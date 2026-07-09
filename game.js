@@ -1048,6 +1048,7 @@ function ascoltaPartita(){
 
                 mano = dati.giocatori[mioGiocatore].mano;
                 mano = dati.giocatori[mioGiocatore].mano;
+alert("Giocatore letto: " + mioGiocatore);
 
 document.getElementById("messaggioPartita").innerHTML =
 "Sei: " + mioGiocatore;
