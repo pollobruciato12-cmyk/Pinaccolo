@@ -934,6 +934,7 @@ alert("Sto inviando a Firebase");
 set(ref(database, "partite/" + codicePartitaAttuale), {
     creatore: "Giocatore 1",
     stato: "attesa",
+    turno: "giocatore1",
     giocatori: {
         giocatore1: "Giocatore 1"
     }
