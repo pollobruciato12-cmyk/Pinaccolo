@@ -72,23 +72,66 @@ function scarta(){
 
     let carta = carteSelezionate[0];
 
-    let indice = mano.indexOf(carta);
+
+    let nuovaMano = [...mano];
+
+    let indice = nuovaMano.findIndex(c =>
+        c.valore === carta.valore &&
+        c.seme === carta.seme
+    );
 
 
     if(indice !== -1){
 
-        scarti.push(carta);
-
-        mano.splice(indice,1);
+        nuovaMano.splice(indice,1);
 
     }
 
 
-    carteSelezionate = [];
+    let nuoviScarti = [...scarti, carta];
 
-    mostraScarti();
 
-    mostraMano();
+    let prossimoGiocatore =
+    mioGiocatore === "giocatore1"
+    ? "giocatore2"
+    : "giocatore1";
+
+
+    set(
+        ref(database, "partite/" + codicePartitaAttuale),
+        {
+            stato:"iniziata",
+
+            turno: prossimoGiocatore,
+
+            scarti: nuoviScarti,
+
+            giocatori:{
+
+                giocatore1:{
+                    nome:"Giocatore 1",
+                    mano:
+                    mioGiocatore === "giocatore1"
+                    ? nuovaMano
+                    : partita.giocatori.giocatore1.mano
+                },
+
+
+                giocatore2:{
+                    nome:"Giocatore 2",
+                    mano:
+                    mioGiocatore === "giocatore2"
+                    ? nuovaMano
+                    : partita.giocatori.giocatore2.mano
+                }
+
+            }
+
+        }
+    );
+
+
+    carteSelezionate=[];
 
 }
 
