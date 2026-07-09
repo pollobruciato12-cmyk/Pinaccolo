@@ -1026,6 +1026,8 @@ function ascoltaPartita(){
         (snapshot)=>{
 
             let dati = snapshot.val();
+            document.getElementById("messaggioPartita").innerHTML =
+"Giocatore: " + mioGiocatore;
 
 
             if(!dati){
@@ -1045,6 +1047,12 @@ function ascoltaPartita(){
             ){
 
                 mano = dati.giocatori[mioGiocatore].mano;
+                mano = dati.giocatori[mioGiocatore].mano;
+
+document.getElementById("messaggioPartita").innerHTML =
+"Sei: " + mioGiocatore;
+
+mostraMano();
 
 
                 mostraMano();
