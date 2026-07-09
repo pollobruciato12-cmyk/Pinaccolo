@@ -978,7 +978,7 @@ function iniziaPartita(){
 
         stato: "iniziata",
 
-        turno: 1,
+        turno: "giocatore1",
 
         mazzo: mazzo,
 
