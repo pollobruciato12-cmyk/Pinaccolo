@@ -52,6 +52,15 @@ function pesca(){
 
 function scarta(){
 
+    if(partita.turno !== mioGiocatore){
+
+        alert("Non è il tuo turno");
+
+        return;
+
+    }
+
+
     if(carteSelezionate.length === 0){
 
         alert("Seleziona una carta");
@@ -1024,6 +1033,8 @@ function ascoltaPartita(){
                 return;
 
             }
+            
+            partita.turno = dati.turno;
 
 
             if(
