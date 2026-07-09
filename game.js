@@ -1066,6 +1066,7 @@ function iniziaPartita(){
 
 }
 function ascoltaPartita(){
+  alert("Turno Firebase: " + partita.turno + " - Io: " + mioGiocatore);
 
     onValue(
         ref(database, "partite/" + codicePartitaAttuale),
