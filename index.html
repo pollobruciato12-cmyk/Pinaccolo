@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PINACOLO</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<div id="menuIniziale">
+
+<h1>🃏 PINACOLO</h1>
+
+
+<button onclick="creaPartita()">
+CREA PARTITA
+</button>
+
+
+<button onclick="entraPartita()">
+ENTRA IN PARTITA
+</button>
+
+
+</div>
+
+
+
+<h1>🃏 PINACOLO</h1>
+
+
+
+<div id="tavolo">
+
+
+<div id="mazzo">
+🂠 Mazzo
+</div>
+
+
+<div id="scarti" class="carta">
+Nessuna
+</div>
+
+
+</div>
+
+
+
+
+<h2>La tua mano</h2>
+
+
+<div id="mano"></div>
+
+
+
+
+<button onclick="creaPartita()">
+Crea partita
+</button>
+
+
+
+<div id="codicePartita"></div>
+
+
+
+<input id="codiceIngresso"
+placeholder="Inserisci codice partita">
+
+
+
+<button onclick="entraPartita()">
+Entra in partita
+</button>
+
+
+
+<div id="messaggioPartita"></div>
+
+
+
+
+<div id="listaGiocatori">
+
+Giocatori:<br>
+
+⚪ In attesa...
+
+</div>
+
+
+
+
+<button id="bottoneInizia" onclick="iniziaPartita()">
+
+Inizia partita
+
+</button>
+
+
+
+
+<button onclick="pesca()">
+
+Pesca 2 carte
+
+</button>
+
+
+
+<button onclick="scarta()">
+
+Scarta
+
+</button>
+
+
+
+
+
+<h2>Combinazioni</h2>
+
+
+
+<div id="combinazioni"></div>
+
+
+
+
+<button onclick="calaCarte()">
+
+Calare
+
+</button>
+
+
+
+<button onclick="aggiungiAlTavolo()">
+
+Aggiungi al tavolo
+
+</button>
+
+
+
+
+
+<!-- Firebase -->
+
+<script type="module">
+
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+
+
+import { getDatabase, ref, set, onValue } 
+from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyB56SBrwszhMt6pnXJ548Vi_QvRipFg6vA",
+
+authDomain: "pinacolo-20eaf.firebaseapp.com",
+
+projectId: "pinacolo-20eaf",
+
+storageBucket: "pinacolo-20eaf.firebasestorage.app",
+
+messagingSenderId: "991743396271",
+
+appId: "1:991743396271:web:f3c9e47a37ceb5c7f1475a"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+
+const database = getDatabase(app);
+
+
+// Firebase disponibile per game.js
+
+window.database = database;
+window.ref = ref;
+window.set = set;
+window.onValue = onValue;
+
+
+</script>
+
+
+
+<script type="module" src="game.js"></script>
+
+
+</body>
+
+</html>
