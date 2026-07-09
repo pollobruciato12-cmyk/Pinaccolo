@@ -858,6 +858,7 @@ distribuisci();
 let codicePartitaAttuale = "";
 let giocatore = "";
 let mioGiocatore = "";
+mioGiocatore = sessionStorage.getItem("mioGiocatore") || "";
 
 const database = window.database;
 const ref = window.ref;
@@ -877,7 +878,8 @@ function creaPartita(){
 
 
     giocatore = "Giocatore 1";
-    mioGiocatore = "giocatore1";
+  mioGiocatore = "giocatore1";
+sessionStorage.setItem("mioGiocatore", "giocatore1");
 
 
     document.getElementById("listaGiocatori").innerHTML =
@@ -922,6 +924,7 @@ function entraPartita(){
     codicePartitaAttuale = codice;
 
     mioGiocatore = "giocatore2";
+sessionStorage.setItem("mioGiocatore", "giocatore2");
 
 
     set(
@@ -1048,6 +1051,7 @@ function ascoltaPartita(){
 
                 mano = dati.giocatori[mioGiocatore].mano;
                 mano = dati.giocatori[mioGiocatore].mano;
+                alert("Prima di leggere: " + mioGiocatore);
 alert("Giocatore letto: " + mioGiocatore);
 
 document.getElementById("messaggioPartita").innerHTML =
