@@ -9,7 +9,7 @@ h1 {
     margin-top: 20px;
 }
 
-#tavolo {
+.tavolo {
     display: flex;
     justify-content: center;
     gap: 50px;
@@ -93,4 +93,68 @@ button {
 
 .combinazione .carta{
     display:inline-block;
+}
+#tavolo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 400px;
+    min-height: 180px;
+    background: rgba(0,0,0,0.15);
+    border-radius: 20px;
+}
+
+
+/* Indicatore turno */
+
+#indicatoreTurno {
+
+    margin: 15px auto;
+    padding: 10px 20px;
+    width: fit-content;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.15);
+    font-size: 20px;
+    font-weight: bold;
+
+}
+
+
+
+/* Carte più stile app */
+
+.carta-mano {
+
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: 0.2s;
+
+}
+
+
+.carta {
+
+    box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+
+}
+
+
+/* Pulsanti stile gioco */
+
+button {
+
+    background: #ffffff;
+    color: #0b5d1e;
+    font-weight: bold;
+    cursor: pointer;
+
+}
+
+
+button:active {
+
+    transform: scale(0.95);
+
 }
