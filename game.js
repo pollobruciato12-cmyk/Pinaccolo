@@ -1101,23 +1101,31 @@ function ascoltaPartita(){
 
 
 
-            if (
-                dati.stato === "attesa" &&
-                dati.giocatori &&
-                dati.giocatori.giocatore1 &&
-                dati.giocatori.giocatore2 &&
-                mioGiocatore === "giocatore1"
-            ){
+if (
+    dati.stato === "attesa" &&
+    dati.giocatori &&
+    dati.giocatori.giocatore1 &&
+    dati.giocatori.giocatore2 &&
+    mioGiocatore === "giocatore1"
+){
 
-                iniziaPartita();
+    iniziaPartita();
 
-            }
+    return;
+
+}
 
 
 
 if(dati.turno !== undefined){
 
+if(dati.turno){
+
     partita.turno = Number(dati.turno);
+
+    aggiornaIndicatoreTurno();
+
+}
 
     aggiornaIndicatoreTurno();
 
