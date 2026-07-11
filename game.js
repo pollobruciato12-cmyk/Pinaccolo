@@ -94,16 +94,33 @@ function scarta(){
     mostraScarti();
 
     mostraMano();
-    
-    // cambio turno
-
-let nuovoTurno = partita.turno === 1 ? 2 : 1;
 
 
-set(
-    ref(database, "partite/" + codicePartitaAttuale + "/turno"),
-    nuovoTurno
-);
+
+    // salva lo scarto su Firebase
+
+    set(
+        ref(database, "partite/" + codicePartitaAttuale + "/giocatori/" + mioGiocatore + "/mano"),
+        mano
+    );
+
+
+    set(
+        ref(database, "partite/" + codicePartitaAttuale + "/scarti"),
+        scarti
+    );
+
+
+
+    // passa il turno
+
+    let nuovoTurno = partita.turno === 1 ? 2 : 1;
+
+
+    set(
+        ref(database, "partite/" + codicePartitaAttuale + "/turno"),
+        nuovoTurno
+    );
 
 
 }
