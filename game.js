@@ -56,6 +56,15 @@ function scarta(){
     mioGiocatore === "giocatore1" ? 1 : 2;
 
 
+if(!partita.turno){
+
+    alert("Attendi caricamento partita");
+
+    return;
+
+}
+
+
 if(Number(partita.turno) !== numeroGiocatore){
 
     alert(
