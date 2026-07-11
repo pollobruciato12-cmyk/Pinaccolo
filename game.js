@@ -1063,19 +1063,6 @@ function ascoltaPartita(){
         (snapshot)=>{
 
             let dati = snapshot.val();
-            if(dati.giocatori){
-
-    let testo = "Giocatori:<br>";
-
-    for(let g in dati.giocatori){
-
-        testo += "🟢 " + dati.giocatori[g].nome + "<br>";
-
-    }
-
-    document.getElementById("listaGiocatori").innerHTML = testo;
-
-}
 
 
             if(!dati){
@@ -1083,17 +1070,51 @@ function ascoltaPartita(){
                 return;
 
             }
+
+
+
+            if(dati.giocatori){
+
+                let testo = "Giocatori:<br>";
+
+                for(let g in dati.giocatori){
+
+                    testo += "🟢 " + dati.giocatori[g].nome + "<br>";
+
+                }
+
+                document.getElementById("listaGiocatori").innerHTML = testo;
+
+            }
+
+
+
+
             if (
-    dati.stato === "attesa" &&
-    dati.giocatori &&
-    dati.giocatori.giocatore1 &&
-    dati.giocatori.giocatore2 &&
-    mioGiocatore === "giocatore1"
-) {
-    iniziaPartita();
-}
-            
-            partita.turno = dati.turno;
+                dati.stato === "attesa" &&
+                dati.giocatori &&
+                dati.giocatori.giocatore1 &&
+                dati.giocatori.giocatore2 &&
+                mioGiocatore === "giocatore1"
+            ){
+
+                iniziaPartita();
+
+            }
+
+
+
+            partita.turno = Number(dati.turno);
+
+
+            console.log(
+                "Turno aggiornato:",
+                partita.turno,
+                "Io sono:",
+                mioGiocatore
+            );
+
+
 
 
             if(
@@ -1104,7 +1125,6 @@ function ascoltaPartita(){
             ){
 
                 mano = dati.giocatori[mioGiocatore].mano;
-
 
                 mostraMano();
 
