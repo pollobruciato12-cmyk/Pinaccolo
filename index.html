@@ -19,16 +19,13 @@
 
 <h1>🃏 PINACOLO</h1>
 
-
 <button onclick="creaPartita()">
 CREA PARTITA
 </button>
 
-
 <button onclick="entraPartita()">
 ENTRA IN PARTITA
 </button>
-
 
 </div>
 
@@ -37,17 +34,57 @@ ENTRA IN PARTITA
 <h1>🃏 PINACOLO</h1>
 
 
+<div id="codicePartita"></div>
+
+
+<input id="codiceIngresso"
+placeholder="Inserisci codice partita">
+
+
+<button onclick="entraPartita()">
+Entra in partita
+</button>
+
+
+<div id="messaggioPartita"></div>
+
+
+<div id="listaGiocatori">
+
+Giocatori:<br>
+⚪ In attesa...
+
+</div>
+
+
+
+<button id="bottoneInizia" onclick="iniziaPartita()">
+Inizia partita
+</button>
+
+
+
+
+<div id="areaGioco">
+
+
+<div id="avversario">
+🟦 Giocatore 2
+</div>
+
+
 
 <div id="indicatoreTurno">
 Attesa giocatori...
 </div>
 
 
+
 <div id="tavolo">
 
 
-<div id="mazzo">
-🂠 Mazzo
+<div id="mazzo" class="carta">
+🂠
 </div>
 
 
@@ -60,100 +97,47 @@ Nessuna
 
 
 
+<h2>Tavolo</h2>
 
-<h2>La tua mano</h2>
+<div id="combinazioni">
 
+</div>
+
+
+
+<div id="miaZona">
+
+<h3>La tua mano</h3>
 
 <div id="mano"></div>
 
+</div>
 
 
-
-<button onclick="creaPartita()">
-Crea partita
-</button>
-
-
-
-<div id="codicePartita"></div>
-
-
-
-<input id="codiceIngresso"
-placeholder="Inserisci codice partita">
-
-
-
-<button onclick="entraPartita()">
-Entra in partita
-</button>
-
-
-
-<div id="messaggioPartita"></div>
-
-
-
-
-<div id="listaGiocatori">
-
-Giocatori:<br>
-
-⚪ In attesa...
 
 </div>
 
 
 
 
-<button id="bottoneInizia" onclick="iniziaPartita()">
-
-Inizia partita
-
-</button>
-
-
-
 
 <button onclick="pesca()">
-
 Pesca 2 carte
-
 </button>
-
 
 
 <button onclick="scarta()">
-
 Scarta
-
 </button>
-
-
-
-
-
-<h2>Combinazioni</h2>
-
-
-
-<div id="combinazioni"></div>
-
-
 
 
 <button onclick="calaCarte()">
-
 Calare
-
 </button>
 
 
-
 <button onclick="aggiungiAlTavolo()">
-
 Aggiungi al tavolo
-
 </button>
 
 
