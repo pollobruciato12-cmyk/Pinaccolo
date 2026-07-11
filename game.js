@@ -935,9 +935,11 @@ alert("Sto inviando a Firebase");
 set(ref(database, "partite/" + codicePartitaAttuale), {
     creatore: "Giocatore 1",
     stato: "attesa",
-    giocatori: {
-        giocatore1: "Giocatore 1"
+giocatori: {
+    giocatore1: {
+        nome: "Giocatore 1"
     }
+}
 })
 .then(() => {
     alert("Partita creata su Firebase!");
@@ -1164,11 +1166,19 @@ function aggiornaIndicatoreTurno(){
     mioGiocatore === "giocatore1" ? 1 : 2;
 
 
-area.innerHTML =
-"Turno: " + partita.turno +
-"<br>Io: " + mioGiocatore +
-"<br>Numero: " + mioNumero;
+    if(partita.turno === mioNumero){
 
+        area.innerHTML =
+        "🟢 È il tuo turno";
+
+    }else{
+
+        area.innerHTML =
+        "⏳ Turno di Giocatore " + partita.turno;
+
+    }
+
+}
 window.creaPartita = creaPartita;
 window.entraPartita = entraPartita;
 window.iniziaPartita = iniziaPartita;
