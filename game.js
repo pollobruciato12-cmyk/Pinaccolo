@@ -1164,18 +1164,10 @@ function aggiornaIndicatoreTurno(){
     mioGiocatore === "giocatore1" ? 1 : 2;
 
 
-    if(partita.turno === mioNumero){
-
-        area.innerHTML = "🟢 È il tuo turno";
-
-    }else{
-
-        area.innerHTML =
-        "⏳ Turno avversario";
-
-    }
-
-}
+area.innerHTML =
+"Turno: " + partita.turno +
+"<br>Io: " + mioGiocatore +
+"<br>Numero: " + mioNumero;
 
 window.creaPartita = creaPartita;
 window.entraPartita = entraPartita;
