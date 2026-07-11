@@ -1115,8 +1115,13 @@ function ascoltaPartita(){
 
 
 
-            partita.turno = Number(dati.turno);
-            aggiornaIndicatoreTurno();
+if(dati.turno !== undefined){
+
+    partita.turno = Number(dati.turno);
+
+    aggiornaIndicatoreTurno();
+
+}
 
 
             console.log(
@@ -1162,8 +1167,12 @@ function aggiornaIndicatoreTurno(){
     }
 
 
-    let mioNumero =
-    mioGiocatore === "giocatore1" ? 1 : 2;
+if(!mioGiocatore){
+    return;
+}
+
+let mioNumero =
+mioGiocatore === "giocatore1" ? 1 : 2;
 
 
     if(partita.turno === mioNumero){
