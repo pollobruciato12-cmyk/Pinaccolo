@@ -1114,6 +1114,7 @@ function ascoltaPartita(){
 
 
             partita.turno = Number(dati.turno);
+            aggiornaIndicatoreTurno();
 
 
             console.log(
@@ -1150,6 +1151,32 @@ function ascoltaPartita(){
     );
 
 }
+function aggiornaIndicatoreTurno(){
+
+    let area = document.getElementById("indicatoreTurno");
+
+    if(!area){
+        return;
+    }
+
+
+    let mioNumero =
+    mioGiocatore === "giocatore1" ? 1 : 2;
+
+
+    if(partita.turno === mioNumero){
+
+        area.innerHTML = "🟢 È il tuo turno";
+
+    }else{
+
+        area.innerHTML =
+        "⏳ Turno avversario";
+
+    }
+
+}
+
 window.creaPartita = creaPartita;
 window.entraPartita = entraPartita;
 window.iniziaPartita = iniziaPartita;
