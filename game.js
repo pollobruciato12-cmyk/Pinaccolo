@@ -56,13 +56,17 @@ function scarta(){
     mioGiocatore === "giocatore1" ? 1 : 2;
 
 
-    if(partita.turno !== numeroGiocatore){
+if(Number(partita.turno) !== numeroGiocatore){
 
-        alert("Non è il tuo turno");
+    alert(
+        "Non è il tuo turno\n" +
+        "Turno attuale: " + partita.turno +
+        "\nTu sei: " + numeroGiocatore
+    );
 
-        return;
+    return;
 
-    }
+}
 
 
     if(carteSelezionate.length === 0){
