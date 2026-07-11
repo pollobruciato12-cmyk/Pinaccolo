@@ -55,6 +55,7 @@ function scarta(){
     if(partita.turno !== mioGiocatore){
 
         alert("Non è il tuo turno");
+
         return;
 
     }
@@ -63,6 +64,7 @@ function scarta(){
     if(carteSelezionate.length === 0){
 
         alert("Seleziona una carta");
+
         return;
 
     }
@@ -76,6 +78,7 @@ function scarta(){
     if(indice !== -1){
 
         scarti.push(carta);
+
         mano.splice(indice,1);
 
     }
@@ -83,8 +86,8 @@ function scarta(){
 
     carteSelezionate = [];
 
-
     mostraScarti();
+
     mostraMano();
 
 }
@@ -855,7 +858,6 @@ distribuisci();
 let codicePartitaAttuale = "";
 let giocatore = "";
 let mioGiocatore = "";
-mioGiocatore = sessionStorage.getItem("mioGiocatore") || "";
 
 const database = window.database;
 const ref = window.ref;
@@ -875,8 +877,7 @@ function creaPartita(){
 
 
     giocatore = "Giocatore 1";
-  mioGiocatore = "giocatore1";
-sessionStorage.setItem("mioGiocatore", "giocatore1");
+    mioGiocatore = "giocatore1";
 
 
     document.getElementById("listaGiocatori").innerHTML =
@@ -888,7 +889,6 @@ alert("Sto inviando a Firebase");
 set(ref(database, "partite/" + codicePartitaAttuale), {
     creatore: "Giocatore 1",
     stato: "attesa",
-    turno: "giocatore1",
     giocatori: {
         giocatore1: "Giocatore 1"
     }
@@ -922,7 +922,6 @@ function entraPartita(){
     codicePartitaAttuale = codice;
 
     mioGiocatore = "giocatore2";
-sessionStorage.setItem("mioGiocatore", "giocatore2");
 
 
     set(
@@ -976,7 +975,7 @@ function iniziaPartita(){
 
         stato: "iniziata",
 
-        turno: "giocatore1",
+        turno: 1,
 
         mazzo: mazzo,
 
@@ -1021,15 +1020,12 @@ function iniziaPartita(){
 
 }
 function ascoltaPartita(){
-  alert("Turno Firebase: " + partita.turno + " - Io: " + mioGiocatore);
 
     onValue(
         ref(database, "partite/" + codicePartitaAttuale),
         (snapshot)=>{
 
             let dati = snapshot.val();
-            document.getElementById("messaggioPartita").innerHTML =
-"Giocatore: " + mioGiocatore;
 
 
             if(!dati){
@@ -1037,6 +1033,15 @@ function ascoltaPartita(){
                 return;
 
             }
+            if (
+    dati.stato === "attesa" &&
+    dati.giocatori &&
+    dati.giocatori.giocatore1 &&
+    dati.giocatori.giocatore2 &&
+    mioGiocatore === "giocatore1"
+) {
+    iniziaPartita();
+}
             
             partita.turno = dati.turno;
 
@@ -1049,14 +1054,6 @@ function ascoltaPartita(){
             ){
 
                 mano = dati.giocatori[mioGiocatore].mano;
-                mano = dati.giocatori[mioGiocatore].mano;
-                alert("Prima di leggere: " + mioGiocatore);
-alert("Giocatore letto: " + mioGiocatore);
-
-document.getElementById("messaggioPartita").innerHTML =
-"Sei: " + mioGiocatore;
-
-mostraMano();
 
 
                 mostraMano();
