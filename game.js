@@ -1074,6 +1074,7 @@ function ascoltaPartita(){
         (snapshot)=>{
 
             let dati = snapshot.val();
+            console.log("DATI FIREBASE:", dati);
 
 
             if(!dati){
