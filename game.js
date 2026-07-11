@@ -52,7 +52,11 @@ function pesca(){
 
 function scarta(){
 
-    if(partita.turno !== mioGiocatore){
+    let numeroGiocatore = 
+    mioGiocatore === "giocatore1" ? 1 : 2;
+
+
+    if(partita.turno !== numeroGiocatore){
 
         alert("Non è il tuo turno");
 
@@ -86,9 +90,11 @@ function scarta(){
 
     carteSelezionate = [];
 
+
     mostraScarti();
 
     mostraMano();
+
 
 }
 
