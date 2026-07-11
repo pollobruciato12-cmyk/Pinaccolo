@@ -94,6 +94,16 @@ function scarta(){
     mostraScarti();
 
     mostraMano();
+    
+    // cambio turno
+
+let nuovoTurno = partita.turno === 1 ? 2 : 1;
+
+
+set(
+    ref(database, "partite/" + codicePartitaAttuale + "/turno"),
+    nuovoTurno
+);
 
 
 }
