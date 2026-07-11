@@ -1026,6 +1026,19 @@ function ascoltaPartita(){
         (snapshot)=>{
 
             let dati = snapshot.val();
+            if(dati.giocatori){
+
+    let testo = "Giocatori:<br>";
+
+    for(let g in dati.giocatori){
+
+        testo += "🟢 " + dati.giocatori[g].nome + "<br>";
+
+    }
+
+    document.getElementById("listaGiocatori").innerHTML = testo;
+
+}
 
 
             if(!dati){
