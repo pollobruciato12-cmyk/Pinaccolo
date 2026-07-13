@@ -50,6 +50,10 @@ function nomeImmagineCarta(carta){
 
 if(carta.valore === "Jolly"){
 
+    if(carta.colore === "blu"){
+        return "jolly_blu.png";
+    }
+
     return "jolly_rosso.png";
 
 }
@@ -69,6 +73,26 @@ if(carta.valore === "Jolly"){
 
 
 function pesca(){
+
+    let mioNumero =
+    mioGiocatore === "giocatore1" ? 1 : 2;
+
+
+if(partita.turno === 0){
+
+    partita.turno = 1;
+
+}
+
+
+    if(mazzo.length === 0){
+
+        alert("Mazzo finito!");
+
+        return;
+
+    }
+
 
     for(let i = 0; i < 2; i++){
 
@@ -389,7 +413,12 @@ colore: coloreJolly
 
 
 
+console.log("Totale carte:", mazzo.length);
 
+console.log(
+    "Jolly creati:",
+    mazzo.filter(c => c.valore === "Jolly")
+);
     mescola();
 
 }
@@ -1132,6 +1161,11 @@ function creaPartita(){
 
     document.getElementById("codicePartita").innerHTML =
     "Codice partita: " + codicePartitaAttuale;
+    document.getElementById("codicePartita").style.display = "block";
+    
+document.getElementById("codicePartita").style.display = "block";
+document.getElementById("codicePartita").style.color = "white";
+document.getElementById("codicePartita").style.fontSize = "22px";
 
 
     giocatore = "Giocatore 1";
@@ -1335,9 +1369,14 @@ if (
 
 if(dati.turno !== undefined){
 
-if(dati.turno){
+if(dati.turno !== undefined){
 
     partita.turno = Number(dati.turno);
+    if(partita.turno === 0){
+
+    partita.turno = 1;
+
+}
 
     aggiornaIndicatoreTurno();
 
