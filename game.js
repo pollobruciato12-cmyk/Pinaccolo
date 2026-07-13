@@ -26,10 +26,46 @@ let squadra = false;
 const semi = ["♠", "♣", "♥", "♦"];
 
 const valori = [
-    "A","3","4","5","6","7",
+    "A","2","3","4","5","6","7",
     "8","9","10","J","Q","K"
 ];
 
+function nomeImmagineCarta(carta){
+
+    let semiNomi = {
+        "♠":"picche",
+        "♣":"fiori",
+        "♥":"cuori",
+        "♦":"quadri"
+    };
+
+
+    let valoriNomi = {
+        "A":"asso",
+        "J":"j",
+        "Q":"q",
+        "K":"k"
+    };
+
+
+if(carta.valore === "Jolly"){
+
+    return "jolly_rosso.png";
+
+}
+
+
+    let valore =
+    valoriNomi[carta.valore] || carta.valore;
+
+
+    let seme =
+    semiNomi[carta.seme];
+
+
+    return valore + "_" + seme + ".png";
+
+}
 
 
 function pesca(){
@@ -44,7 +80,26 @@ function pesca(){
 
     }
 
+
     mostraMano();
+
+
+    let percorso =
+    "partite/" + codicePartitaAttuale +
+    "/giocatori/" + mioGiocatore +
+    "/mano";
+
+
+    set(
+        ref(database, percorso),
+        mano
+    );
+
+
+    set(
+        ref(database, "partite/" + codicePartitaAttuale + "/mazzo"),
+        mazzo
+    );
 
 }
 
@@ -144,15 +199,67 @@ function mostraScarti(){
 
     let area = document.getElementById("scarti");
 
+    area.innerHTML = "";
 
-    if(scarti.length > 0){
 
-        let ultima = scarti[scarti.length-1];
+    if(scarti.length === 0){
+        return;
+    }
 
-        area.innerHTML =
-        ultima.valore + ultima.seme;
+
+    let carta = scarti[scarti.length - 1];
+
+
+    let div = document.createElement("div");
+
+    div.className = "carta-mano";
+
+
+    let colore =
+    (carta.seme === "♥" || carta.seme === "♦")
+    ? "rosso"
+    : "nero";
+
+
+    if(["J","Q","K"].includes(carta.valore)){
+
+
+        div.innerHTML = `
+
+        <div class="angoloCarta ${colore}">
+            <div>${carta.valore}</div>
+            <div>${carta.seme}</div>
+        </div>
+
+
+        <div class="figuraCarta ${colore}">
+            ${carta.valore}
+        </div>
+
+        `;
+
+
+    } else {
+
+
+        div.innerHTML = `
+
+        <div class="angoloCarta ${colore}">
+            <div>${carta.valore}</div>
+            <div>${carta.seme}</div>
+        </div>
+
+
+        <div class="semeCentro ${colore}">
+            ${carta.seme}
+        </div>
+
+        `;
 
     }
+
+
+    area.appendChild(div);
 
 }
 
@@ -222,100 +329,64 @@ function creaMazzo(){
 
 
     for(let partita = 0; partita < 2; partita++){
+      let coloreJolly = partita === 0 ? "rosso" : "blu";
 
 
         for(let seme of semi){
 
 
-            for(let valore of valori){
+for(let valore of valori){
+
+    // niente 2 di cuori e 2 di quadri
+    if(valore === "2" && (seme === "♥" || seme === "♦")){
+        continue;
+    }
 
 
-                // saltiamo il 2 di cuori e il 2 di quadri
-                // (non esistono nel Pinacolo)
+    mazzo.push({
 
-                mazzo.push({
+        valore: valore,
 
-                    valore: valore,
+        seme: seme,
 
-                    seme: seme
+        pinella:
+        valore === "2" && (seme === "♠" || seme === "♣")
 
-                });
+    });
 
-
-            }
+}
 
         }
 
 
-        // Jolly
+// Jolly
 
-        mazzo.push({
+mazzo.push({
 
-            valore:"Jolly",
+    valore:"Jolly",
 
-            seme:"⭐"
+    seme:"⭐",
 
-        });
+colore: coloreJolly
+
+});
 
 
-        mazzo.push({
+mazzo.push({
 
-            valore:"Jolly",
+    valore:"Jolly",
 
-            seme:"⭐"
+    seme:"⭐",
 
-        });
+colore: coloreJolly
+
+});
 
 
     }
 
 
-    // Aggiungiamo le pinelle:
-    // 2 di picche e 2 di fiori,
-    // una per ogni mazzo
 
-    mazzo.push({
-
-        valore:"2",
-
-        seme:"♠",
-
-        pinella:true
-
-    });
-
-
-    mazzo.push({
-
-        valore:"2",
-
-        seme:"♣",
-
-        pinella:true
-
-    });
-
-
-    mazzo.push({
-
-        valore:"2",
-
-        seme:"♠",
-
-        pinella:true
-
-    });
-
-
-    mazzo.push({
-
-        valore:"2",
-
-        seme:"♣",
-
-        pinella:true
-
-    });
 
 
 
@@ -377,6 +448,8 @@ function mostraMano(){
         let div = document.createElement("div");
 
         div.className="carta-mano";
+        
+div.style.backgroundPosition = "center";
 
 
         div.onclick=function(){
@@ -412,24 +485,102 @@ function mostraMano(){
         : "nero";
 
 
-        div.innerHTML = `
+div.innerHTML = `
 
-        <span class="${colore}">
-        ${carta.valore}
-        </span>
+<img class="immagineCarta" src="images/carte/${nomeImmagineCarta(carta)}">
 
-        <span class="${colore}">
-        ${carta.seme}
-        </span>
-
-        `;
+`;
 
 
-        area.appendChild(div);
+area.appendChild(div);
 
 
     });
+    
 
+// Adatta spazio mano in base allo spazio disponibile
+
+let spazio = document.getElementById("mano").clientWidth;
+
+let larghezzaCarta = 62;
+
+let margine = 0;
+
+
+if(mano.length <= 12){
+
+    margine = -15;
+
+}
+else if(mano.length <= 16){
+
+    margine = -28;
+
+}
+else if(mano.length <= 20){
+
+    margine = -38;
+
+}
+else {
+
+    margine = -42;
+
+}
+
+
+document.querySelectorAll(".carta-mano").forEach((c,i)=>{
+
+    if(i === 0){
+
+        c.style.marginLeft = "0px";
+
+    } else {
+
+        c.style.marginLeft = margine + "px";
+
+    }
+
+});
+
+
+// limite massimo di sovrapposizione
+if(margine < -38){
+
+    margine = -38;
+
+}
+document.querySelectorAll(".carta-mano").forEach((c, i)=>{
+
+    if(i > 0){
+        c.style.marginLeft = margine + "px";
+    }
+
+});
+
+
+document.querySelectorAll(".carta-mano").forEach((c, i)=>{
+
+    if(i === 0){
+
+        c.style.marginLeft = "0px";
+
+    }else{
+
+        c.style.marginLeft = margine + "px";
+
+    }
+
+});
+
+let contatore = document.getElementById("contatoreMazzo");
+
+if(contatore){
+
+    contatore.innerHTML =
+    "Carte mazzo: " + mazzo.length;
+
+}
 
 }
 
@@ -491,9 +642,66 @@ function calaCarte(){
     mostraCombinazioni();
 
 }
+// TOCCO AREA MIE COMBINAZIONI
+
+document.getElementById("mieCombinazioni").onclick = function(){
+
+    if(carteSelezionate.length === 0){
+
+        alert("Seleziona prima le carte");
+
+        return;
+
+    }
+
+
+    if(!combinazioneValida(carteSelezionate)){
+
+        alert("Combinazione non valida");
+
+        return;
+
+    }
+
+
+    let nuova = [];
+
+
+    for(let carta of carteSelezionate){
+
+        let indice = mano.indexOf(carta);
+
+        if(indice !== -1){
+
+            nuova.push(carta);
+
+            mano.splice(indice,1);
+
+        }
+
+    }
+
+
+    combinazioni.push({
+
+        tipo: determinaTipo(nuova),
+
+        carte: nuova
+
+    });
+
+
+    carteSelezionate = [];
+
+
+    mostraMano();
+
+    mostraCombinazioni();
+
+};
 function mostraCombinazioni(){
 
-    let area = document.getElementById("combinazioni");
+    let area = document.getElementById("mieCombinazioni");
 
     area.innerHTML = "";
 
@@ -521,7 +729,7 @@ function mostraCombinazioni(){
 
             let c = document.createElement("div");
 
-            c.className="carta";
+            c.className="carta-mano carta-calata";
 
 
             c.innerHTML =
@@ -912,6 +1120,10 @@ const onValue = window.onValue;
 
 function creaPartita(){
 
+    document.getElementById("menuIniziale").style.display = "none";
+    document.getElementById("areaGioco").style.display = "flex";
+
+
     codicePartitaAttuale = Math.random()
     .toString(36)
     .substring(2,8)
@@ -930,28 +1142,31 @@ function creaPartita(){
     "Giocatori:<br>🟢 Giocatore 1<br>⚪ In attesa...";
 
 
-alert("Sto inviando a Firebase");
+    alert("Sto inviando a Firebase");
 
-set(ref(database, "partite/" + codicePartitaAttuale), {
-    creatore: "Giocatore 1",
-    stato: "attesa",
-giocatori: {
-    giocatore1: {
-        nome: "Giocatore 1"
-    }
-}
-})
-.then(() => {
-    alert("Partita creata su Firebase!");
-    ascoltaPartita();
-})
-.catch((errore) => {
-    alert("ERRORE: " + errore);
-});
+    set(ref(database, "partite/" + codicePartitaAttuale), {
+        creatore: "Giocatore 1",
+        stato: "attesa",
+        giocatori: {
+            giocatore1: {
+                nome: "Giocatore 1"
+            }
+        }
+    })
+    .then(() => {
+        alert("Partita creata su Firebase!");
+        ascoltaPartita();
+    })
+    .catch((errore) => {
+        alert("ERRORE: " + errore);
+    });
 
 }
 
 function entraPartita(){
+  
+      document.getElementById("menuIniziale").style.display = "none";
+    document.getElementById("areaGioco").style.display = "flex";
 
     let codice = document.getElementById("codiceIngresso").value
     .toUpperCase();
@@ -1151,6 +1366,7 @@ if(dati.turno){
             ){
 
                 mano = dati.giocatori[mioGiocatore].mano;
+                mazzo = dati.mazzo;
 
                 mostraMano();
 
