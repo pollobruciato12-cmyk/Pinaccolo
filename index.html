@@ -11,27 +11,20 @@
 
 </head>
 
-
 <body>
-
 
 <div id="menuIniziale">
 
-<h1>🃏 PINACOLO</h1>
 
 <button onclick="creaPartita()">
 CREA PARTITA
 </button>
 
-<button onclick="entraPartita()">
-ENTRA IN PARTITA
-</button>
 
 </div>
 
 
-
-<h1>🃏 PINACOLO</h1>
+</div>
 
 
 <div id="codicePartita"></div>
@@ -57,73 +50,86 @@ Giocatori:<br>
 </div>
 
 
-
 <button id="bottoneInizia" onclick="iniziaPartita()">
 Inizia partita
 </button>
 
 
 
-
 <div id="areaGioco">
 
 
-<div id="avversario">
+<!-- AVVERSARIO -->
+
+<div id="zonaAvversario">
+
+<div id="nomeAvversario">
 🟦 Giocatore 2
 </div>
 
-
-
-<div id="indicatoreTurno">
-Attesa giocatori...
+<div id="numeroCarteAvversario">
+15
 </div>
 
 
+<div id="carteAvversario">
 
-<div id="tavolo">
-
-
-<div id="mazzo" class="carta">
-🂠
-</div>
-
-
-<div id="scarti" class="carta">
-Nessuna
-</div>
-
+<div class="cartaRetro rosso"></div>
+<div class="cartaRetro blu"></div>
+<div class="cartaRetro rosso"></div>
+<div class="cartaRetro blu"></div>
 
 </div>
 
 
+<div id="combinazioniAvversario">
 
-<h2>Tavolo</h2>
-
-<div id="combinazioni">
+</div>
 
 </div>
 
 
+
+<!-- CENTRO TAVOLO -->
+
+<div id="centroTavolo">
+
+
+<div id="mazzo" onclick="pesca()">
+
+</div>
+
+
+<div id="scarti">
+
+</div>
+
+
+</div>
+
+
+
+<!-- MIE COMBINAZIONI -->
+
+<div id="mieCombinazioni">
+
+</div>
+
+
+
+<!-- MANO -->
 
 <div id="miaZona">
 
-<h3>La tua mano</h3>
+<div id="mano">
 
-<div id="mano"></div>
+</div>
 
 </div>
 
 
-
 </div>
 
-
-
-
-
-<button onclick="pesca()">
-Pesca 2 carte
-</button>
 
 
 <button onclick="scarta()">
@@ -143,7 +149,6 @@ Aggiungi al tavolo
 
 
 
-
 <!-- Firebase -->
 
 <script type="module">
@@ -158,7 +163,7 @@ from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 
 const firebaseConfig = {
 
-apiKey: "AIzaSyB56SBrwszhMt6pnXJ548Vi_QvRipFg6vA",
+apiKey: "AIzazaXXXXXXXXXXXX",
 
 authDomain: "pinacolo-20eaf.firebaseapp.com",
 
@@ -179,8 +184,6 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
 
-// Firebase disponibile per game.js
-
 window.database = database;
 window.ref = ref;
 window.set = set;
@@ -192,6 +195,9 @@ window.onValue = onValue;
 
 
 <script type="module" src="game.js"></script>
+
+
+
 
 
 </body>
