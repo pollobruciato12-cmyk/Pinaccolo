@@ -1,833 +1,201 @@
-/* ==========================
-   PINACCOLO - CSS PULITO
-   PARTE 1
-========================== */
+<!DOCTYPE html>
+<html lang="it">
 
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-/* TAVOLO GENERALE */
+<title>PINACOLO</title>
 
-body {
-    background:#0b5d1e;
-    color:white;
-    font-family:Arial, sans-serif;
-    text-align:center;
-    margin:0;
-}
+<link rel="stylesheet" href="style.css">
 
+</head>
 
-/* TITOLO MENU */
+<body>
 
-h1 {
-    margin-top:20px;
-}
+<div id="menuIniziale">
 
 
-/* AREA PARTITA */
+<button onclick="creaPartita()">
+CREA PARTITA
+</button>
 
-#areaGioco {
 
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    background:#0b5d1e;
-    overflow:hidden;
+</div>
 
-}
+<div id="codicePartita"></div>
 
 
-/* NASCONDI ELEMENTI PARTITA NEL MENU */
+<input id="codiceIngresso"
+placeholder="Inserisci codice partita">
 
-#areaGioco,
-#codiceIngresso,
-#messaggioPartita,
-#listaGiocatori,
-#bottoneInizia,
-body > button {
 
-    display:none;
+<button onclick="entraPartita()">
+Entra in partita
+</button>
 
-}
 
+<div id="messaggioPartita"></div>
 
-/* INDICATORE TURNO */
 
-#indicatoreTurno {
+<div id="listaGiocatori">
 
-    font-size:18px;
-    font-weight:bold;
-    margin:10px;
+Giocatori:<br>
+⚪ In attesa...
 
-}
+</div>
 
 
-/* ==========================
-   AVVERSARIO
-========================== */
+<button id="bottoneInizia" onclick="iniziaPartita()">
+Inizia partita
+</button>
 
 
-#zonaAvversario {
 
-    position:absolute;
+<div id="areaGioco">
 
-    top:0px;
-    left:0px;
 
-    display:flex;
-    align-items:flex-start;
-    gap:3px;
+<!-- AVVERSARIO -->
 
-    padding:0;
-    margin:0;
+<div id="zonaAvversario">
 
-    z-index:200;
+<div id="nomeAvversario">
+🟦 Giocatore 2
+</div>
 
-}
+<div id="numeroCarteAvversario">
+15
+</div>
 
 
-#nomeAvversario {
+<div id="carteAvversario">
 
-    font-size:13px;
-    margin:0;
-    padding:0;
+<div class="cartaRetro rosso"></div>
+<div class="cartaRetro blu"></div>
+<div class="cartaRetro rosso"></div>
+<div class="cartaRetro blu"></div>
 
-}
+</div>
 
 
-#carteAvversario {
+<div id="combinazioniAvversario">
 
-    display:flex;
-    align-items:center;
+</div>
 
-}
+</div>
 
 
-/* RETRO CARTE PINACCOLO - DUE MAZZI */
 
-/* RETRO CARTE CON IMMAGINI */
+<!-- CENTRO TAVOLO -->
 
-.cartaRetro {
+<div id="centroTavolo">
 
-    width:32px;
-    height:50px;
 
-    border-radius:6px;
+<div id="mazzo" onclick="pesca()">
 
-    margin-left:-12px;
+</div>
 
-    background-size:cover;
-    background-position:center;
 
-    border:2px solid white;
+<div id="scarti">
 
-    box-shadow:
-    0 3px 6px rgba(0,0,0,0.5);
+</div>
 
-}
 
+</div>
 
-/* mazzo blu */
 
-.cartaRetro.blu {
-    background-image:url("./images/carte/retro_blu.png");
-}
 
+<!-- MIE COMBINAZIONI -->
 
-/* mazzo rosso */
+<div id="mieCombinazioni">
 
-.cartaRetro.rosso {
+</div>
 
-    background-image:url("images/carte/retro_rosso.png");
 
-}
 
+<!-- MANO -->
 
-/* cornice interna */
+<div id="miaZona">
 
-.cartaRetro::before {
+<div id="mano">
 
-    content:"";
+</div>
 
-    position:absolute;
+</div>
 
-    top:4px;
-    left:4px;
-    right:4px;
-    bottom:4px;
 
-    border:1px solid rgba(255,255,255,0.8);
+</div>
 
-    border-radius:3px;
 
-}
 
+<button onclick="scarta()">
+Scarta
+</button>
 
-/* motivo blu */
 
-.cartaRetro.blu {
+<button onclick="calaCarte()">
+Calare
+</button>
 
-    background:
-    repeating-linear-gradient(
-        45deg,
-        #0b3d91,
-        #0b3d91 3px,
-        #164fc0 3px,
-        #164fc0 6px
-    );
 
-}
+<button onclick="aggiungiAlTavolo()">
+Aggiungi al tavolo
+</button>
 
 
-/* motivo rosso */
 
-.cartaRetro.rosso {
 
-    background:
-    repeating-linear-gradient(
-        45deg,
-        #8b0000,
-        #8b0000 3px,
-        #d00000 3px,
-        #d00000 6px
-    );
+<!-- Firebase -->
 
-}
+<script type="module">
 
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 
 
-/* CONTATORE CARTE AVVERSARIO */
+import { getDatabase, ref, set, onValue } 
+from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 
-#numeroCarteAvversario {
 
-    position:absolute;
+const firebaseConfig = {
 
-    top:5px;
-    left:95px;
+apiKey: "AIzazaXXXXXXXXXXXX",
 
-    width:20px;
-    height:20px;
+authDomain: "pinacolo-20eaf.firebaseapp.com",
 
-    border-radius:50%;
+projectId: "pinacolo-20eaf",
 
-    background:white;
-    color:black;
+storageBucket: "pinacolo-20eaf.firebasestorage.app",
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
+messagingSenderId: "991743396271",
 
-    font-size:11px;
-    font-weight:bold;
+appId: "1:991743396271:web:f3c9e47a37ceb5c7f1475a"
 
-}
+};
 
 
-/* ==========================
-   CENTRO TAVOLO
-========================== */
+const app = initializeApp(firebaseConfig);
 
 
-#centroTavolo {
+const database = getDatabase(app);
 
-    position:absolute;
 
-    top:45%;
-    left:25px;
+window.database = database;
+window.ref = ref;
+window.set = set;
+window.onValue = onValue;
 
-    transform:translateY(-50%);
 
-    display:flex;
+</script>
 
-    align-items:center;
 
-    gap:15px;
 
-}
+<script type="module" src="game.js"></script>
 
 
-/* MAZZO */
 
-#mazzo {
 
-    width:60px;
-    height:85px;
 
-    background:#b00020;
+</body>
 
-    border:3px solid white;
-
-    border-radius:10px;
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-    font-size:32px;
-
-    box-shadow:0 4px 10px rgba(0,0,0,0.5);
-
-}
-
-
-/* SLOT SCARTI */
-
-#scarti {
-
-    width:60px;
-    height:85px;
-
-    border:2px dashed rgba(255,255,255,0.5);
-
-    border-radius:10px;
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-}
-
-
-.carta-scarto {
-
-    width:60px;
-    height:85px;
-
-    background:white;
-
-    border-radius:10px;
-
-    color:black;
-
-    box-shadow:0 4px 10px rgba(0,0,0,0.5);
-
-}
-
- 
-/* ==========================
-   ZONE COMBINAZIONI
-========================== */
-
-
-#combinazioni,
-#mieCombinazioni,
-#combinazioniAvversario {
-
-    min-height:70px;
-
-}
-
-
-#combinazioni {
-
-    border:2px dashed white;
-
-    padding:10px;
-
-    margin:15px;
-
-}
-
-
-.combinazione {
-
-    margin-bottom:10px;
-
-}
-
-
-.combinazione .carta {
-
-    display:inline-flex;
-
-}
-
-
-/* ==========================
-   ZONA MANO GIOCATORE
-========================== */
-
-
-#miaZona {
-
-    position:fixed;
-
-    bottom:0;
-    left:0;
-
-    width:100%;
-
-    padding-bottom:5px;
-
-    background:rgba(11,93,30,0.95);
-
-    z-index:100;
-
-}
-
-
-/* CONTENITORE CARTE */
-
-#mano {
-
-    width:100%;
-
-    display:flex;
-
-    flex-direction:row;
-
-    align-items:flex-end;
-
-    justify-content:flex-start;
-
-    flex-wrap:nowrap;
-
-    overflow-x:auto;
-
-    overflow-y:hidden;
-
-    padding:10px 20px;
-
-    box-sizing:border-box;
-
-    gap:0;
-
-}
-
-
-/* NASCONDE LA BARRA SCORRIMENTO */
-
-#mano::-webkit-scrollbar {
-
-    display:none;
-
-}
-
-
-
-/* ==========================
-   CARTA MANO
-========================== */
-
-
-.carta-mano {
-
-    flex:0 0 auto;
-
-    width:60px;
-
-    height:90px;
-
-    margin-left:-42px;
-
-    background:white;
-
-    color:black;
-
-    border-radius:10px;
-
-    position:relative;
-
-    box-shadow:0 4px 10px rgba(0,0,0,0.5);
-
-    cursor:pointer;
-
-    transition:0.2s;
-
-}
-
-
-.carta-mano:first-child {
-
-    margin-left:0;
-
-}
-
-
-/* carta selezionata */
-
-.carta-mano.selezionata {
-
-    z-index:200;
-
-    transform:translateY(-25px);
-
-    border:3px solid gold;
-
-}
-
-
-/* ==========================
-   CONTENUTO CARTA
-========================== */
-
-
-.angoloCarta {
-
-    position:absolute;
-
-    top:5px;
-
-    left:7px;
-
-    font-weight:bold;
-
-    line-height:18px;
-
-}
-
-
-.angoloCarta div:first-child {
-    font-size:16px;
-    letter-spacing:-1px;
-}
-
-
-.angoloCarta div:last-child {
-
-    font-size:16px;
-
-}
-
-
-.semeCentro {
-
-    display:none;
-
-}
-
-
-.valoreBasso {
-
-    display:none;
-
-}
-
-
-
-.rosso {
-
-    color:red;
-
-}
-
-
-.nero {
-
-    color:black;
-
-}
-
-
-/* quando selezionata mostra il simbolo */
-
-.carta-mano.selezionata .semeCentro {
-
-    display:block;
-
-    position:absolute;
-
-    top:55%;
-
-    left:50%;
-
-    transform:translate(-50%,-50%);
-
-    font-size:28px;
-
-}
-
-
-.carta-mano.selezionata .valoreBasso {
-
-    display:block;
-
-    position:absolute;
-
-    bottom:5px;
-
-    right:7px;
-
-    font-size:18px;
-
-    font-weight:bold;
-
-}
-
-
-/* pulsanti */
-
-button {
-
-    padding:12px 20px;
-
-    margin:10px;
-
-    border-radius:8px;
-
-    border:none;
-
-    font-size:16px;
-
-}
-
-
-
-/* ==========================
-   RETRO CARTE
-========================== */
-
-
-.cartaRetro::after {
-
-
-    position:absolute;
-
-    top:50%;
-    left:50%;
-
-    transform:translate(-50%,-50%);
-
-    font-size:24px;
-
-    font-weight:bold;
-
-    color:white;
-
-    opacity:0.8;
-
-}
-
-
-.cartaRetro {
-
-    position:relative;
-
-    overflow:hidden;
-
-}
-
-
-
-/* ==========================
-   ANIMAZIONI CARTE
-========================== */
-
-
-.carta-mano:hover {
-
-    transform:translateY(-8px);
-
-}
-
-
-.carta-mano.selezionata:hover {
-
-    transform:translateY(-25px);
-
-}
-
-
-
-/* ==========================
-   CARTA CALATA SUL TAVOLO
-========================== */
-
-
-.carta-calata {
-
-    display:inline-flex;
-
-    width:50px;
-
-    height:75px;
-
-    margin:2px;
-
-    background:white;
-
-    border-radius:8px;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-weight:bold;
-
-    box-shadow:0 3px 7px rgba(0,0,0,0.4);
-
-}
-
-
-
-/* ==========================
-   TITOLO SOLO MENU
-========================== */
-
-
-#titoloGioco {
-
-    display:block;
-
-}
-
-
-/* quando parte la partita */
-
-#areaGioco #titoloGioco {
-
-    display:none;
-
-}
-
-
-
-/* ==========================
-   ADATTAMENTO TELEFONO
-========================== */
-
-
-@media(max-width:600px){
-
-    .carta-mano {
-
-        width:58px;
-
-        height:88px;
-
-    }
-
-
-    #centroTavolo {
-
-        left:15px;
-
-    }
-
-
-    #mazzo,
-    #scarti {
-
-        width:58px;
-
-        height:82px;
-
-    }
-
-}
-
-.cartaDieci div:first-child {
-    font-size:15px;
-    letter-spacing:-1px;
-}
-/* Nasconde il titolo solo nella schermata partita */
-
-#areaGioco #titoloGioco {
-    display:none !important;
-}
-#carteAvversario {
-
-    margin-left:45px;
-
-}
-/* RETRO CARTE CON IMMAGINI */
-
-.cartaRetro.blu {
-
-    background-image:url("images/carte/retro_blu.png") !important;
-    background-size:100% 100%;
-    background-position:center;
-    background-repeat:no-repeat;
-
-}
-
-
-.cartaRetro.rosso {
-
-    background-image:url("images/carte/retro_rosso.png") !important;
-    background-size:100% 100%;
-    background-position:center;
-    background-repeat:no-repeat;
-
-}
-/* ULTIMO CONTROLLO RETRO CARTE */
-
-.cartaRetro {
-
-    width:32px;
-    height:50px;
-
-    background-size:100% 100% !important;
-    background-position:center !important;
-    background-repeat:no-repeat !important;
-
-    border-radius:6px;
-    border:2px solid white;
-
-    overflow:hidden;
-
-}
-.cartaRetro {
-
-    width:32px;
-    height:50px;
-
-    margin-left:-8px;
-
-    border-radius:6px;
-
-    background-size:100% 100%;
-    background-position:center;
-    background-repeat:no-repeat;
-
-}
-.cartaRetro.blu {
-
-    background-image:url("images/carte/retro_blu.jpg") !important;
-    background-size:100% 100%;
-    background-repeat:no-repeat;
-
-}
-
-
-.cartaRetro.rosso {
-
-    background-image:url("images/carte/retro_rosso.jpg") !important;
-    background-size:100% 100%;
-    background-repeat:no-repeat;
-
-}
-/* RETRO MAZZO */
-
-#mazzo {
-
-    background-image:url("images/carte/retro_rosso.jpg") !important;
-
-    background-size:100% 100%;
-
-    background-position:center;
-
-    background-repeat:no-repeat;
-
-    border:2px solid white;
-
-}
-.immagineCarta {
-
-    width:60px;
-
-    height:90px;
-
-    object-fit:fill;
-
-    border-radius:10px;
-
-    display:block;
-
-}
-.carta-mano {
-
-    overflow:hidden;
-
-}
+</html>
