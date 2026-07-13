@@ -3,6 +3,9 @@ let mano = [];
 let carteSelezionate = [];
 let scarti = [];
 let combinazioni = [];
+
+let hoPescato = false;
+
 let partita = {
 
     turno: 0,
@@ -103,6 +106,7 @@ if(partita.turno === 0){
         }
 
     }
+    hoPescato = true;
 
 
     mostraMano();
@@ -124,6 +128,7 @@ if(partita.turno === 0){
         ref(database, "partite/" + codicePartitaAttuale + "/mazzo"),
         mazzo
     );
+    document.getElementById("contatoreMazzo").innerHTML = mazzo.length;
 
 }
 
@@ -1408,6 +1413,13 @@ if(dati.turno !== undefined){
                 mazzo = dati.mazzo;
 
                 mostraMano();
+                if(dati.mazzo){
+
+    mazzo = dati.mazzo;
+
+    console.log("Mazzo aggiornato:", mazzo.length);
+
+}
 
 
                 console.log(
