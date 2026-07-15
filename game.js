@@ -198,12 +198,9 @@ function pescaMazzo(){
 console.log("Io sono:", mioNumero);
 
 
-if(Number(partita.turno) === 0){
-
+if(partita.turno === undefined){
     alert("Attendi caricamento turno");
-
     return;
-
 }
 
 
@@ -257,6 +254,8 @@ if(Number(partita.turno) !== mioNumero){
         mazzo
     );
 
+partita.fase = "gioco";
+hoPescato = true;
 
     update(
         ref(database,
@@ -297,6 +296,14 @@ if(!partita.turno){
 
 
 if(Number(partita.turno) !== numeroGiocatore){
+  
+  if(partita.fase !== "gioco"){
+
+    alert("Prima devi pescare");
+
+    return;
+
+}
 
     alert(
         "Non è il tuo turno\n" +
@@ -358,15 +365,19 @@ if(Number(partita.turno) !== numeroGiocatore){
 
     // passa il turno
 
-    let nuovoTurno = partita.turno === 1 ? 2 : 1;
-    
-    hoPescato = false;
+let nuovoTurno = Number(partita.turno) === 1 ? 2 : 1;
+
+hoPescato = false;
 
 
-    set(
-        ref(database, "partite/" + codicePartitaAttuale + "/turno"),
-        nuovoTurno
-    );
+update(
+    ref(database, "partite/" + codicePartitaAttuale),
+    {
+        turno: nuovoTurno,
+        fase: "pesca",
+        pescaCompletata:false
+    }
+);
 
 
 }
@@ -976,17 +987,6 @@ function calaCarte(){
 document.getElementById("mieCombinazioni").onclick = function(){
   alert("Ho cliccato gli scarti");
   
-  document.getElementById("scarti").onclick = function(){
-
-    if(modalitaGioco === "cpu"){
-
-        scartaCPU();
-
-        return;
-
-    }
-
-};
 
     if(carteSelezionate.length === 0){
 
@@ -1489,15 +1489,17 @@ document.getElementById("codicePartita").style.fontSize = "22px";
 
     alert("Sto inviando a Firebase");
 
-    set(ref(database, "partite/" + codicePartitaAttuale), {
-        creatore: "Giocatore 1",
-        stato: "attesa",
-        giocatori: {
-            giocatore1: {
-                nome: "Giocatore 1"
-            }
+set(ref(database, "partite/" + codicePartitaAttuale), {
+    creatore: "Giocatore 1",
+    stato: "attesa",
+    turno:1,
+    fase:"pesca",
+    giocatori:{
+        giocatore1:{
+            nome:"Giocatore 1"
         }
-    })
+    }
+})
     .then(() => {
         alert("Partita creata su Firebase!");
         ascoltaPartita();
@@ -1529,12 +1531,14 @@ function entraPartita(){
     mioGiocatore = "giocatore2";
 
 
-    set(
-        ref(database, "partite/" + codice + "/giocatori/giocatore2"),
-        {
-            nome: "Giocatore 2",
+update(
+    ref(database, "partite/" + codice + "/giocatori"),
+    {
+        giocatore2:{
+            nome:"Giocatore 2"
         }
-    )
+    }
+)
 
     .then(()=>{
 
@@ -1666,10 +1670,10 @@ let datiPartita = {
     };
 
 
-    set(
-        ref(database, "partite/" + codicePartitaAttuale),
-        datiPartita
-    )
+set(
+    ref(database, "partite/" + codicePartitaAttuale),
+    datiPartita
+)
 
     .then(()=>{
 
@@ -1692,7 +1696,22 @@ function ascoltaPartita(){
         (snapshot)=>{
 
             let dati = snapshot.val();
+            
+            alert("Firebase ricevuto. Turno: " + dati.turno);
+            
+console.log("STATO COMPLETO FIREBASE:", dati);
             console.log("DATI FIREBASE:", dati);
+            
+            if(dati.fase){
+
+    partita.fase = dati.fase;
+
+    console.log(
+        "Fase aggiornata:",
+        partita.fase
+    );
+
+}
 
 
             if(!dati){
@@ -1731,19 +1750,12 @@ if(dati.stato === "iniziata"){
 
 if(dati.turno !== undefined){
 
-if(dati.turno !== undefined){
-
     partita.turno = Number(dati.turno);
-    console.log("Firebase ha dato il turno:", partita.turno);
-    if(partita.turno === 0){
 
-    partita.turno = 1;
-
-}
-
-    aggiornaIndicatoreTurno();
-
-}
+    console.log(
+        "Firebase ha dato il turno:",
+        partita.turno
+    );
 
     aggiornaIndicatoreTurno();
 
@@ -1794,32 +1806,53 @@ if(dati.turno !== undefined){
 }
 function aggiornaIndicatoreTurno(){
 
-    let area = document.getElementById("indicatoreTurno");
+    console.log("AGGIORNO INDICATORE", mioGiocatore, partita.turno);
 
-    if(!area){
+
+    let mio = document.getElementById("turnoMio");
+    let avversario = document.getElementById("turnoCPU");
+
+
+    if(!mio || !avversario){
+
+        console.log("Indicatori non trovati");
+
         return;
+
     }
 
 
-if(!mioGiocatore){
-    return;
-}
-
-let mioNumero =
-mioGiocatore === "giocatore1" ? 1 : 2;
+    let mioNumero =
+    mioGiocatore === "giocatore1" ? 1 : 2;
 
 
-    if(partita.turno === mioNumero){
+    // nascondo entrambi prima dell'aggiornamento
 
-        area.innerHTML =
-        "🟢 È il tuo turno";
+    mio.style.display = "none";
+    avversario.style.display = "none";
+
+
+    if(Number(partita.turno) === mioNumero){
+
+
+        mio.style.display = "flex";
+
 
     }else{
 
-        area.innerHTML =
-        "⏳ Turno di Giocatore " + partita.turno;
+
+        avversario.style.display = "flex";
+
 
     }
+
+
+    console.log(
+        "Mio numero:",
+        mioNumero,
+        "Turno:",
+        partita.turno
+    );
 
 }
 window.creaPartita = creaPartita;
