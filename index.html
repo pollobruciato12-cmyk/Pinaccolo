@@ -12,8 +12,31 @@
 </head>
 
 <body>
+  
+
+<!-- MENU PRINCIPALE -->
 
 <div id="menuIniziale">
+
+<h1>PINACCOLO</h1>
+
+<button onclick="mostraOnline()">
+GIOCA ONLINE
+</button>
+
+<button onclick="giocaCPU()">
+GIOCA CONTRO CPU
+</button>
+
+</div>
+
+
+
+<!-- MENU ONLINE -->
+
+<div id="menuOnline" style="display:none;">
+
+<h2>GIOCA ONLINE</h2>
 
 
 <button onclick="creaPartita()">
@@ -21,17 +44,17 @@ CREA PARTITA
 </button>
 
 
-</div>
-
 <div id="codicePartita"></div>
 
 
+<h3>Inserisci codice partita</h3>
+
 <input id="codiceIngresso"
-placeholder="Inserisci codice partita">
+placeholder="Codice partita">
 
 
 <button onclick="entraPartita()">
-Entra in partita
+ENTRA
 </button>
 
 
@@ -39,20 +62,21 @@ Entra in partita
 
 
 <div id="listaGiocatori">
-
 Giocatori:<br>
 ⚪ In attesa...
-
 </div>
 
 
 <button id="bottoneInizia" onclick="iniziaPartita()">
-Inizia partita
+INIZIA PARTITA
 </button>
 
 
+</div>
 
-<div id="areaGioco">
+
+
+<div id="areaGioco" style="display:none;">
 
 
 <!-- AVVERSARIO -->
@@ -61,6 +85,10 @@ Inizia partita
 
 <div id="nomeAvversario">
 🟦 Giocatore 2
+</div>
+
+<div id="turnoCPU" class="indicatoreTurno">
+T
 </div>
 
 <div id="numeroCarteAvversario">
@@ -91,14 +119,16 @@ Inizia partita
 <div id="centroTavolo">
 
 
-<div id="mazzo" onclick="pesca()">
+<div id="mazzo" onclick="pescaMazzo()">
 
 <span id="contatoreMazzo">0</span>
 
 </div>
 
 
-<div id="scarti">
+<div id="scarti" onclick="scartaCPU()">
+
+</div>
 
 </div>
 
@@ -118,6 +148,10 @@ Inizia partita
 <!-- MANO -->
 
 <div id="miaZona">
+
+<div id="turnoMio" class="indicatoreTurno">
+T
+</div>
 
 <div id="mano">
 
