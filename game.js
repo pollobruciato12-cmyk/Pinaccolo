@@ -1,3 +1,16 @@
+let modalitaGioco = "online";
+
+let combinazioniCPU = [];
+
+let partitaCPU = {
+    giocatore: [],
+    cpu: [],
+    mazzo: [],
+    scarti: [],
+    turno: "giocatore",
+    fase: "pesca"
+};
+
 let mazzo = [];
 let mano = [];
 let carteSelezionate = [];
@@ -79,6 +92,11 @@ function pesca(){
 
     let mioNumero =
     mioGiocatore === "giocatore1" ? 1 : 2;
+    
+    if(hoPescato){
+    alert("Hai già pescato in questo turno.");
+    return;
+}
 
 
 if(partita.turno === 0){
@@ -132,9 +150,138 @@ if(partita.turno === 0){
 
 }
 
+function pescaMazzo(){
+  
+  if(modalitaGioco === "cpu" && partitaCPU.turno !== "giocatore"){
+
+    alert("Aspetta, sta giocando la CPU");
+
+    return;
+
+}
+  
+  if(modalitaGioco === "cpu"){
+
+    if(partitaCPU.fase !== "pesca"){
+
+        alert("Hai già pescato!");
+
+        return;
+
+    }
+
+
+    partitaCPU.giocatore.push(partitaCPU.mazzo.pop());
+    partitaCPU.giocatore.push(partitaCPU.mazzo.pop());
+
+
+    partitaCPU.fase = "scarto";
+
+
+    mano = partitaCPU.giocatore;
+
+    mostraMano();
+
+
+    return;
+
+}
+  
+  if(modalitaGioco === "cpu"){
+    // qui metteremo il codice della pesca offline
+    return;
+}
+
+    let mioNumero =
+    mioGiocatore === "giocatore1" ? 1 : 2;
+    console.log("Turno Firebase:", partita.turno);
+console.log("Io sono:", mioNumero);
+
+
+if(Number(partita.turno) === 0){
+
+    alert("Attendi caricamento turno");
+
+    return;
+
+}
+
+
+if(Number(partita.turno) !== mioNumero){
+
+    alert(
+        "Non è il tuo turno\n" +
+        "Turno attuale: " + partita.turno +
+        "\nTu sei: " + mioNumero
+    );
+
+    return;
+
+}
+
+
+    if(partita.fase !== "pesca"){
+
+        alert("Hai già pescato");
+
+        return;
+
+    }
+
+
+    if(mazzo.length < 2){
+
+        alert("Mazzo finito");
+
+        return;
+
+    }
+
+
+    mano.push(mazzo.pop());
+
+    mano.push(mazzo.pop());
+
+
+    set(
+        ref(database,
+        "partite/" + codicePartitaAttuale +
+        "/giocatori/" + mioGiocatore + "/mano"),
+        mano
+    );
+
+
+    set(
+        ref(database,
+        "partite/" + codicePartitaAttuale + "/mazzo"),
+        mazzo
+    );
+
+
+    update(
+        ref(database,
+        "partite/" + codicePartitaAttuale),
+        {
+            fase:"gioco",
+            pescaCompletata:true
+        }
+    );
+
+
+    mostraMano();
+
+}
 
 
 function scarta(){
+  
+  if(modalitaGioco === "cpu"){
+
+    scartaCPU();
+
+    return;
+
+}
 
     let numeroGiocatore = 
     mioGiocatore === "giocatore1" ? 1 : 2;
@@ -212,6 +359,8 @@ if(Number(partita.turno) !== numeroGiocatore){
     // passa il turno
 
     let nuovoTurno = partita.turno === 1 ? 2 : 1;
+    
+    hoPescato = false;
 
 
     set(
@@ -219,6 +368,234 @@ if(Number(partita.turno) !== numeroGiocatore){
         nuovoTurno
     );
 
+
+}
+
+function scartaCPU(){
+  
+  if(partitaCPU.turno !== "giocatore"){
+
+    alert("Non è il tuo turno");
+
+    return;
+
+}
+
+if(partitaCPU.fase !== "scarto"){
+
+    alert("Prima devi pescare");
+
+    return;
+
+}
+
+    if(partitaCPU.fase !== "scarto"){
+
+        alert("Devi prima pescare");
+
+        return;
+
+    }
+
+
+    if(carteSelezionate.length === 0){
+
+        alert("Seleziona una carta");
+
+        return;
+
+    }
+
+
+    let carta = carteSelezionate[0];
+
+
+    let indice = partitaCPU.giocatore.indexOf(carta);
+
+
+    if(indice !== -1){
+
+        partitaCPU.giocatore.splice(indice,1);
+
+        partitaCPU.scarti.push(carta);
+
+    }
+
+
+    carteSelezionate = [];
+
+
+    mano = partitaCPU.giocatore;
+
+
+    mostraMano();
+
+
+    mostraScarti();
+
+
+    partitaCPU.turno = "cpu";
+    
+    aggiornaTurnoCPU();
+
+partitaCPU.fase = "pesca";
+
+setTimeout(turnoCPU, 800);
+
+
+    console.log("Carta scartata:", carta);
+
+}
+
+function turnoCPU(){
+
+    console.log("Turno CPU");
+    controllaCPU();
+
+
+    // pesca due carte
+
+    if(partitaCPU.mazzo.length >= 2){
+
+        partitaCPU.cpu.push(partitaCPU.mazzo.pop());
+        partitaCPU.cpu.push(partitaCPU.mazzo.pop());
+
+    }
+
+
+    // sceglie una carta casuale da scartare
+
+    let indice = Math.floor(
+        Math.random() * partitaCPU.cpu.length
+    );
+
+
+    let carta = partitaCPU.cpu.splice(indice,1)[0];
+
+
+    partitaCPU.scarti.push(carta);
+
+
+    mostraScarti();
+
+
+    console.log("CPU scarta:", carta);
+
+
+    // torna il turno al giocatore
+
+    partitaCPU.turno = "giocatore";
+    
+    aggiornaTurnoCPU();
+
+    partitaCPU.fase = "pesca";
+
+
+}
+
+function mostraCombinazioniCPU(){
+
+    let area = document.getElementById("combinazioniAvversario");
+
+    area.innerHTML = "";
+
+
+    combinazioniCPU.forEach(gruppo=>{
+
+
+        let div = document.createElement("div");
+
+        div.className = "combinazione";
+
+
+        gruppo.carte.forEach(carta=>{
+
+            let c = document.createElement("div");
+
+            c.className = "carta-mano carta-calata";
+
+            c.innerHTML =
+            carta.valore + "<br>" + carta.seme;
+
+
+            div.appendChild(c);
+
+        });
+
+
+        area.appendChild(div);
+
+    });
+
+}
+
+function controllaCPU(){
+
+    console.log("CPU controlla la mano");
+
+    for(let i = 0; i < partitaCPU.cpu.length; i++){
+
+        let carta = partitaCPU.cpu[i];
+
+        let uguali = partitaCPU.cpu.filter(c =>
+            c.valore === carta.valore
+        );
+
+
+        if(uguali.length >= 3){
+
+            let tris = uguali.slice(0,3);
+
+
+            combinazioniCPU.push({
+                tipo:"tris",
+                carte:tris
+            });
+
+
+            tris.forEach(c => {
+
+                let indice = partitaCPU.cpu.indexOf(c);
+
+                if(indice !== -1){
+
+                    partitaCPU.cpu.splice(indice,1);
+
+                }
+
+            });
+
+
+            console.log("CPU ha calato:", tris);
+
+            mostraCombinazioniCPU();
+
+
+            return;
+
+        }
+
+    }
+
+}
+
+function aggiornaTurnoCPU(){
+
+    let mio = document.getElementById("turnoMio");
+    let cpu = document.getElementById("turnoCPU");
+
+
+    if(partitaCPU.turno === "giocatore"){
+
+        mio.style.display = "flex";
+        cpu.style.display = "none";
+
+    }else{
+
+        mio.style.display = "none";
+        cpu.style.display = "flex";
+
+    }
 
 }
 
@@ -231,89 +608,54 @@ function mostraScarti(){
     area.innerHTML = "";
 
 
-    if(scarti.length === 0){
-        return;
-    }
+    let listaScarti = modalitaGioco === "cpu"
+    ? partitaCPU.scarti
+    : scarti;
 
 
-    let carta = scarti[scarti.length - 1];
+    listaScarti.forEach((carta, indice)=>{
 
 
-    let div = document.createElement("div");
+        let div = document.createElement("div");
 
-    div.className = "carta-mano";
-
-
-    let colore =
-    (carta.seme === "♥" || carta.seme === "♦")
-    ? "rosso"
-    : "nero";
-
-
-    if(["J","Q","K"].includes(carta.valore)){
+        div.className = "carta-mano";
 
 
         div.innerHTML = `
 
-        <div class="angoloCarta ${colore}">
-            <div>${carta.valore}</div>
-            <div>${carta.seme}</div>
-        </div>
-
-
-        <div class="figuraCarta ${colore}">
-            ${carta.valore}
-        </div>
+        <img class="immagineCarta"
+        src="images/carte/${nomeImmagineCarta(carta)}">
 
         `;
 
 
-    } else {
+        area.appendChild(div);
 
 
-        div.innerHTML = `
-
-        <div class="angoloCarta ${colore}">
-            <div>${carta.valore}</div>
-            <div>${carta.seme}</div>
-        </div>
+    });
 
 
-        <div class="semeCentro ${colore}">
-            ${carta.seme}
-        </div>
+    // effetto mini mano
 
-        `;
-
-    }
+    let margine = -30;
 
 
-    area.appendChild(div);
+    document.querySelectorAll("#scarti .carta-mano")
+    .forEach((carta, indice)=>{
 
-}
+
+        if(indice === 0){
+
+            carta.style.marginLeft = "0px";
+
+        }else{
+
+            carta.style.marginLeft = margine + "px";
+
+        }
 
 
-function creaGiocatori(numero, coppie = false){
-
-    giocatori = [];
-
-    for(let i = 0; i < numero; i++){
-
-        giocatori.push({
-
-            id: i,
-
-            nome: "Giocatore " + (i + 1),
-
-            mano: [],
-
-            combinazioni: [],
-
-            squadra: coppie ? (i % 2) : i
-
-        });
-
-    }
+    });
 
 }
 
@@ -532,38 +874,12 @@ area.appendChild(div);
     });
     
 
-// Adatta spazio mano in base allo spazio disponibile
+// Sovrapposizione mano fissa
 
-let spazio = document.getElementById("mano").clientWidth;
+let margine = -35;
 
-let larghezzaCarta = 62;
-
-let margine = 0;
-
-
-if(mano.length <= 12){
-
-    margine = -15;
-
-}
-else if(mano.length <= 16){
-
-    margine = -28;
-
-}
-else if(mano.length <= 20){
-
-    margine = -38;
-
-}
-else {
-
-    margine = -42;
-
-}
-
-
-document.querySelectorAll(".carta-mano").forEach((c,i)=>{
+document.querySelectorAll("#mano .carta-mano")
+.forEach((c, i)=>{
 
     if(i === 0){
 
@@ -577,42 +893,21 @@ document.querySelectorAll(".carta-mano").forEach((c,i)=>{
 
 });
 
-
-// limite massimo di sovrapposizione
-if(margine < -38){
-
-    margine = -38;
-
-}
-document.querySelectorAll(".carta-mano").forEach((c, i)=>{
-
-    if(i > 0){
-        c.style.marginLeft = margine + "px";
-    }
-
-});
-
-
-document.querySelectorAll(".carta-mano").forEach((c, i)=>{
-
-    if(i === 0){
-
-        c.style.marginLeft = "0px";
-
-    }else{
-
-        c.style.marginLeft = margine + "px";
-
-    }
-
-});
-
 let contatore = document.getElementById("contatoreMazzo");
 
 if(contatore){
 
+if(modalitaGioco === "cpu"){
+
+    contatore.innerHTML =
+    "Carte mazzo: " + partitaCPU.mazzo.length;
+
+}else{
+
     contatore.innerHTML =
     "Carte mazzo: " + mazzo.length;
+
+}
 
 }
 
@@ -679,6 +974,19 @@ function calaCarte(){
 // TOCCO AREA MIE COMBINAZIONI
 
 document.getElementById("mieCombinazioni").onclick = function(){
+  alert("Ho cliccato gli scarti");
+  
+  document.getElementById("scarti").onclick = function(){
+
+    if(modalitaGioco === "cpu"){
+
+        scartaCPU();
+
+        return;
+
+    }
+
+};
 
     if(carteSelezionate.length === 0){
 
@@ -1139,9 +1447,7 @@ function puoAggiungereCarta(carta, combinazione){
 
 
 
-creaMazzo();
 
-distribuisci();
 
 let codicePartitaAttuale = "";
 let giocatore = "";
@@ -1151,11 +1457,11 @@ const database = window.database;
 const ref = window.ref;
 const set = window.set;
 const onValue = window.onValue;
+const update = window.update;
 
 function creaPartita(){
 
     document.getElementById("menuIniziale").style.display = "none";
-    document.getElementById("areaGioco").style.display = "flex";
 
 
     codicePartitaAttuale = Math.random()
@@ -1203,9 +1509,6 @@ document.getElementById("codicePartita").style.fontSize = "22px";
 }
 
 function entraPartita(){
-  
-      document.getElementById("menuIniziale").style.display = "none";
-    document.getElementById("areaGioco").style.display = "flex";
 
     let codice = document.getElementById("codiceIngresso").value
     .toUpperCase();
@@ -1257,7 +1560,64 @@ function entraPartita(){
 
 }
 
+function giocaCPU(){
+  
+  alert("Modalità CPU partita!");
+
+    modalitaGioco = "cpu";
+
+    document.getElementById("menuIniziale").style.display = "none";
+    document.getElementById("areaGioco").style.display = "block";
+
+
+    creaMazzo();
+
+partitaCPU.mazzo = [...mazzo];
+
+
+    partitaCPU.giocatore = [];
+    partitaCPU.cpu = [];
+
+
+    for(let i = 0; i < 15; i++){
+
+        partitaCPU.giocatore.push(
+            partitaCPU.mazzo.pop()
+        );
+
+        partitaCPU.cpu.push(
+            partitaCPU.mazzo.pop()
+        );
+
+    }
+
+
+    partitaCPU.scarti.push(
+        partitaCPU.mazzo.pop()
+    );
+    
+mano = partitaCPU.giocatore;
+
+mostraMano();
+
+
+mano = partitaCPU.giocatore;
+
+mostraMano();
+
+mostraScarti();
+
+aggiornaTurnoCPU();
+
+    console.log("Partita CPU iniziata");
+    console.log(partitaCPU);
+
+}
+
 function iniziaPartita(){
+
+    document.getElementById("menuOnline").style.display = "none";
+    document.getElementById("areaGioco").style.display = "flex";
 
     creaMazzo();
 
@@ -1273,15 +1633,19 @@ function iniziaPartita(){
     }
 
 
-    let datiPartita = {
+let datiPartita = {
 
-        stato: "iniziata",
+    stato: "iniziata",
 
-        turno: 1,
+    turno: 1,
 
-        mazzo: mazzo,
+    fase: "pesca",
 
-        scarti: [],
+    pescaCompletata: false,
+
+    mazzo: mazzo,
+
+    scarti: [],
 
         tavolo: [],
 
@@ -1356,17 +1720,10 @@ function ascoltaPartita(){
 
 
 
-if (
-    dati.stato === "attesa" &&
-    dati.giocatori &&
-    dati.giocatori.giocatore1 &&
-    dati.giocatori.giocatore2 &&
-    mioGiocatore === "giocatore1"
-){
+if(dati.stato === "iniziata"){
 
-    iniziaPartita();
-
-    return;
+    document.getElementById("menuOnline").style.display = "none";
+    document.getElementById("areaGioco").style.display = "flex";
 
 }
 
@@ -1377,6 +1734,7 @@ if(dati.turno !== undefined){
 if(dati.turno !== undefined){
 
     partita.turno = Number(dati.turno);
+    console.log("Firebase ha dato il turno:", partita.turno);
     if(partita.turno === 0){
 
     partita.turno = 1;
@@ -1470,4 +1828,19 @@ window.iniziaPartita = iniziaPartita;
 window.pesca = pesca;
 window.scarta = scarta;
 window.calaCarte = calaCarte;
+window.pescaMazzo = pescaMazzo;
 window.aggiungiAlTavolo = aggiungiAlTavolo;
+
+function mostraOnline(){
+
+    document.getElementById("menuIniziale").style.display = "none";
+    document.getElementById("menuOnline").style.display = "block";
+
+}
+
+window.giocaCPU = giocaCPU;
+window.mostraOnline = mostraOnline;
+window.creaPartita = creaPartita;
+window.entraPartita = entraPartita;
+window.iniziaPartita = iniziaPartita;
+window.scartaCPU = scartaCPU;
