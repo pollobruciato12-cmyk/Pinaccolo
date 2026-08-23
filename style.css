@@ -907,3 +907,15 @@ html, body {
     overflow:hidden;
 
 }
+
+#menuOnline {
+    position: relative;
+    z-index: 9999;
+}
+
+#menuOnline button,
+#codiceIngresso {
+    position: relative;
+    z-index: 10000;
+    pointer-events: auto;
+}
