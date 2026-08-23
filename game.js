@@ -1511,6 +1511,8 @@ set(ref(database, "partite/" + codicePartitaAttuale), {
 }
 
 function entraPartita(){
+  
+  console.log("ENTRA PARTITA FUNZIONE AVVIATA");
 
     let codice = document.getElementById("codiceIngresso").value
     .toUpperCase();
