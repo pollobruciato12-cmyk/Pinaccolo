@@ -52,11 +52,19 @@ CREA PARTITA
 <input id="codiceIngresso"
 placeholder="Codice partita">
 
-
-<button onclick="entraPartita()">
-ENTRA
-</button>
-
+<div style="padding:30px;">
+    <button
+        style="position:relative !important;
+               display:block !important;
+               width:200px !important;
+               height:70px !important;
+               margin:20px auto !important;
+               z-index:999999 !important;
+               pointer-events:auto !important;"
+        onclick="alert('CLICK ENTRA')">
+        ENTRA
+    </button>
+</div>
 
 <div id="messaggioPartita"></div>
 
@@ -189,7 +197,7 @@ import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
 
 
-import { getDatabase, ref, set, onValue } 
+import { getDatabase, ref, set, onValue, update } 
 from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
 
 
@@ -220,6 +228,7 @@ window.database = database;
 window.ref = ref;
 window.set = set;
 window.onValue = onValue;
+window.update = update;
 
 
 </script>
