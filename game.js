@@ -4857,6 +4857,10 @@ if(dati.turno !== undefined){
 let contatore =
     document.getElementById("numeroCarteAvversario");
 
+console.log("CONTATORE TROVATO:", contatore);
+console.log("ALTRO GIOCATORE:", altroGiocatore);
+console.log("MANO AVVERSARIO:", dati.giocatori[altroGiocatore]?.mano);
+console.log("NUMERO CARTE AVVERSARIO:", dati.giocatori[altroGiocatore]?.mano?.length);
 if(contatore &&
    dati.giocatori[altroGiocatore] &&
    dati.giocatori[altroGiocatore].mano){
