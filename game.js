@@ -3378,6 +3378,77 @@ if(contatore){
 
 }
 
+function mostraCarteAvversarioOnline(){
+
+    let area =
+        document.getElementById("carteAvversario");
+
+    if(!area){
+        return;
+    }
+
+    area.innerHTML = "";
+
+    if(modalitaGioco === "cpu"){
+        return;
+    }
+
+    if(!codicePartitaAttuale){
+        return;
+    }
+
+    if(!window.datiPartitaOnline){
+        return;
+    }
+
+    let dati =
+        window.datiPartitaOnline;
+
+    if(!dati.giocatori){
+        return;
+    }
+
+    let altroGiocatore =
+        mioGiocatore === "giocatore1"
+        ? "giocatore2"
+        : "giocatore1";
+
+    if(!dati.giocatori[altroGiocatore]){
+        return;
+    }
+
+    let manoAvversario =
+        dati.giocatori[altroGiocatore].mano || [];
+
+    manoAvversario.forEach((carta, indice) => {
+
+        let div =
+            document.createElement("div");
+
+        div.className = "cartaRetro";
+
+        if(indice % 2 === 0){
+
+            div.style.backgroundImage =
+                "url('retro_rosso.jpg')";
+
+        }else{
+
+            div.style.backgroundImage =
+                "url('retro_blu.jpg')";
+
+        }
+
+        div.style.backgroundSize = "cover";
+        div.style.backgroundPosition = "center";
+        div.style.flexShrink = "0";
+
+        area.appendChild(div);
+
+    });
+
+}
+
 
 
 function calaCarte(){
@@ -4704,6 +4775,7 @@ function ascoltaPartita(){
         (snapshot)=>{
 
             let dati = snapshot.val();
+            window.datiPartitaOnline = dati;
             
             alert("Firebase ricevuto. Turno: " + dati.turno);
             
@@ -4791,6 +4863,7 @@ if(dati.turno !== undefined){
                 mazzo = dati.mazzo;
 
                 mostraMano();
+                mostraCarteAvversarioOnline();
                 if(dati.scarti){
     scarti = dati.scarti;
 }else{
