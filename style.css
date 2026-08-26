@@ -237,7 +237,7 @@ body > button {
 
     width:400px;
 
-    gap:40px;
+    gap:5px;
 
     align-items:center;
 
@@ -280,26 +280,28 @@ body > button {
 
     flex-shrink:0;
 
-    overflow:visible;
+    overflow-x:auto;
+    overflow-y:hidden;
+
+    align-items:center;
+
+    scrollbar-width:none;
 
 }
 
-    border:2px dashed rgba(255,255,255,0.5);
-
-    border-radius:10px;
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
+#scarti::-webkit-scrollbar {
+    display:none;
 }
 
 
 .carta-scarto {
 
     width:60px;
+    min-width:60px;
+
     height:85px;
+
+    flex-shrink:0;
 
     background:white;
 
@@ -318,7 +320,6 @@ body > button {
 
 
 #combinazioni,
-#mieCombinazioni,
 #combinazioniAvversario {
 
     width:300px;
@@ -329,6 +330,41 @@ body > button {
     align-items:center;
 
     overflow:hidden;
+
+}
+
+
+/* ==========================
+   MIE COMBINAZIONI
+========================== */
+
+#mieCombinazioni {
+
+    position:fixed;
+
+    bottom:120px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:90vw;
+    max-width:500px;
+
+    min-height:80px;
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:5px;
+
+    overflow:visible;
+
+    z-index:300;
 
 }
 
@@ -379,21 +415,25 @@ body > button {
 
 #mano {
 
-    position: absolute;
+    position:absolute;
 
-    bottom: 10px;
-    left: 50%;
+    bottom:10px;
+    left:50%;
 
-    transform: translateX(-50%);
+    transform:translateX(-50%);
 
-    width: 360px;
-    height: 100px;
+    width:96vw;
+max-width:96vw;
+
+    height:100px;
 
     display:flex;
 
     align-items:center;
-    
-    overflow:hidden;
+
+    justify-content:flex-start;
+
+    overflow:visible;
 
 }
 
@@ -421,7 +461,7 @@ body > button {
 
     height:90px;
 
-    margin-left:-42px;
+    margin-left:-45px;
 
     background:white;
 
@@ -817,9 +857,8 @@ button {
 }
 .immagineCarta {
 
-    width:60px;
-
-    height:90px;
+    width:100%;
+    height:100%;
 
     object-fit:fill;
 
@@ -863,7 +902,7 @@ button {
 #scarti {
     width: 70px;
     height: 100px;
-    border: 2px solid red;
+    border: none !important;
 }
 
 .indicatoreTurno {
@@ -883,6 +922,16 @@ button {
 
     color: white;
 
+    position: absolute;
+    left: -30px;
+    bottom: -30px;
+
+}
+
+#turnoMio {
+    position: fixed !important;
+    left: -10px !important;
+    bottom: -10px !important;
 }
 
 #areaGioco {
@@ -919,3 +968,1524 @@ html, body {
     z-index: 10000;
     pointer-events: auto;
 }
+
+#bottoneScarta {
+
+    position:fixed;
+
+    bottom:115px;
+    right:15px;
+
+    padding:8px 12px;
+
+    font-size:13px;
+
+    border-radius:6px;
+
+    background:#b00020;
+
+    color:white;
+
+    border:1px solid white;
+
+    z-index:500;
+
+}
+
+/* ==========================
+   COMBINAZIONI CPU
+========================== */
+
+#combinazioniAvversario {
+
+    position:fixed;
+
+    top:70px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:90vw;
+    max-width:500px;
+
+    min-height:90px;
+    height:auto;
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    align-items:flex-start;
+    justify-content:center;
+
+    gap:10px;
+
+    overflow:visible;
+
+    z-index:300;
+
+}
+
+
+#combinazioniAvversario .combinazione {
+
+    display:flex;
+
+    align-items:center;
+
+    margin:0;
+
+}
+
+
+#combinazioniAvversario .carta-calata {
+
+    flex:0 0 auto;
+
+}
+
+/* CARTE CALATE CPU - DIMENSIONE RIDOTTA */
+
+#combinazioniAvversario .carta-calata {
+
+    width:35px;
+    height:52px;
+
+    margin:1px;
+
+    font-size:12px;
+
+    border-radius:6px;
+
+}
+
+/* ==========================
+   FIX VISUALIZZAZIONE CARTE
+========================== */
+
+#mano .carta-mano {
+    width: 60px;
+    height: 90px;
+    padding: 0;
+    overflow: hidden;
+    background: white;
+}
+
+#mano .immagineCarta {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    margin: 0;
+    padding: 0;
+}
+
+/* ==========================
+   NUOVE CARTE GRAFICHE
+========================== */
+
+#mano .carta-mano {
+
+    width:60px;
+    height:90px;
+
+    background:white;
+
+    border-radius:10px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    flex:0 0 auto;
+
+    box-shadow:0 4px 10px rgba(0,0,0,0.5);
+
+    cursor:pointer;
+
+    transition:0.2s;
+
+}
+
+
+.cartaValore {
+
+    position:absolute;
+
+    top:5px;
+    left:7px;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+}
+
+
+.cartaSeme {
+
+    position:absolute;
+
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    display:block !important;
+
+    font-size:34px !important;
+
+    line-height:1;
+
+    font-weight:bold;
+
+    z-index:5;
+
+}
+
+#mano .cartaSeme {
+
+    display:block !important;
+
+    visibility:visible !important;
+
+    opacity:1 !important;
+
+}
+
+
+.cartaValore.rosso,
+.cartaSeme.rosso {
+
+    color:red;
+
+}
+
+
+.cartaValore.nero,
+.cartaSeme.nero {
+
+    color:black;
+
+}
+
+
+.cartaValore.jolly {
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    font-size:11px;
+
+    color:#222;
+
+}
+
+
+.cartaSeme.jolly {
+
+    font-size:32px;
+
+}
+
+
+#mano .carta-mano.selezionata {
+
+    z-index:200;
+
+    transform:translateY(-25px);
+
+    border:3px solid gold;
+
+}
+
+
+#mano .carta-mano:hover {
+
+    transform:translateY(-8px);
+
+}
+
+
+#mano .carta-mano.selezionata:hover {
+
+    transform:translateY(-25px);
+
+}
+
+#bottoneCala {
+
+    position:fixed;
+
+    bottom:115px;
+    left:15px;
+
+    padding:8px 12px;
+
+    font-size:13px;
+
+    border-radius:6px;
+
+    background:#0b7a2a;
+
+    color:white;
+
+    border:1px solid white;
+
+    z-index:500;
+
+}
+
+#mieCombinazioni {
+
+    position:absolute;
+
+    top:180px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:90vw;
+    max-width:500px;
+
+    min-height:90px;
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:5px;
+
+    z-index:300;
+
+    overflow:visible;
+
+}
+
+
+#mieCombinazioni .combinazione {
+
+    display:flex;
+
+    align-items:center;
+
+    margin:5px;
+
+}
+
+
+#mieCombinazioni .carta-calata {
+
+    width:50px;
+    height:75px;
+
+    margin-left:-25px;
+
+    position:relative;
+
+}
+
+#mieCombinazioni .carta-calata:first-child {
+
+    margin-left:0;
+
+}
+
+
+#mieCombinazioni .immagineCarta {
+
+    width:100%;
+    height:100%;
+
+    object-fit:fill;
+
+    border-radius:8px;
+
+}
+
+/* ==========================
+   FIX CLICK TAVOLO
+========================== */
+
+#centroTavolo {
+    position:absolute;
+    z-index:1000;
+}
+
+#mazzo {
+    position:relative;
+    z-index:1001;
+    pointer-events:auto;
+    cursor:pointer;
+}
+
+#scarti {
+    position:relative;
+    z-index:1001;
+    pointer-events:auto;
+}
+
+#bottoneCala,
+#bottoneScarta {
+    pointer-events:auto;
+}
+
+#bottoneCala,
+#bottoneScarta {
+    position:fixed !important;
+    z-index:99999 !important;
+    pointer-events:auto !important;
+}
+
+#bottoneCala,
+#bottoneScarta {
+    position: fixed !important;
+    z-index: 999999 !important;
+    pointer-events: auto !important;
+    display: block !important;
+}
+
+#bottoneCala {
+    bottom: 115px !important;
+    left: 15px !important;
+}
+
+#bottoneScarta {
+    bottom: 115px !important;
+    right: 15px !important;
+}
+
+#bottoneCala {
+    position: fixed !important;
+    left: 15px !important;
+    bottom: 200px !important;
+
+    width: 150px !important;
+    height: 70px !important;
+
+    z-index: 2147483647 !important;
+
+    pointer-events: auto !important;
+
+    background: yellow !important;
+    color: black !important;
+}
+
+#bottoneCala {
+    position: fixed !important;
+
+    bottom: 115px !important;
+    left: 15px !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    padding: 8px 12px !important;
+
+    font-size: 13px !important;
+
+    z-index: 999999999 !important;
+
+    pointer-events: auto !important;
+}
+
+#miaZona {
+    position: fixed !important;
+    z-index: 999999 !important;
+}
+
+#bottoneCala {
+    z-index: 999999999 !important;
+}
+
+/* =========================================
+   MANO GIOCATORE - LAYOUT DEFINITIVO
+   Carte sovrapposte ma leggibili
+========================================= */
+
+#mano {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 96vw;
+    max-width: 600px;
+    height: 120px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+
+    overflow: visible;
+
+    z-index: 100000;
+}
+
+/* Ogni carta */
+
+#mano .carta-mano {
+    position: relative;
+
+    flex: 0 0 60px;
+
+    width: 60px;
+    height: 90px;
+
+    margin-left: -28px;
+
+    padding: 0;
+
+    background: white;
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+
+    cursor: pointer;
+
+    transition: transform 0.2s ease;
+
+    z-index: 1;
+}
+
+/* Prima carta */
+
+#mano .carta-mano:first-child {
+    margin-left: 0;
+}
+
+/* Numero + seme SEMPRE visibili */
+
+#mano .carta-mano .cartaValore {
+    position: absolute;
+
+    top: 5px;
+    left: 6px;
+
+    z-index: 20;
+
+    font-size: 18px;
+    line-height: 20px;
+
+    font-weight: bold;
+
+    pointer-events: none;
+}
+
+/* Seme centrale */
+
+#mano .carta-mano .cartaSeme {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    z-index: 10;
+
+    font-size: 34px;
+    font-weight: bold;
+
+    pointer-events: none;
+}
+
+/* Carta selezionata */
+
+#mano .carta-mano.selezionata {
+    transform: translateY(-25px);
+
+    z-index: 1000;
+
+    border: 3px solid gold;
+}
+
+/* Hover */
+
+#mano .carta-mano:hover {
+    transform: translateY(-8px);
+    z-index: 500;
+}
+
+/* Hover sulla selezionata */
+
+#mano .carta-mano.selezionata:hover {
+    transform: translateY(-25px);
+    z-index: 1000;
+}
+
+/* IMPORTANTE:
+   il contenuto della carta non deve intercettare il click */
+
+#mano .carta-mano *,
+#mano .carta-mano .cartaValore,
+#mano .carta-mano .cartaSeme {
+    pointer-events: none;
+}
+
+/* TEST VISIBILITÀ SEME */
+
+#mano .carta-mano .cartaSeme {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    position: absolute !important;
+
+    top: 55% !important;
+    left: 50% !important;
+
+    transform: translate(-50%, -50%) !important;
+
+    font-size: 32px !important;
+    font-weight: bold !important;
+
+    z-index: 9999 !important;
+
+    pointer-events: none !important;
+}
+
+/* ==========================
+   CARTE DA GIOCO
+========================== */
+
+#mano .carta-mano {
+
+    width:60px;
+    height:90px;
+
+    background:white;
+
+    border-radius:8px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    flex:0 0 auto;
+
+    box-shadow:0 3px 8px rgba(0,0,0,0.5);
+
+    cursor:pointer;
+
+}
+
+
+/* ANGOLI DELLA CARTA */
+
+.cartaAngolo {
+
+    position:absolute;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    font-weight:bold;
+
+    font-size:15px;
+
+    line-height:14px;
+
+    z-index:10;
+
+}
+
+
+/* ALTO SINISTRA */
+
+.cartaAlto {
+
+    top:4px;
+    left:5px;
+
+}
+
+
+/* BASSO DESTRA CAPOVOLTO */
+
+.cartaBasso {
+
+    bottom:4px;
+    right:5px;
+
+    transform:rotate(180deg);
+
+}
+
+
+/* SEME GRANDE CENTRALE */
+
+.cartaSemeCentro {
+
+    position:absolute;
+
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    font-size:32px;
+
+    font-weight:bold;
+
+    z-index:5;
+
+}
+
+
+/* ROSSO */
+
+.cartaAngolo.rosso,
+.cartaSemeCentro.rosso {
+
+    color:red;
+
+}
+
+
+/* NERO */
+
+.cartaAngolo.nero,
+.cartaSemeCentro.nero {
+
+    color:black;
+
+}
+
+
+/* CARTA SELEZIONATA */
+
+#mano .carta-mano.selezionata {
+
+    z-index:1000;
+
+    transform:translateY(-22px);
+
+    border:3px solid gold;
+
+}
+
+/* CARTA SELEZIONATA - ESCE DALLA MANO */
+
+
+/* CARTA NON SELEZIONATA */
+
+/* ==========================
+   PILA SCARTI
+========================== */
+
+#scarti {
+    display: flex;
+    align-items: flex-start;
+    overflow: visible;
+}
+
+#scarti .carta-scarto {
+    position: relative;
+    flex: 0 0 60px;
+    width: 60px;
+    height: 90px;
+    margin-left: -45px;
+    z-index: 1;
+}
+
+/* La prima carta non ha sovrapposizione */
+
+#scarti .carta-scarto:first-child {
+    margin-left: 0;
+}
+
+/* La carta intera deve stare sopra
+   alle carte precedenti */
+
+#scarti .carta-scarto:nth-child(1) {
+    z-index: 1;
+}
+
+#scarti .carta-scarto:nth-child(2) {
+    z-index: 2;
+}
+
+#scarti .carta-scarto:nth-child(3) {
+    z-index: 3;
+}
+
+#scarti .carta-scarto:nth-child(4) {
+    z-index: 4;
+}
+
+#scarti .carta-scarto:nth-child(5) {
+    z-index: 5;
+}
+
+#scarti .carta-scarto:nth-child(6) {
+    z-index: 6;
+}
+
+#scarti .carta-scarto:nth-child(7) {
+    z-index: 7;
+}
+
+#scarti .carta-scarto:nth-child(8) {
+    z-index: 8;
+}
+
+#scarti .carta-scarto:nth-child(9) {
+    z-index: 9;
+}
+
+#scarti .carta-scarto:nth-child(10) {
+    z-index: 10;
+}
+
+/* ==========================
+   CARTE CALATE
+========================== */
+
+#mieCombinazioni .carta-calata {
+    position: relative;
+    margin-left: -30px;
+}
+
+#mieCombinazioni .carta-calata:first-child {
+    margin-left: 0;
+}
+
+/* ==========================
+   POSIZIONE COMBINAZIONI
+========================== */
+
+#mieCombinazioni {
+
+    position: absolute !important;
+
+    top: 55% !important;
+    left: 15px !important;
+
+    transform: none !important;
+
+    width: 150px !important;
+    max-width: 150px !important;
+
+    min-height: 90px;
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: flex-start;
+
+    align-items: flex-start;
+
+    gap: 0;
+
+    overflow: visible;
+
+    z-index: 300;
+}
+
+
+#mieCombinazioni .combinazione {
+
+    display: flex;
+
+    align-items: center;
+
+    margin: 5px 0;
+
+    width: 100%;
+
+}
+
+/* ORDINE DELLE CARTE CALATE */
+
+#mieCombinazioni .carta-calata:nth-child(1) {
+    z-index: 1;
+}
+
+#mieCombinazioni .carta-calata:nth-child(2) {
+    z-index: 2;
+}
+
+#mieCombinazioni .carta-calata:nth-child(3) {
+    z-index: 3;
+}
+
+#mieCombinazioni .carta-calata:nth-child(4) {
+    z-index: 4;
+}
+
+#mieCombinazioni .carta-calata:nth-child(5) {
+    z-index: 5;
+}
+
+#mieCombinazioni .carta-calata:nth-child(6) {
+    z-index: 6;
+}
+
+#mieCombinazioni .carta-calata:nth-child(7) {
+    z-index: 7;
+}
+
+#mieCombinazioni .carta-calata:nth-child(8) {
+    z-index: 8;
+}
+
+#mieCombinazioni .carta-calata:nth-child(9) {
+    z-index: 9;
+}
+
+#mieCombinazioni .carta-calata:nth-child(10) {
+    z-index: 10;
+}
+
+/* Il contenuto rimane dentro la propria carta */
+
+#mieCombinazioni .carta-calata .cartaSemeCentro,
+#mieCombinazioni .carta-calata .cartaAngolo {
+    pointer-events: none;
+}
+
+/* ==========================
+   CARTE CPU - STESSO STILE
+   DELLE MIE CARTE CALATE
+========================== */
+
+#combinazioniAvversario .carta-calata {
+
+    position: relative;
+
+    flex: 0 0 50px !important;
+
+    width: 50px !important;
+    height: 75px !important;
+
+    margin-left: -30px !important;
+
+    padding: 0 !important;
+
+    background: white !important;
+
+    border-radius: 8px !important;
+
+    overflow: hidden !important;
+
+    box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+
+    display: inline-flex !important;
+
+}
+
+
+/* PRIMA CARTA */
+
+#combinazioniAvversario .carta-calata:first-child {
+
+    margin-left: 0 !important;
+
+}
+
+
+/* ==========================
+   ORDINE CARTE
+========================== */
+
+#combinazioniAvversario .carta-calata:nth-child(1) { z-index:1; }
+#combinazioniAvversario .carta-calata:nth-child(2) { z-index:2; }
+#combinazioniAvversario .carta-calata:nth-child(3) { z-index:3; }
+#combinazioniAvversario .carta-calata:nth-child(4) { z-index:4; }
+#combinazioniAvversario .carta-calata:nth-child(5) { z-index:5; }
+#combinazioniAvversario .carta-calata:nth-child(6) { z-index:6; }
+#combinazioniAvversario .carta-calata:nth-child(7) { z-index:7; }
+#combinazioniAvversario .carta-calata:nth-child(8) { z-index:8; }
+#combinazioniAvversario .carta-calata:nth-child(9) { z-index:9; }
+#combinazioniAvversario .carta-calata:nth-child(10) { z-index:10; }
+
+
+/* ==========================
+   ANGOLI IDENTICI
+========================== */
+
+#combinazioniAvversario .cartaAngolo {
+
+    position: absolute !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+
+    font-weight: bold !important;
+
+    font-size: 15px !important;
+
+    line-height: 14px !important;
+
+    z-index: 10 !important;
+
+}
+
+
+#combinazioniAvversario .cartaAlto {
+
+    top: 4px !important;
+    left: 5px !important;
+
+}
+
+
+#combinazioniAvversario .cartaBasso {
+
+    bottom: 4px !important;
+    right: 5px !important;
+
+    transform: rotate(180deg) !important;
+
+}
+
+
+/* ==========================
+   SEME CENTRALE IDENTICO
+========================== */
+
+#combinazioniAvversario .cartaSemeCentro {
+
+    position: absolute !important;
+
+    top: 50% !important;
+    left: 50% !important;
+
+    transform: translate(-50%, -50%) !important;
+
+    font-size: 32px !important;
+
+    font-weight: bold !important;
+
+    z-index: 5 !important;
+
+    pointer-events: none !important;
+
+}
+
+
+/* COLORI */
+
+#combinazioniAvversario .cartaAngolo.rosso,
+#combinazioniAvversario .cartaSemeCentro.rosso {
+
+    color: red !important;
+
+}
+
+
+#combinazioniAvversario .cartaAngolo.nero,
+#combinazioniAvversario .cartaSemeCentro.nero {
+
+    color: black !important;
+
+}
+
+
+/* ==========================
+   JOLLY IDENTICO
+========================== */
+
+#combinazioniAvversario .cartaValore.jolly {
+
+    position: absolute !important;
+
+    top: 5px !important;
+    left: 50% !important;
+
+    transform: translateX(-50%) !important;
+
+    font-size: 11px !important;
+
+    color: #222 !important;
+
+}
+
+
+#combinazioniAvversario .cartaSeme.jolly {
+
+    position: absolute !important;
+
+    top: 50% !important;
+    left: 50% !important;
+
+    transform: translate(-50%, -50%) !important;
+
+    font-size: 32px !important;
+
+}
+
+
+/* IL CONTENUTO NON INTERFERISCE */
+
+#combinazioniAvversario .carta-calata * {
+
+    pointer-events: none !important;
+
+}
+
+ /* ==========================
+    COMBINAZIONI CPU A SINISTRA
+ ========================== */
+
+#combinazioniAvversario {
+
+    position: fixed !important;
+
+    top: 70px !important;
+    left: 15px !important;
+
+    transform: none !important;
+
+    width: 220px !important;
+    max-width: 220px !important;
+
+    min-height: 90px;
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    align-items: flex-start;
+
+    justify-content: flex-start;
+
+    gap: 5px;
+
+    overflow: visible;
+
+    z-index: 300;
+}
+
+
+/* Ogni scala CPU */
+
+#combinazioniAvversario .combinazione {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-start;
+
+    margin: 5px 0;
+
+    width: 100%;
+
+    overflow: visible;
+}
+
+/* =========================================
+   POSIZIONE INDICATORI TURNO
+   ========================================= */
+
+#turnoMio {
+    position: fixed !important;
+    left: 20px !important;
+    bottom: 20px !important;
+    top: auto !important;
+    right: auto !important;
+    z-index: 99999 !important;
+}
+
+#turnoCPU {
+    position: fixed !important;
+    right: 20px !important;
+    top: 20px !important;
+    left: auto !important;
+    bottom: auto !important;
+    z-index: 99999 !important;
+}
+
+/* ================================
+   INDICATORI DI TURNO
+   ================================ */
+
+#turnoMio {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+
+    width: 35px;
+    height: 35px;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid white;
+    border-radius: 8px;
+
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+
+    z-index: 9999;
+}
+
+#turnoCPU {
+    position: fixed;
+    right: 0;
+    top: 0;
+
+    width: 35px;
+    height: 35px;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid white;
+    border-radius: 8px;
+
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+
+    z-index: 9999;
+}
+
+#turnoMio {
+    position: fixed !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    right: auto !important;
+}
+
+#turnoCPU {
+    position: fixed !important;
+    right: 0 !important;
+    top: 0 !important;
+    left: auto !important;
+    bottom: auto !important;
+}
+
+/* ==========================
+   LINEA CENTRALE
+========================== */
+
+#areaGioco::after {
+
+    content: "";
+
+    position: fixed;
+
+    left: 0;
+    right: 0;
+
+    top: 53%;
+
+    height: 2px;
+
+    background: rgba(255,255,255,0.6);
+
+    z-index: 100;
+
+    pointer-events: none;
+}
+
+/* ==========================
+   LINEA SOTTO COMBINAZIONI AVVERSARIO
+========================== */
+
+#areaGioco {
+    position: relative;
+}
+
+#areaGioco::before {
+
+    content: "";
+
+    position: fixed;
+
+    left: 0;
+    right: 0;
+
+    top: 38%;
+
+    height: 2px;
+
+    background: rgba(255,255,255,0.6);
+
+    z-index: 100;
+
+    pointer-events: none;
+}
+
+/* ==========================
+   LINEA SOPRA LA MIA MANO
+========================== */
+
+#miaZona::before {
+
+    content: "";
+
+    position: fixed;
+
+    left: 0;
+    right: 0;
+
+    top: 85%;
+
+    height: 2px;
+
+    background: rgba(255,255,255,0.6);
+
+    z-index: 100;
+
+    pointer-events: none;
+}
+/* ==========================
+   LINEA SOPRA CARTE AVVERSARIO
+========================== */
+
+#zonaAvversario::before {
+
+    content: "";
+
+    position: fixed;
+
+    left: 0;
+    right: 0;
+
+    top: 8%;
+
+    height: 2px;
+
+    background: rgba(255,255,255,0.6);
+
+    z-index: 100;
+
+    pointer-events: none;
+}
+
+#scarti {
+    position: relative;
+    top: 5px;
+}
+#mazzo {
+    width: 58px !important;
+    height: 88px !important;
+}
+
+/* =========================================
+   NUOVO LAYOUT COMBINAZIONI GIOCATORE
+========================================= */
+
+#mieCombinazioni {
+
+    position: absolute !important;
+
+    top: 55% !important;
+    left: 0 !important;
+
+    transform: none !important;
+
+    width: 100vw !important;
+    max-width: none !important;
+
+    min-height: 90px;
+
+    display: flex !important;
+
+    flex-wrap: wrap !important;
+
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+
+    gap: 0;
+
+    overflow: visible !important;
+
+    z-index: 300;
+}
+
+#mieCombinazioni .combinazione {
+    flex: 0 0 auto !important;
+}
+
+/* COMBINAZIONI AFFIANCATE */
+
+#mieCombinazioni .combinazione {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    margin: 0 5px !important;
+}
+
+/* =========================================
+   SEPARATORE TRA LE COMBINAZIONI
+========================================= */
+
+#mieCombinazioni .combinazione {
+    position: relative !important;
+}
+
+#mieCombinazioni .combinazione:not(:last-child)::after {
+
+    content: "";
+
+    position: absolute;
+
+    right: -5px;
+    top: 8px;
+
+    width: 0.5px;
+    height: 60px;
+
+    background: white;
+
+    z-index: 9999;
+
+    pointer-events: none;
+}
+
+/* =========================================
+   NUOVO LAYOUT COMBINAZIONI CPU
+========================================= */
+
+#combinazioniAvversario {
+
+position: fixed !important;
+
+    top: 9% !important;
+    left: 0 !important;
+
+    transform: none !important;
+
+    width: 100vw !important;
+    max-width: none !important;
+
+    min-height: 90px;
+
+    display: flex !important;
+
+    flex-wrap: wrap !important;
+
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+
+    gap: 0;
+
+    overflow: visible !important;
+
+    z-index: 300;
+}
+
+/* =========================================
+   COMBINAZIONI CPU AFFIANCATE
+========================================= */
+
+#combinazioniAvversario .combinazione {
+
+    width: auto !important;
+
+    flex: 0 0 auto !important;
+
+    margin: 0 5px !important;
+
+}
+
+/* =========================================
+   SEPARATORI TRA COMBINAZIONI CPU
+========================================= */
+
+#combinazioniAvversario .combinazione {
+    position: relative !important;
+}
+
+#combinazioniAvversario .combinazione:not(:last-child)::after {
+
+    content: "";
+
+    position: absolute;
+
+    right: -5px;
+    top: 8px;
+
+    width: 0.5px;
+    height: 60px;
+
+    background: white;
+
+    z-index: 9999;
+
+    pointer-events: none;
+}
+
+/* =========================================
+   FIX DEFINITIVO MAZZO
+========================================= */
+
+#centroTavolo {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: auto !important;
+}
+
+#mazzo {
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+
+    height: 88px !important;
+    min-height: 88px !important;
+    max-height: 88px !important;
+
+    flex: 0 0 58px !important;
+    flex-shrink: 0 !important;
+
+    box-sizing: border-box !important;
+
+    background-image: url("images/carte/retro_rosso.jpg") !important;
+    background-size: 100% 100% !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+
+    border: 2px solid white !important;
+    border-radius: 8px !important;
+
+    overflow: hidden !important;
+}
+
+/* =========================================
+   MONTE SCARTI - SOVRAPPOSIZIONE COMPATTA
+========================================= */
+
+#scarti {
+    display: flex !important;
+    align-items: flex-start !important;
+    overflow: visible !important;
+}
+
+#scarti .carta-scarto {
+    flex: 0 0 60px !important;
+    width: 60px !important;
+    height: 90px !important;
+
+    margin-left: -42px !important;
+
+    position: relative !important;
+}
+
+/* Prima carta */
+#scarti .carta-scarto:first-child {
+    margin-left: 0 !important;
+}
+
