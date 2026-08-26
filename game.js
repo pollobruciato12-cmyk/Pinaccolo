@@ -4339,13 +4339,16 @@ function entraPartita(){
 
     console.log("🟢 ENTRA PARTITA: funzione avviata");
 
-    alert("🟢 Click su ENTRA ricevuto");
+    alert("🟢 1 - Click su ENTRA ricevuto");
 
 
     let codice =
         document.getElementById("codiceIngresso").value
         .toUpperCase()
         .trim();
+
+
+    alert("🟡 2 - Codice letto: " + codice);
 
 
     console.log(
@@ -4375,6 +4378,9 @@ function entraPartita(){
     mioGiocatore = "giocatore2";
 
 
+    alert("🟡 3 - Codice salvato. Ora provo Firebase");
+
+
     console.log(
         "📡 Provo a collegarmi alla partita:",
         codicePartitaAttuale
@@ -4385,12 +4391,18 @@ function entraPartita(){
         PRIMA CONTROLLIAMO SE LA PARTITA ESISTE
     */
 
+    alert("🟠 4 - Sto eseguendo onValue()");
+
+
     onValue(
         ref(
             database,
             "partite/" + codicePartitaAttuale
         ),
         function(snapshot){
+
+            alert("🟢 5 - Firebase ha risposto!");
+
 
             let dati = snapshot.val();
 
@@ -4415,6 +4427,9 @@ function entraPartita(){
                 return;
 
             }
+
+
+            alert("🟢 6 - Partita trovata!");
 
 
             console.log(
@@ -4442,13 +4457,13 @@ function entraPartita(){
 
             .then(()=>{
 
-                console.log(
-                    "✅ GIOCATORE 2 SCRITTO SU FIREBASE"
+                alert(
+                    "🟢 7 - GIOCATORE 2 SCRITTO SU FIREBASE!"
                 );
 
 
-                alert(
-                    "✅ Giocatore 2 aggiunto su Firebase!"
+                console.log(
+                    "✅ GIOCATORE 2 SCRITTO SU FIREBASE"
                 );
 
 
@@ -4494,7 +4509,7 @@ function entraPartita(){
 
 
                 alert(
-                    "❌ ERRORE FIREBASE: " +
+                    "❌ 8 - ERRORE FIREBASE: " +
                     errore.message
                 );
 
