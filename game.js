@@ -3393,16 +3393,11 @@ function mostraCarteAvversarioOnline(){
         return;
     }
 
-    if(!codicePartitaAttuale){
-        return;
-    }
-
     if(!window.datiPartitaOnline){
         return;
     }
 
-    let dati =
-        window.datiPartitaOnline;
+    let dati = window.datiPartitaOnline;
 
     if(!dati.giocatori){
         return;
@@ -3420,28 +3415,16 @@ function mostraCarteAvversarioOnline(){
     let manoAvversario =
         dati.giocatori[altroGiocatore].mano || [];
 
+
     manoAvversario.forEach((carta, indice) => {
 
         let div =
             document.createElement("div");
 
-        div.className = "cartaRetro";
-
-        if(indice % 2 === 0){
-
-            div.style.backgroundImage =
-                "url('retro_rosso.jpg')";
-
-        }else{
-
-            div.style.backgroundImage =
-                "url('retro_blu.jpg')";
-
-        }
-
-        div.style.backgroundSize = "cover";
-        div.style.backgroundPosition = "center";
-        div.style.flexShrink = "0";
+        div.className =
+            indice % 2 === 0
+            ? "cartaRetro rosso"
+            : "cartaRetro blu";
 
         area.appendChild(div);
 
