@@ -4845,6 +4845,7 @@ if(dati.turno !== undefined){
             ){
 
                 mano = dati.giocatori[mioGiocatore].mano;
+                ordinaManoIniziale();
                 mazzo = dati.mazzo;
 
                 mostraMano();
