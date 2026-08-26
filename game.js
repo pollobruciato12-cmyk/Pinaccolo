@@ -4336,58 +4336,182 @@ set(ref(database, "partite/" + codicePartitaAttuale), {
 }
 
 function entraPartita(){
-  
-  console.log("ENTRA PARTITA FUNZIONE AVVIATA");
 
-    let codice = document.getElementById("codiceIngresso").value
-    .toUpperCase();
+    console.log("🟢 ENTRA PARTITA: funzione avviata");
+
+    alert("🟢 Click su ENTRA ricevuto");
+
+
+    let codice =
+        document.getElementById("codiceIngresso").value
+        .toUpperCase()
+        .trim();
+
+
+    console.log(
+        "🔑 Codice inserito:",
+        codice
+    );
 
 
     if(codice === ""){
 
+        alert("❌ Codice vuoto");
+
         document.getElementById("messaggioPartita").innerHTML =
-        "Inserisci un codice";
+            "Inserisci un codice";
 
         return;
 
     }
 
 
+    /*
+        SALVIAMO IL CODICE
+    */
+
     codicePartitaAttuale = codice;
 
     mioGiocatore = "giocatore2";
 
 
-update(
-    ref(database, "partite/" + codice + "/giocatori"),
-    {
-        giocatore2:{
-            nome:"Giocatore 2"
+    console.log(
+        "📡 Provo a collegarmi alla partita:",
+        codicePartitaAttuale
+    );
+
+
+    /*
+        PRIMA CONTROLLIAMO SE LA PARTITA ESISTE
+    */
+
+    onValue(
+        ref(
+            database,
+            "partite/" + codicePartitaAttuale
+        ),
+        function(snapshot){
+
+            let dati = snapshot.val();
+
+
+            console.log(
+                "📥 DATI PARTITA RICEVUTI:",
+                dati
+            );
+
+
+            if(!dati){
+
+                alert(
+                    "❌ Partita non trovata su Firebase"
+                );
+
+                document.getElementById(
+                    "messaggioPartita"
+                ).innerHTML =
+                    "Partita non trovata.";
+
+                return;
+
+            }
+
+
+            console.log(
+                "✅ Partita trovata!"
+            );
+
+
+            /*
+                AGGIUNGIAMO IL GIOCATORE 2
+            */
+
+            update(
+                ref(
+                    database,
+                    "partite/" +
+                    codicePartitaAttuale +
+                    "/giocatori"
+                ),
+                {
+                    giocatore2:{
+                        nome:"Giocatore 2"
+                    }
+                }
+            )
+
+            .then(()=>{
+
+                console.log(
+                    "✅ GIOCATORE 2 SCRITTO SU FIREBASE"
+                );
+
+
+                alert(
+                    "✅ Giocatore 2 aggiunto su Firebase!"
+                );
+
+
+                document.getElementById(
+                    "messaggioPartita"
+                ).innerHTML =
+                    "Sei entrato nella partita!";
+
+
+                /*
+                    AGGIORNA LA LISTA LOCALE
+                */
+
+                document.getElementById(
+                    "listaGiocatori"
+                ).innerHTML =
+                    "Giocatori:<br>" +
+                    "🟢 Giocatore 1<br>" +
+                    "🟢 Giocatore 2";
+
+
+                /*
+                    INIZIAMO AD ASCOLTARE
+                    LA PARTITA
+                */
+
+                console.log(
+                    "👂 Avvio ascoltaPartita()"
+                );
+
+
+                ascoltaPartita();
+
+
+            })
+
+            .catch((errore)=>{
+
+                console.error(
+                    "❌ ERRORE FIREBASE:",
+                    errore
+                );
+
+
+                alert(
+                    "❌ ERRORE FIREBASE: " +
+                    errore.message
+                );
+
+
+                document.getElementById(
+                    "messaggioPartita"
+                ).innerHTML =
+                    "Errore: " +
+                    errore.message;
+
+            });
+
+        },
+        {
+            onlyOnce: true
         }
-    }
-)
-
-    .then(()=>{
-
-        document.getElementById("messaggioPartita").innerHTML =
-        "Sei entrato nella partita!";
-
-
-        document.getElementById("listaGiocatori").innerHTML =
-        "Giocatori:<br>🟢 Giocatore 1<br>🟢 Giocatore 2";
-
-
-        ascoltaPartita();
-
-
-    })
-
-    .catch((errore)=>{
-
-        document.getElementById("messaggioPartita").innerHTML =
-        "Errore: " + errore;
-
-    });
+    );
 
 }
 
