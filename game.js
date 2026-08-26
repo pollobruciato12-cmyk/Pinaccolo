@@ -4791,6 +4791,13 @@ if(dati.turno !== undefined){
                 mazzo = dati.mazzo;
 
                 mostraMano();
+                if(dati.scarti){
+    scarti = dati.scarti;
+}else{
+    scarti = [];
+}
+
+mostraScarti();
                 if(dati.mazzo){
 
     mazzo = dati.mazzo;
