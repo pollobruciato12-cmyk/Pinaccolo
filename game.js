@@ -4849,6 +4849,22 @@ if(dati.turno !== undefined){
 
                 mostraMano();
                 mostraCarteAvversarioOnline();
+                let altroGiocatore =
+    mioGiocatore === "giocatore1"
+    ? "giocatore2"
+    : "giocatore1";
+
+let contatore =
+    document.getElementById("numeroCarteAvversario");
+
+if(contatore &&
+   dati.giocatori[altroGiocatore] &&
+   dati.giocatori[altroGiocatore].mano){
+
+    contatore.innerHTML =
+        dati.giocatori[altroGiocatore].mano.length;
+
+}
                 if(dati.scarti){
     scarti = dati.scarti;
 }else{
