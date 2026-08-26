@@ -3416,19 +3416,21 @@ function mostraCarteAvversarioOnline(){
         dati.giocatori[altroGiocatore].mano || [];
 
 
-    manoAvversario.forEach((carta, indice) => {
+manoAvversario.forEach((carta, indice) => {
 
-        let div =
-            document.createElement("div");
+    let img =
+        document.createElement("img");
 
-        div.className =
-            indice % 2 === 0
-            ? "cartaRetro rosso"
-            : "cartaRetro blu";
+    img.src =
+        indice % 2 === 0
+        ? "retro_rosso.png"
+        : "retro_blu.png";
 
-        area.appendChild(div);
+    img.className = "cartaRetro";
 
-    });
+    area.appendChild(img);
+
+});
 
 }
 
