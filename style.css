@@ -2472,6 +2472,8 @@ position: fixed !important;
    FIX DEFINITIVO ANGOLI CARTE ONLINE
 ========================================= */
 
+/* FIX ANGOLI CARTE */
+
 #mano .cartaAngolo {
 
     position: absolute !important;
@@ -2481,12 +2483,12 @@ position: fixed !important;
     flex-direction: column !important;
 
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
 
-    width: 22px !important;
-    height: 32px !important;
+    width: 28px !important;
+    height: auto !important;
 
-    font-size: 14px !important;
+    font-size: 13px !important;
     line-height: 13px !important;
 
     font-weight: bold !important;
@@ -2504,7 +2506,6 @@ position: fixed !important;
 
     top: 3px !important;
     left: 3px !important;
-
 }
 
 #mano .cartaBasso {
@@ -2513,14 +2514,12 @@ position: fixed !important;
     right: 3px !important;
 
     transform: rotate(180deg) !important;
-
 }
 
 #mano .cartaAngolo div {
 
-    font-size: 14px !important;
+    font-size: 13px !important;
     line-height: 13px !important;
 
     white-space: nowrap !important;
-
 }
