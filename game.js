@@ -3423,8 +3423,8 @@ manoAvversario.forEach((carta, indice) => {
 
     img.src =
         indice % 2 === 0
-        ? "retro_rosso.png"
-        : "retro_blu.png";
+        ? "retro_rosso.jpg"
+        : "retro_blu.jpg";
 
     img.className = "cartaRetro";
 
