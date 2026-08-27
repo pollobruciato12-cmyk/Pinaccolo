@@ -3575,15 +3575,8 @@ if(
 if(modalitaGioco === "online"){
 
     update(
-        ref(
-            database,
-            "partite/" +
-            codicePartitaAttuale +
-            "/giocatori/" +
-            mioGiocatore
-        ),
+        ref(database, "partite/" + codicePartitaAttuale + "/giocatori/" + mioGiocatore),
         {
-            mano: mano,
             combinazioni: combinazioni
         }
     );
