@@ -4917,11 +4917,13 @@ window.combinazioniAvversarioOnline =
 mostraCombinazioniAvversarioOnline();
 
 alert(
-    "DEBUG AVVERSARIO\n\n" +
+    "DEBUG FIREBASE\n\n" +
     "Io sono: " + mioGiocatore + "\n" +
-    "Avversario: " + altroGiocatore + "\n" +
-    "Combinazioni: " +
-    JSON.stringify(combinazioniAvversario)
+    "Avversario: " + altroGiocatore + "\n\n" +
+    "COMBINAZIONI MIE:\n" +
+    JSON.stringify(dati.giocatori[mioGiocatore]?.combinazioni) +
+    "\n\nCOMBINAZIONI AVVERSARIO:\n" +
+    JSON.stringify(dati.giocatori[altroGiocatore]?.combinazioni)
 );
 
 let contatore =
