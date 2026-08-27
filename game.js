@@ -3572,6 +3572,16 @@ if(
 
 
     combinazioni.push(nuovaCombinazione);
+    if(modalitaGioco === "online"){
+
+    update(
+        ref(database, "partite/" + codicePartitaAttuale),
+        {
+            combinazioni: combinazioni
+        }
+    );
+
+}
 
 
     // =========================
@@ -4845,6 +4855,15 @@ if(dati.turno !== undefined){
             ){
 
                 mano = dati.giocatori[mioGiocatore].mano;
+                if(dati.combinazioni){
+
+    combinazioni = dati.combinazioni;
+
+}else{
+
+    combinazioni = [];
+
+}
                 ordinaManoIniziale();
                 mazzo = dati.mazzo;
 
