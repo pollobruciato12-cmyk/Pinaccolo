@@ -3577,6 +3577,7 @@ if(
     update(
         ref(database, "partite/" + codicePartitaAttuale + "/giocatori/" + mioGiocatore),
         {
+            mano: mano,
             combinazioni: combinazioni
         }
     );
