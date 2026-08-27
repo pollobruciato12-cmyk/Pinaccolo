@@ -4897,6 +4897,10 @@ console.log("CONTATORE TROVATO:", contatore);
 console.log("ALTRO GIOCATORE:", altroGiocatore);
 console.log("MANO AVVERSARIO:", dati.giocatori[altroGiocatore]?.mano);
 console.log("NUMERO CARTE AVVERSARIO:", dati.giocatori[altroGiocatore]?.mano?.length);
+console.log(
+    "COMBINAZIONI AVVERSARIO:",
+    dati.giocatori[altroGiocatore]?.combinazioni
+);
 if(contatore &&
    dati.giocatori[altroGiocatore] &&
    dati.giocatori[altroGiocatore].mano){
