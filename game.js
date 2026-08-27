@@ -3572,6 +3572,11 @@ if(
 
 
     combinazioni.push(nuovaCombinazione);
+    alert(
+    "CALO ONLINE\n" +
+    "Io sono: " + mioGiocatore + "\n" +
+    "Combinazioni: " + combinazioni.length
+);
 if(modalitaGioco === "online"){
 
     // SALVA LA NUOVA MANO
