@@ -3572,10 +3572,16 @@ if(
 
 
     combinazioni.push(nuovaCombinazione);
-    if(modalitaGioco === "online"){
+if(modalitaGioco === "online"){
 
     update(
-        ref(database, "partite/" + codicePartitaAttuale + "/giocatori/" + mioGiocatore),
+        ref(
+            database,
+            "partite/" +
+            codicePartitaAttuale +
+            "/giocatori/" +
+            mioGiocatore
+        ),
         {
             mano: mano,
             combinazioni: combinazioni
