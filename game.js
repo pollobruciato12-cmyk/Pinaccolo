@@ -3574,11 +3574,31 @@ if(
     combinazioni.push(nuovaCombinazione);
 if(modalitaGioco === "online"){
 
-    update(
-        ref(database, "partite/" + codicePartitaAttuale + "/giocatori/" + mioGiocatore),
-        {
-            combinazioni: combinazioni
-        }
+    // SALVA LA NUOVA MANO
+    set(
+        ref(
+            database,
+            "partite/" +
+            codicePartitaAttuale +
+            "/giocatori/" +
+            mioGiocatore +
+            "/mano"
+        ),
+        mano
+    );
+
+
+    // SALVA LE COMBINAZIONI
+    set(
+        ref(
+            database,
+            "partite/" +
+            codicePartitaAttuale +
+            "/giocatori/" +
+            mioGiocatore +
+            "/combinazioni"
+        ),
+        combinazioni
     );
 
 }
