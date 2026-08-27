@@ -298,10 +298,10 @@ function scarta(){
     }
 
 
-    if(carteSelezionate.length !== 1){
-        alert("Devi selezionare una sola carta da scartare.");
-        return;
-    }
+if(carteSelezionate.length !== 1){
+    alert("Devi selezionare una sola carta da scartare.");
+    return;
+}
 
 
     let carta = carteSelezionate[0];
@@ -4846,6 +4846,7 @@ if(dati.stato === "iniziata"){
 if(dati.turno !== undefined){
 
     partita.turno = Number(dati.turno);
+    alert("TURNO AGGIORNATO A: " + partita.turno);
 
     console.log(
         "Firebase ha dato il turno:",
