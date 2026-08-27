@@ -4846,7 +4846,6 @@ if(dati.stato === "iniziata"){
 if(dati.turno !== undefined){
 
     partita.turno = Number(dati.turno);
-    alert("TURNO AGGIORNATO A: " + partita.turno);
 
     console.log(
         "Firebase ha dato il turno:",
@@ -4910,6 +4909,10 @@ if(
 window.combinazioniAvversarioOnline =
     combinazioniAvversario;
     mostraCombinazioniAvversarioOnline();
+    alert(
+    "COMBINAZIONI AVVERSARIO: " +
+    combinazioniAvversario.length
+);
 
 let contatore =
     document.getElementById("numeroCarteAvversario");
