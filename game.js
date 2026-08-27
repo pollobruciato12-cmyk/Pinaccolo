@@ -4913,10 +4913,15 @@ if(
 
 window.combinazioniAvversarioOnline =
     combinazioniAvversario;
-    mostraCombinazioniAvversarioOnline();
-    alert(
-    "COMBINAZIONI AVVERSARIO: " +
-    combinazioniAvversario.length
+
+mostraCombinazioniAvversarioOnline();
+
+alert(
+    "DEBUG AVVERSARIO\n\n" +
+    "Io sono: " + mioGiocatore + "\n" +
+    "Avversario: " + altroGiocatore + "\n" +
+    "Combinazioni: " +
+    JSON.stringify(combinazioniAvversario)
 );
 
 let contatore =
