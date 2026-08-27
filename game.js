@@ -3575,7 +3575,7 @@ if(
     if(modalitaGioco === "online"){
 
     update(
-        ref(database, "partite/" + codicePartitaAttuale),
+        ref(database, "partite/" + codicePartitaAttuale + "/giocatori/" + mioGiocatore),
         {
             combinazioni: combinazioni
         }
@@ -4855,9 +4855,10 @@ if(dati.turno !== undefined){
             ){
 
                 mano = dati.giocatori[mioGiocatore].mano;
-                if(dati.combinazioni){
+                if(dati.giocatori[mioGiocatore].combinazioni){
 
-    combinazioni = dati.combinazioni;
+    combinazioni =
+        dati.giocatori[mioGiocatore].combinazioni;
 
 }else{
 
@@ -4873,6 +4874,21 @@ if(dati.turno !== undefined){
     mioGiocatore === "giocatore1"
     ? "giocatore2"
     : "giocatore1";
+    let combinazioniAvversario = [];
+
+if(
+    dati.giocatori[altroGiocatore] &&
+    dati.giocatori[altroGiocatore].combinazioni
+){
+
+    combinazioniAvversario =
+        dati.giocatori[altroGiocatore].combinazioni;
+
+}
+
+window.combinazioniAvversarioOnline =
+    combinazioniAvversario;
+    mostraCombinazioniAvversarioOnline();
 
 let contatore =
     document.getElementById("numeroCarteAvversario");
@@ -4966,6 +4982,84 @@ function aggiornaIndicatoreTurno(){
         "Turno:",
         partita.turno
     );
+
+}
+
+function mostraCombinazioniAvversarioOnline(){
+
+    let area =
+        document.getElementById("combinazioniAvversario");
+
+    if(!area){
+        console.log(
+            "❌ ERRORE: combinazioniAvversario non trovato"
+        );
+        return;
+    }
+
+    area.innerHTML = "";
+
+    let lista =
+        window.combinazioniAvversarioOnline || [];
+
+    lista.forEach(gruppo => {
+
+        let div = document.createElement("div");
+
+        div.className = "combinazione";
+
+        gruppo.carte.forEach(carta => {
+
+            let c = document.createElement("div");
+
+            c.className =
+                "carta-mano carta-calata";
+
+            let colore =
+                (carta.seme === "♥" ||
+                 carta.seme === "♦")
+                ? "rosso"
+                : "nero";
+
+            if(carta.valore === "Jolly"){
+
+                c.innerHTML = `
+                    <div class="cartaValore jolly">
+                        JOLLY
+                    </div>
+
+                    <div class="cartaSeme jolly">
+                        🃏
+                    </div>
+                `;
+
+            }else{
+
+                c.innerHTML = `
+                    <div class="cartaAngolo cartaAlto ${colore}">
+                        <div>${carta.valore}</div>
+                        <div>${carta.seme}</div>
+                    </div>
+
+                    <div class="cartaSemeCentro ${colore}">
+                        ${carta.seme}
+                    </div>
+
+                    <div class="cartaAngolo cartaBasso ${colore}">
+                        <div>${carta.valore}</div>
+                        <div>${carta.seme}</div>
+                    </div>
+                `;
+
+            }
+
+            div.appendChild(c);
+
+        });
+
+        area.appendChild(div);
+
+    });
 
 }
 window.creaPartita = creaPartita;
