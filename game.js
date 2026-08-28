@@ -3577,6 +3577,12 @@ function calaCarte(){
     // PARTITA ONLINE
     // =========================
 
+alert(
+    "SALVATAGGIO CALO\n\n" +
+    "Giocatore: " + mioGiocatore + "\n" +
+    "Codice partita: " + codicePartitaAttuale + "\n" +
+    "Combinazioni: " + JSON.stringify(combinazioni)
+);
 if(modalitaGioco === "online"){
 
     let percorsoBase =
