@@ -249,8 +249,11 @@ console.log("🃏 MANO DOPO PESCA:", mano);
     );
     
     console.log(
-    "🔥 INVIO MAZZO A FIREBASE:",
-    mazzo.length
+    "🔥🔥 PRIMA DI FIREBASE:",
+    {
+        numeroCarte: mazzo.length,
+        carte: [...mazzo]
+    }
 );
 
     update(
