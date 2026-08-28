@@ -4835,30 +4835,28 @@ function ascoltaPartita(){
 
             let dati = snapshot.val();
             window.datiPartitaOnline = dati;
-            
+
             alert("Firebase ricevuto. Turno: " + dati.turno);
-            
-console.log("STATO COMPLETO FIREBASE:", dati);
+
+            console.log("STATO COMPLETO FIREBASE:", dati);
             console.log("DATI FIREBASE:", dati);
-            
-            if(dati.fase){
-
-    partita.fase = dati.fase;
-
-    console.log(
-        "Fase aggiornata:",
-        partita.fase
-    );
-
-}
 
 
             if(!dati){
-
                 return;
-
             }
 
+
+            if(dati.fase){
+
+                partita.fase = dati.fase;
+
+                console.log(
+                    "Fase aggiornata:",
+                    partita.fase
+                );
+
+            }
 
 
             if(dati.giocatori){
@@ -4867,38 +4865,45 @@ console.log("STATO COMPLETO FIREBASE:", dati);
 
                 for(let g in dati.giocatori){
 
-                    testo += "🟢 " + dati.giocatori[g].nome + "<br>";
+                    testo +=
+                        "🟢 " +
+                        dati.giocatori[g].nome +
+                        "<br>";
 
                 }
 
-                document.getElementById("listaGiocatori").innerHTML = testo;
+                document.getElementById(
+                    "listaGiocatori"
+                ).innerHTML = testo;
 
             }
 
 
+            if(dati.stato === "iniziata"){
+
+                document.getElementById(
+                    "menuOnline"
+                ).style.display = "none";
+
+                document.getElementById(
+                    "areaGioco"
+                ).style.display = "flex";
+
+            }
 
 
-if(dati.stato === "iniziata"){
+            if(dati.turno !== undefined){
 
-    document.getElementById("menuOnline").style.display = "none";
-    document.getElementById("areaGioco").style.display = "flex";
+                partita.turno = Number(dati.turno);
 
-}
+                console.log(
+                    "Firebase ha dato il turno:",
+                    partita.turno
+                );
 
+                aggiornaIndicatoreTurno();
 
-
-if(dati.turno !== undefined){
-
-    partita.turno = Number(dati.turno);
-
-    console.log(
-        "Firebase ha dato il turno:",
-        partita.turno
-    );
-
-    aggiornaIndicatoreTurno();
-
-}
+            }
 
 
             console.log(
@@ -4909,7 +4914,26 @@ if(dati.turno !== undefined){
             );
 
 
+            // =========================
+            // AGGIORNA MONTE SCARTI
+            // =========================
 
+            if(dati.scarti){
+
+                scarti = dati.scarti;
+
+            }else{
+
+                scarti = [];
+
+            }
+
+            mostraScarti();
+
+
+            // =========================
+            // DATI DEL MIO GIOCATORE
+            // =========================
 
             if(
                 dati.stato === "iniziata" &&
@@ -4918,76 +4942,114 @@ if(dati.turno !== undefined){
                 dati.giocatori[mioGiocatore].mano
             ){
 
-                mano = dati.giocatori[mioGiocatore].mano;
-                if(dati.giocatori[mioGiocatore].combinazioni){
+                mano =
+                    dati.giocatori[mioGiocatore].mano;
 
-    combinazioni =
-        dati.giocatori[mioGiocatore].combinazioni;
 
-}else{
+                if(
+                    dati.giocatori[mioGiocatore].combinazioni
+                ){
 
-    combinazioni = [];
+                    combinazioni =
+                        dati.giocatori[mioGiocatore].combinazioni;
 
-}
+                }else{
+
+                    combinazioni = [];
+
+                }
+
+
                 ordinaManoIniziale();
+
                 mazzo = dati.mazzo;
 
                 mostraMano();
+
                 mostraCarteAvversarioOnline();
+
+
                 let altroGiocatore =
-    mioGiocatore === "giocatore1"
-    ? "giocatore2"
-    : "giocatore1";
-    let combinazioniAvversario = [];
+                    mioGiocatore === "giocatore1"
+                    ? "giocatore2"
+                    : "giocatore1";
 
-if(
-    dati.giocatori[altroGiocatore] &&
-    dati.giocatori[altroGiocatore].combinazioni
-){
 
-    combinazioniAvversario =
-        dati.giocatori[altroGiocatore].combinazioni;
+                let combinazioniAvversario = [];
 
-}
 
-window.combinazioniAvversarioOnline =
-    combinazioniAvversario;
+                if(
+                    dati.giocatori[altroGiocatore] &&
+                    dati.giocatori[altroGiocatore].combinazioni
+                ){
 
-mostraCombinazioniAvversarioOnline();
+                    combinazioniAvversario =
+                        dati.giocatori[altroGiocatore].combinazioni;
 
-let contatore =
-    document.getElementById("numeroCarteAvversario");
+                }
 
-console.log("CONTATORE TROVATO:", contatore);
-console.log("ALTRO GIOCATORE:", altroGiocatore);
-console.log("MANO AVVERSARIO:", dati.giocatori[altroGiocatore]?.mano);
-console.log("NUMERO CARTE AVVERSARIO:", dati.giocatori[altroGiocatore]?.mano?.length);
-console.log(
-    "COMBINAZIONI AVVERSARIO:",
-    dati.giocatori[altroGiocatore]?.combinazioni
-);
-if(contatore &&
-   dati.giocatori[altroGiocatore] &&
-   dati.giocatori[altroGiocatore].mano){
 
-    contatore.innerHTML =
-        dati.giocatori[altroGiocatore].mano.length;
+                window.combinazioniAvversarioOnline =
+                    combinazioniAvversario;
 
-}
-                if(dati.scarti){
-    scarti = dati.scarti;
-}else{
-    scarti = [];
-}
 
-mostraScarti();
+                mostraCombinazioniAvversarioOnline();
+
+
+                let contatore =
+                    document.getElementById(
+                        "numeroCarteAvversario"
+                    );
+
+
+                console.log(
+                    "CONTATORE TROVATO:",
+                    contatore
+                );
+
+                console.log(
+                    "ALTRO GIOCATORE:",
+                    altroGiocatore
+                );
+
+                console.log(
+                    "MANO AVVERSARIO:",
+                    dati.giocatori[altroGiocatore]?.mano
+                );
+
+                console.log(
+                    "NUMERO CARTE AVVERSARIO:",
+                    dati.giocatori[altroGiocatore]?.mano?.length
+                );
+
+                console.log(
+                    "COMBINAZIONI AVVERSARIO:",
+                    dati.giocatori[altroGiocatore]?.combinazioni
+                );
+
+
+                if(
+                    contatore &&
+                    dati.giocatori[altroGiocatore] &&
+                    dati.giocatori[altroGiocatore].mano
+                ){
+
+                    contatore.innerHTML =
+                        dati.giocatori[altroGiocatore].mano.length;
+
+                }
+
+
                 if(dati.mazzo){
 
-    mazzo = dati.mazzo;
+                    mazzo = dati.mazzo;
 
-    console.log("Mazzo aggiornato:", mazzo.length);
+                    console.log(
+                        "Mazzo aggiornato:",
+                        mazzo.length
+                    );
 
-}
+                }
 
 
                 console.log(
@@ -5002,6 +5064,7 @@ mostraScarti();
     );
 
 }
+
 function aggiornaIndicatoreTurno(){
 
     console.log("AGGIORNO INDICATORE", mioGiocatore, partita.turno);
