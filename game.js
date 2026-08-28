@@ -5026,6 +5026,11 @@ if(contatore &&
     scarti = [];
 }
 
+alert(
+    "SCARTI RICEVUTI\n\n" +
+    JSON.stringify(dati.scarti)
+);
+
 mostraScarti();
                 if(dati.mazzo){
 
