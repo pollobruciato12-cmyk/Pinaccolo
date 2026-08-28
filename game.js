@@ -2278,7 +2278,8 @@ function mostraScarti(){
         : scarti;
         
         console.log(
-    "🃏 MOSTRA SCARTI:",
+    "🃏 NUMERO SCARTI:",
+    listaScarti.length,
     listaScarti
 );
 
