@@ -5096,6 +5096,15 @@ function ascoltaPartita(){
                 ordinaManoIniziale();
 
                 mazzo = dati.mazzo;
+                
+                console.log("🔢 CONTATORE PRIMA:", mazzo.length);
+
+aggiornaContatoreMazzo();
+
+console.log(
+    "🔢 CONTATORE HTML:",
+    document.getElementById("contatoreMazzo")?.innerHTML
+);
 
                 mostraMano();
 
