@@ -247,6 +247,11 @@ console.log("🃏 MANO DOPO PESCA:", mano);
         "partite/" + codicePartitaAttuale + "/mazzo"),
         mazzo
     );
+    
+    console.log(
+    "🔥 INVIO MAZZO A FIREBASE:",
+    mazzo.length
+);
 
     update(
         ref(database,
