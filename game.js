@@ -407,6 +407,7 @@ function scarta(){
             "✅ SCARTO SALVATO SU FIREBASE:",
             scarti
         );
+        console.log("🔄 NUOVO TURNO:", nuovoTurno);
 
 
         // =========================
