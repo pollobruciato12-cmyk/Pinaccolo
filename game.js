@@ -3629,6 +3629,13 @@ function calaCarte(){
     // =========================
     // AGGIORNA SCHERMO
     // =========================
+    
+    alert(
+    "DOPO IL CALO\n\n" +
+    "Giocatore: " + mioGiocatore + "\n" +
+    "Combinazioni: " +
+    JSON.stringify(combinazioni)
+);
 
     mostraMano();
     mostraCombinazioni();
