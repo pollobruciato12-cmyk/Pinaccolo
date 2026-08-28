@@ -4791,21 +4791,23 @@ let datiPartita = {
 
     mazzo: mazzo,
 
-    scarti: [],
+    scarti: [mazzo.pop()],
 
         tavolo: [],
 
         giocatori: {
 
-            giocatore1: {
-                nome: "Giocatore 1",
-                mano: mano1
-            },
+giocatore1: {
+    nome: "Giocatore 1",
+    mano: mano1,
+    combinazioni: []
+},
 
-            giocatore2: {
-                nome: "Giocatore 2",
-                mano: mano2
-            }
+giocatore2: {
+    nome: "Giocatore 2",
+    mano: mano2,
+    combinazioni: []
+}
 
         }
 
