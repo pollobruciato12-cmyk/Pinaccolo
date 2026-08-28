@@ -175,7 +175,8 @@ function pescaMazzo(){
             return;
         }
 
-        let numeroCarte = partitaCPU.carteDaPescare || 2;
+        let numeroCarte =
+            partitaCPU.carteDaPescare || 2;
 
         if(partitaCPU.mazzo.length < numeroCarte){
             alert("Mazzo finito!");
@@ -183,9 +184,11 @@ function pescaMazzo(){
         }
 
         for(let i = 0; i < numeroCarte; i++){
+
             partitaCPU.giocatore.push(
                 partitaCPU.mazzo.pop()
             );
+
         }
 
         mano = partitaCPU.giocatore;
@@ -210,56 +213,114 @@ function pescaMazzo(){
     let mioNumero =
         mioGiocatore === "giocatore1" ? 1 : 2;
 
+
     if(Number(partita.turno) !== mioNumero){
+
         alert("Non è il tuo turno.");
+
         return;
+
     }
+
 
     if(partita.fase !== "pesca"){
+
         alert("Hai già pescato.");
+
         return;
+
     }
+
 
     if(mazzo.length < 2){
+
         alert("Mazzo finito.");
+
         return;
+
     }
 
+
+    // =========================
+    // PESCA 2 CARTE
+    // =========================
+
     mano.push(mazzo.pop());
     mano.push(mazzo.pop());
-    
-    console.log("🃏 MAZZO DOPO PESCA:", mazzo.length);
-console.log("🃏 MANO DOPO PESCA:", mano);
 
-    partita.fase = "gioco";
-    hoPescato = true;
 
-    set(
-        ref(database,
-        "partite/" + codicePartitaAttuale +
-        "/giocatori/" + mioGiocatore + "/mano"),
+    console.log(
+        "🃏 MAZZO DOPO PESCA:",
+        mazzo.length
+    );
+
+    console.log(
+        "🃏 MANO DOPO PESCA:",
         mano
     );
-    aggiornaContatoreMazzo();
 
-    set(
-        ref(database,
-        "partite/" + codicePartitaAttuale + "/mazzo"),
-        mazzo
-    );
-    
-    console.log("🔥🔥 NUMERO MAZZO PRIMA DI FIREBASE =", mazzo.length);
+
+    partita.fase = "gioco";
+
+    hoPescato = true;
+
+
+    // =========================
+    // SALVA TUTTO INSIEME
+    // =========================
 
     update(
-        ref(database,
-        "partite/" + codicePartitaAttuale),
+        ref(
+            database,
+            "partite/" + codicePartitaAttuale
+        ),
         {
-            fase:"gioco",
-            pescaCompletata:true
-        }
-    );
 
-    mostraMano();
+            ["giocatori/" + mioGiocatore + "/mano"]:
+                mano,
+
+            mazzo:
+                mazzo,
+
+            fase:
+                "gioco",
+
+            pescaCompletata:
+                true
+
+        }
+    )
+
+    .then(() => {
+
+        console.log(
+            "✅ PESCA SALVATA:",
+            "mazzo =",
+            mazzo.length,
+            "mano =",
+            mano.length
+        );
+
+
+        // =========================
+        // AGGIORNA SCHERMO
+        // =========================
+
+        aggiornaContatoreMazzo();
+
+        mostraMano();
+
+    })
+
+    .catch((errore) => {
+
+        console.error(
+            "❌ ERRORE PESCA:",
+            errore
+        );
+
+    });
+
 }
 
 
