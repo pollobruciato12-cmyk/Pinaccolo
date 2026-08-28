@@ -2276,6 +2276,11 @@ function mostraScarti(){
     let listaScarti = modalitaGioco === "cpu"
         ? partitaCPU.scarti
         : scarti;
+        
+        console.log(
+    "🃏 MOSTRA SCARTI:",
+    listaScarti
+);
 
 
     listaScarti.forEach((carta, indice) => {
