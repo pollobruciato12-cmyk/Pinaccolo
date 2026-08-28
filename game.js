@@ -265,6 +265,13 @@ function scarta(){
         fase: partita.fase,
         selezionate: carteSelezionate
     });
+    
+    console.log(
+    "🔎 CONTROLLO TURNO:",
+    "Firebase/local turno =", partita.turno,
+    "Io sono =", mioGiocatore,
+    "Mio numero =", numeroGiocatore
+);
 
 
     // =========================
@@ -4915,8 +4922,6 @@ function ascoltaPartita(){
 
             let dati = snapshot.val();
             window.datiPartitaOnline = dati;
-
-            alert("Firebase ricevuto. Turno: " + dati.turno);
 
             console.log("STATO COMPLETO FIREBASE:", dati);
             console.log("DATI FIREBASE:", dati);
