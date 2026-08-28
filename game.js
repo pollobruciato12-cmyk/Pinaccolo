@@ -4382,48 +4382,117 @@ function creaPartita(){
     document.getElementById("menuIniziale").style.display = "none";
 
 
-    codicePartitaAttuale = Math.random()
-    .toString(36)
-    .substring(2,8)
-    .toUpperCase();
+    // =========================
+    // CREA CODICE PARTITA
+    // =========================
+
+    codicePartitaAttuale =
+        Math.random()
+        .toString(36)
+        .substring(2,8)
+        .toUpperCase();
 
 
     document.getElementById("codicePartita").innerHTML =
-    "Codice partita: " + codicePartitaAttuale;
-    document.getElementById("codicePartita").style.display = "block";
-    
-document.getElementById("codicePartita").style.display = "block";
-document.getElementById("codicePartita").style.color = "white";
-document.getElementById("codicePartita").style.fontSize = "22px";
+        "Codice partita: " + codicePartitaAttuale;
 
+    document.getElementById("codicePartita").style.display = "block";
+    document.getElementById("codicePartita").style.color = "white";
+    document.getElementById("codicePartita").style.fontSize = "22px";
+
+
+    // =========================
+    // GIOCATORE 1
+    // =========================
 
     giocatore = "Giocatore 1";
     mioGiocatore = "giocatore1";
 
 
     document.getElementById("listaGiocatori").innerHTML =
-    "Giocatori:<br>🟢 Giocatore 1<br>⚪ In attesa...";
+        "Giocatori:<br>🟢 Giocatore 1<br>⚪ In attesa...";
 
+
+    // =========================
+    // CREA MAZZO
+    // =========================
+
+    creaMazzo();
+
+
+    // =========================
+    // CREA MONTE SCARTI
+    // =========================
+
+    scarti = [];
+
+    if(mazzo.length > 0){
+
+        let primaCarta = mazzo.pop();
+
+        scarti.push(primaCarta);
+
+    }
+
+
+    // =========================
+    // SALVA PARTITA SU FIREBASE
+    // =========================
 
     alert("Sto inviando a Firebase");
 
-set(ref(database, "partite/" + codicePartitaAttuale), {
-    creatore: "Giocatore 1",
-    stato: "attesa",
-    turno:1,
-    fase:"pesca",
-    giocatori:{
-        giocatore1:{
-            nome:"Giocatore 1"
+
+    set(
+        ref(
+            database,
+            "partite/" + codicePartitaAttuale
+        ),
+        {
+
+            creatore: "Giocatore 1",
+
+            stato: "attesa",
+
+            turno: 1,
+
+            fase: "pesca",
+
+            mazzo: mazzo,
+
+            scarti: scarti,
+
+            giocatori: {
+
+                giocatore1: {
+
+                    nome: "Giocatore 1",
+
+                    mano: [],
+
+                    combinazioni: []
+
+                }
+
+            }
+
         }
-    }
-})
+
+    )
+
     .then(() => {
+
         alert("Partita creata su Firebase!");
+
+        mostraScarti();
+
         ascoltaPartita();
+
     })
+
     .catch((errore) => {
+
         alert("ERRORE: " + errore);
+
     });
 
 }
