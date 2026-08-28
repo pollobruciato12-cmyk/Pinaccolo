@@ -261,10 +261,11 @@ function scarta(){
 
     console.log("🔴 SCARTA PREMUTO", {
         modalita: modalitaGioco,
-        turno: partitaCPU.turno,
-        fase: partitaCPU.fase,
+        turno: partita.turno,
+        fase: partita.fase,
         selezionate: carteSelezionate
     });
+
 
     // =========================
     // PARTITA CPU
@@ -275,6 +276,7 @@ function scarta(){
         scartaCPU();
 
         return;
+
     }
 
 
@@ -287,22 +289,35 @@ function scarta(){
 
 
     if(Number(partita.turno) !== numeroGiocatore){
+
         alert("Non è il tuo turno.");
+
         return;
+
     }
 
 
     if(partita.fase !== "gioco"){
+
         alert("Prima devi pescare.");
+
         return;
+
     }
 
 
-if(carteSelezionate.length !== 1){
-    alert("Devi selezionare una sola carta da scartare.");
-    return;
-}
+    if(carteSelezionate.length !== 1){
 
+        alert("Devi selezionare una sola carta da scartare.");
+
+        return;
+
+    }
+
+
+    // =========================
+    // PRENDE LA CARTA
+    // =========================
 
     let carta = carteSelezionate[0];
 
@@ -310,49 +325,107 @@ if(carteSelezionate.length !== 1){
 
 
     if(indice === -1){
+
         alert("Carta non trovata.");
+
         return;
+
     }
 
 
+    // =========================
+    // TOGLIE DALLA MANO
+    // =========================
+
     mano.splice(indice, 1);
 
+
+    // =========================
+    // AGGIUNGE AGLI SCARTI
+    // =========================
+
     scarti.push(carta);
-    
-    console.log("🃏 SCARTI PRIMA DI FIREBASE:", scarti);
+
+
+    console.log(
+        "🃏 SCARTI PRIMA DI FIREBASE:",
+        scarti
+    );
+
+
+    // =========================
+    // DESELEZIONA
+    // =========================
 
     carteSelezionate = [];
 
 
-    mostraMano();
-    mostraScarti();
+    // =========================
+    // NUOVO TURNO
+    // =========================
+
+    let nuovoTurno =
+        Number(partita.turno) === 1 ? 2 : 1;
 
 
-    set(
-        ref(database,
-        "partite/" + codicePartitaAttuale +
-        "/giocatori/" + mioGiocatore + "/mano"),
-        mano
-    );
+    hoPescato = false;
 
 
-let nuovoTurno =
-    Number(partita.turno) === 1 ? 2 : 1;
+    // =========================
+    // AGGIORNA FIREBASE
+    // TUTTO INSIEME
+    // =========================
 
-hoPescato = false;
+    let percorso =
+        "partite/" + codicePartitaAttuale;
 
-update(
-    ref(database,
-    "partite/" + codicePartitaAttuale),
-    {
-        scarti: scarti,
-        turno: nuovoTurno,
-        fase: "pesca",
-        pescaCompletata: false
-    }
-);
 
-console.log("🟣 UPDATE SCARTI INVIATO:", scarti);
+    update(
+        ref(database, percorso),
+        {
+
+            ["giocatori/" + mioGiocatore + "/mano"]:
+                mano,
+
+            scarti:
+                scarti,
+
+            turno:
+                nuovoTurno,
+
+            fase:
+                "pesca",
+
+            pescaCompletata:
+                false
+
+        }
+    )
+    .then(() => {
+
+        console.log(
+            "✅ SCARTO SALVATO SU FIREBASE:",
+            scarti
+        );
+
+
+        // =========================
+        // AGGIORNA SCHERMO
+        // =========================
+
+        mostraMano();
+
+        mostraScarti();
+
+    })
+    .catch((errore) => {
+
+        console.error(
+            "❌ ERRORE SALVATAGGIO SCARTO:",
+            errore
+        );
+
+    });
 
 }
 
