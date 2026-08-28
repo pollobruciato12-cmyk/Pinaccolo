@@ -4856,50 +4856,88 @@ function iniziaPartita(){
     }
 
 
-let datiPartita = {
+    // =========================
+    // CARTA INIZIALE DEGLI SCARTI
+    // =========================
 
-    stato: "iniziata",
+    let cartaScartoIniziale = mazzo.pop();
 
-    turno: 1,
 
-    fase: "pesca",
+    console.log(
+        "🃏 CARTA INIZIALE SCARTI:",
+        cartaScartoIniziale
+    );
 
-    pescaCompletata: false,
+    console.log(
+        "🃏 CARTE RIMASTE NEL MAZZO:",
+        mazzo.length
+    );
 
-    mazzo: mazzo,
 
-    scarti: [mazzo.pop()],
+    // =========================
+    // CREA PARTITA
+    // =========================
+
+    let datiPartita = {
+
+        stato: "iniziata",
+
+        turno: 1,
+
+        fase: "pesca",
+
+        pescaCompletata: false,
+
+        // Ora il mazzo NON contiene
+        // la carta degli scarti
+        mazzo: mazzo,
+
+        scarti: [cartaScartoIniziale],
 
         tavolo: [],
 
         giocatori: {
 
-giocatore1: {
-    nome: "Giocatore 1",
-    mano: mano1,
-    combinazioni: []
-},
+            giocatore1: {
+                nome: "Giocatore 1",
+                mano: mano1,
+                combinazioni: []
+            },
 
-giocatore2: {
-    nome: "Giocatore 2",
-    mano: mano2,
-    combinazioni: []
-}
+            giocatore2: {
+                nome: "Giocatore 2",
+                mano: mano2,
+                combinazioni: []
+            }
 
         }
 
     };
 
 
-set(
-    ref(database, "partite/" + codicePartitaAttuale),
-    datiPartita
-)
+    console.log(
+        "🃏 MAZZO SALVATO:",
+        datiPartita.mazzo.length
+    );
+
+    console.log(
+        "🃏 SCARTI SALVATI:",
+        datiPartita.scarti
+    );
+
+
+    set(
+        ref(
+            database,
+            "partite/" + codicePartitaAttuale
+        ),
+        datiPartita
+    )
 
     .then(()=>{
 
         document.getElementById("messaggioPartita").innerHTML =
-        "Partita iniziata!";
+            "Partita iniziata!";
 
     })
 
