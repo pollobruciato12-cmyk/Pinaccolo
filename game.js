@@ -318,6 +318,8 @@ if(carteSelezionate.length !== 1){
     mano.splice(indice, 1);
 
     scarti.push(carta);
+    
+    console.log("🃏 SCARTI PRIMA DI FIREBASE:", scarti);
 
     carteSelezionate = [];
 
