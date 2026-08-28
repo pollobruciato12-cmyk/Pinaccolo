@@ -334,29 +334,21 @@ if(carteSelezionate.length !== 1){
     );
 
 
-    set(
-        ref(database,
-        "partite/" + codicePartitaAttuale + "/scarti"),
-        scarti
-    );
+let nuovoTurno =
+    Number(partita.turno) === 1 ? 2 : 1;
 
+hoPescato = false;
 
-    let nuovoTurno =
-        Number(partita.turno) === 1 ? 2 : 1;
-
-
-    hoPescato = false;
-
-
-    update(
-        ref(database,
-        "partite/" + codicePartitaAttuale),
-        {
-            turno: nuovoTurno,
-            fase: "pesca",
-            pescaCompletata:false
-        }
-    );
+update(
+    ref(database,
+    "partite/" + codicePartitaAttuale),
+    {
+        scarti: scarti,
+        turno: nuovoTurno,
+        fase: "pesca",
+        pescaCompletata: false
+    }
+);
 }
 
 function scartaCPU(){
@@ -4563,9 +4555,6 @@ function entraPartita(){
             }
 
 
-            alert("🟢 6 - Partita trovata!");
-
-
             console.log(
                 "✅ Partita trovata!"
             );
@@ -4985,11 +4974,6 @@ if(contatore &&
 }else{
     scarti = [];
 }
-
-alert(
-    "SCARTI RICEVUTI\n\n" +
-    JSON.stringify(dati.scarti)
-);
 
 mostraScarti();
                 if(dati.mazzo){
