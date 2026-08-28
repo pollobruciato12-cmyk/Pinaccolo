@@ -227,6 +227,9 @@ function pescaMazzo(){
 
     mano.push(mazzo.pop());
     mano.push(mazzo.pop());
+    
+    console.log("🃏 MAZZO DOPO PESCA:", mazzo.length);
+console.log("🃏 MANO DOPO PESCA:", mano);
 
     partita.fase = "gioco";
     hoPescato = true;
