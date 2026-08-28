@@ -351,6 +351,9 @@ update(
         pescaCompletata: false
     }
 );
+
+console.log("🟣 UPDATE SCARTI INVIATO:", scarti);
+
 }
 
 function scartaCPU(){
