@@ -3440,8 +3440,7 @@ function calaCarte(){
 
     console.log("🟢 CALA PREMUTO", {
         modalita: modalitaGioco,
-        turno: partitaCPU.turno,
-        fase: partitaCPU.fase,
+        mioGiocatore: mioGiocatore,
         selezionate: carteSelezionate
     });
 
@@ -3459,23 +3458,23 @@ function calaCarte(){
             return;
 
         }
-        
+
         if(partitaCPU.fase !== "scarto"){
 
-    alert("Prima devi pescare dal mazzo.");
+            alert("Prima devi pescare dal mazzo.");
 
-    return;
+            return;
 
-}
+        }
 
     }
 
 
     // =========================
-    // CONTROLLA CARTE SELEZIONATE
+    // CARTE SELEZIONATE
     // =========================
 
-    if(carteSelezionate.length === 0){
+    if(carteSelezionate.length < 3){
 
         alert("Seleziona almeno 3 carte.");
 
@@ -3495,122 +3494,122 @@ function calaCarte(){
         return;
 
     }
-    
-    /*
-    Se abbiamo preso dagli scarti,
-    la carta obbligatoria deve essere
-    presente nella combinazione calata.
-*/
-
-if(
-    partitaCPU.haPresoScarti &&
-    !partitaCPU.cartaObbligatoriaUsata
-){
-
-    let contieneObbligatoria =
-        carteSelezionate.some(carta =>
-            stessaCarta(
-                carta,
-                partitaCPU.cartaObbligatoria
-            )
-        );
-
-    if(!contieneObbligatoria){
-
-        alert(
-            "Devi prima utilizzare la carta obbligatoria " +
-            "presa dal monte scarti."
-        );
-
-        return;
-
-    }
-
-    partitaCPU.cartaObbligatoriaUsata = true;
-
-    console.log(
-        "✅ Carta obbligatoria utilizzata:",
-        partitaCPU.cartaObbligatoria
-    );
-}
 
 
     // =========================
-    // TOGLIE LE CARTE DALLA MANO
+    // CARTA OBBLIGATORIA
     // =========================
 
-    let nuova = [];
+    if(
+        modalitaGioco === "cpu" &&
+        partitaCPU.haPresoScarti &&
+        !partitaCPU.cartaObbligatoriaUsata
+    ){
 
+        let contieneObbligatoria =
+            carteSelezionate.some(carta =>
+                stessaCarta(
+                    carta,
+                    partitaCPU.cartaObbligatoria
+                )
+            );
 
-    for(let carta of carteSelezionate){
+        if(!contieneObbligatoria){
 
-        let indice = mano.indexOf(carta);
+            alert(
+                "Devi prima utilizzare la carta obbligatoria " +
+                "presa dal monte scarti."
+            );
 
-
-        if(indice !== -1){
-
-            nuova.push(carta);
-
-            mano.splice(indice,1);
+            return;
 
         }
 
+        partitaCPU.cartaObbligatoriaUsata = true;
+
     }
 
 
     // =========================
-    // CREA LA SCALA
+    // CREA COPIA DELLA SCALA
     // =========================
 
     let nuovaCombinazione = {
 
         tipo: "scala",
 
-        carte: nuova
+        carte: [...carteSelezionate]
 
     };
 
 
-    combinazioni.push(nuovaCombinazione);
-    alert(
-    "CALO ONLINE\n" +
-    "Io sono: " + mioGiocatore + "\n" +
-    "Combinazioni: " + combinazioni.length
-);
-if(modalitaGioco === "online"){
+    // =========================
+    // TOGLIE LE CARTE DALLA MANO
+    // =========================
 
-    // SALVA LA NUOVA MANO
-    set(
-        ref(
-            database,
-            "partite/" +
-            codicePartitaAttuale +
-            "/giocatori/" +
-            mioGiocatore +
-            "/mano"
-        ),
-        mano
-    );
+    carteSelezionate.forEach(carta => {
 
+        let indice = mano.indexOf(carta);
 
-    // SALVA LE COMBINAZIONI
-    set(
-        ref(
-            database,
-            "partite/" +
-            codicePartitaAttuale +
-            "/giocatori/" +
-            mioGiocatore +
-            "/combinazioni"
-        ),
-        combinazioni
-    );
+        if(indice !== -1){
 
-}
+            mano.splice(indice, 1);
+
+        }
+
+    });
 
 
     // =========================
-    // AGGIORNA MANO CPU
+    // AGGIUNGE LA COMBINAZIONE
+    // =========================
+
+    combinazioni.push(nuovaCombinazione);
+
+
+    console.log(
+        "🟢 NUOVA COMBINAZIONE:",
+        nuovaCombinazione
+    );
+
+
+    // =========================
+    // PARTITA ONLINE
+    // =========================
+
+    if(modalitaGioco === "online"){
+
+        let percorsoBase =
+            "partite/" +
+            codicePartitaAttuale +
+            "/giocatori/" +
+            mioGiocatore;
+
+
+        // SALVA MANO
+        set(
+            ref(
+                database,
+                percorsoBase + "/mano"
+            ),
+            mano
+        );
+
+
+        // SALVA COMBINAZIONI
+        set(
+            ref(
+                database,
+                percorsoBase + "/combinazioni"
+            ),
+            combinazioni
+        );
+
+    }
+
+
+    // =========================
+    // PARTITA CPU
     // =========================
 
     if(modalitaGioco === "cpu"){
@@ -3632,13 +3631,15 @@ if(modalitaGioco === "online"){
     // =========================
 
     mostraMano();
-
     mostraCombinazioni();
 
 
     console.log(
-        "🟢 Scala calata:",
-        nuovaCombinazione
+        "🟢 CALATA COMPLETATA",
+        {
+            giocatore: mioGiocatore,
+            combinazioni: combinazioni
+        }
     );
 
 }
