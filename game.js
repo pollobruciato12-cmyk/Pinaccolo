@@ -3577,35 +3577,23 @@ function calaCarte(){
     // PARTITA ONLINE
     // =========================
 
-    if(modalitaGioco === "online"){
+if(modalitaGioco === "online"){
 
-        let percorsoBase =
-            "partite/" +
-            codicePartitaAttuale +
-            "/giocatori/" +
-            mioGiocatore;
+    let percorsoBase =
+        "partite/" +
+        codicePartitaAttuale +
+        "/giocatori/" +
+        mioGiocatore;
 
+    update(
+        ref(database, percorsoBase),
+        {
+            mano: mano,
+            combinazioni: combinazioni
+        }
+    );
 
-        // SALVA MANO
-        set(
-            ref(
-                database,
-                percorsoBase + "/mano"
-            ),
-            mano
-        );
-
-
-        // SALVA COMBINAZIONI
-        set(
-            ref(
-                database,
-                percorsoBase + "/combinazioni"
-            ),
-            combinazioni
-        );
-
-    }
+}
 
 
     // =========================
