@@ -320,8 +320,6 @@ if(carteSelezionate.length !== 1){
     scarti.push(carta);
     
     console.log("🃏 SCARTI PRIMA DI FIREBASE:", scarti);
-    
-    console.log("🃏 SCARTI PRIMA DI FIREBASE:", scarti);
 
     carteSelezionate = [];
 
