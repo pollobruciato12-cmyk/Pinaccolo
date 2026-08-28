@@ -248,13 +248,7 @@ console.log("🃏 MANO DOPO PESCA:", mano);
         mazzo
     );
     
-    console.log(
-    "🔥🔥 PRIMA DI FIREBASE:",
-    {
-        numeroCarte: mazzo.length,
-        carte: [...mazzo]
-    }
-);
+    console.log("🔥🔥 NUMERO MAZZO PRIMA DI FIREBASE =", mazzo.length);
 
     update(
         ref(database,
