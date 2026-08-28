@@ -5170,16 +5170,18 @@ function ascoltaPartita(){
                 }
 
 
-                if(dati.mazzo){
+if(dati.mazzo){
 
-                    mazzo = dati.mazzo;
+    mazzo = dati.mazzo;
 
-                    console.log(
-                        "Mazzo aggiornato:",
-                        mazzo.length
-                    );
+    console.log(
+        "Mazzo aggiornato:",
+        mazzo.length
+    );
 
-                }
+    aggiornaContatoreMazzo();
+
+}
 
 
                 console.log(
