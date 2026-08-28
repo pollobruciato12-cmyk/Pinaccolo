@@ -4431,6 +4431,10 @@ function creaPartita(){
         let primaCarta = mazzo.pop();
 
         scarti.push(primaCarta);
+        alert(
+    "SCARTO INIZIALE\n\n" +
+    JSON.stringify(scarti)
+);
 
     }
 
