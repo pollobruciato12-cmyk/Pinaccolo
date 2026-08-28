@@ -3577,12 +3577,6 @@ function calaCarte(){
     // PARTITA ONLINE
     // =========================
 
-alert(
-    "SALVATAGGIO CALO\n\n" +
-    "Giocatore: " + mioGiocatore + "\n" +
-    "Codice partita: " + codicePartitaAttuale + "\n" +
-    "Combinazioni: " + JSON.stringify(combinazioni)
-);
 if(modalitaGioco === "online"){
 
     let percorsoBase =
@@ -3624,12 +3618,6 @@ if(modalitaGioco === "online"){
     // AGGIORNA SCHERMO
     // =========================
     
-    alert(
-    "DOPO IL CALO\n\n" +
-    "Giocatore: " + mioGiocatore + "\n" +
-    "Combinazioni: " +
-    JSON.stringify(combinazioni)
-);
 
     mostraMano();
     mostraCombinazioni();
@@ -4431,10 +4419,6 @@ function creaPartita(){
         let primaCarta = mazzo.pop();
 
         scarti.push(primaCarta);
-        alert(
-    "SCARTO INIZIALE\n\n" +
-    JSON.stringify(scarti)
-);
 
     }
 
@@ -4442,8 +4426,6 @@ function creaPartita(){
     // =========================
     // SALVA PARTITA SU FIREBASE
     // =========================
-
-    alert("Sto inviando a Firebase");
 
 
     set(
@@ -4485,8 +4467,6 @@ function creaPartita(){
 
     .then(() => {
 
-        alert("Partita creata su Firebase!");
-
         mostraScarti();
 
         ascoltaPartita();
@@ -4505,16 +4485,11 @@ function entraPartita(){
 
     console.log("🟢 ENTRA PARTITA: funzione avviata");
 
-    alert("🟢 1 - Click su ENTRA ricevuto");
-
 
     let codice =
         document.getElementById("codiceIngresso").value
         .toUpperCase()
         .trim();
-
-
-    alert("🟡 2 - Codice letto: " + codice);
 
 
     console.log(
@@ -4544,9 +4519,6 @@ function entraPartita(){
     mioGiocatore = "giocatore2";
 
 
-    alert("🟡 3 - Codice salvato. Ora provo Firebase");
-
-
     console.log(
         "📡 Provo a collegarmi alla partita:",
         codicePartitaAttuale
@@ -4557,8 +4529,6 @@ function entraPartita(){
         PRIMA CONTROLLIAMO SE LA PARTITA ESISTE
     */
 
-    alert("🟠 4 - Sto eseguendo onValue()");
-
 
     onValue(
         ref(
@@ -4566,8 +4536,6 @@ function entraPartita(){
             "partite/" + codicePartitaAttuale
         ),
         function(snapshot){
-
-            alert("🟢 5 - Firebase ha risposto!");
 
 
             let dati = snapshot.val();
@@ -4990,16 +4958,6 @@ window.combinazioniAvversarioOnline =
     combinazioniAvversario;
 
 mostraCombinazioniAvversarioOnline();
-
-alert(
-    "DEBUG FIREBASE\n\n" +
-    "Io sono: " + mioGiocatore + "\n" +
-    "Avversario: " + altroGiocatore + "\n\n" +
-    "COMBINAZIONI MIE:\n" +
-    JSON.stringify(dati.giocatori[mioGiocatore]?.combinazioni) +
-    "\n\nCOMBINAZIONI AVVERSARIO:\n" +
-    JSON.stringify(dati.giocatori[altroGiocatore]?.combinazioni)
-);
 
 let contatore =
     document.getElementById("numeroCarteAvversario");
