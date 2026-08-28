@@ -237,6 +237,7 @@ function pescaMazzo(){
         "/giocatori/" + mioGiocatore + "/mano"),
         mano
     );
+    aggiornaContatoreMazzo();
 
     set(
         ref(database,
@@ -626,10 +627,20 @@ function aggiornaContatoreMazzo(){
     let contatore =
         document.getElementById("contatoreMazzo");
 
-    if(contatore){
+    if(!contatore){
+        return;
+    }
+
+
+    if(modalitaGioco === "cpu"){
 
         contatore.innerHTML =
             partitaCPU.mazzo.length;
+
+    }else{
+
+        contatore.innerHTML =
+            mazzo.length;
 
     }
 
