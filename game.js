@@ -259,19 +259,22 @@ function pescaMazzo(){
 
 function scarta(){
 
-    console.log("🔴 SCARTA PREMUTO", {
-        modalita: modalitaGioco,
-        turno: partita.turno,
-        fase: partita.fase,
-        selezionate: carteSelezionate
-    });
+console.log("🔴 SCARTA PREMUTO", {
+    modalita: modalitaGioco,
+    turno: partita.turno,
+    fase: partita.fase,
+    selezionate: carteSelezionate
+});
+
+let numeroGiocatore =
+    mioGiocatore === "giocatore1" ? 1 : 2;
+
+
+if(Number(partita.turno) !== numeroGiocatore){
+    alert("Non è il tuo turno.");
+    return;
+}
     
-    console.log(
-    "🔎 CONTROLLO TURNO:",
-    "Firebase/local turno =", partita.turno,
-    "Io sono =", mioGiocatore,
-    "Mio numero =", numeroGiocatore
-);
 
 
     // =========================
