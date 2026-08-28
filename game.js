@@ -2382,7 +2382,7 @@ let carteScarto =
 carteScarto.forEach((carta, indice) => {
 
     carta.style.flexShrink = "0";
-    carta.style.marginLeft = "0px";
+    carta.style.marginLeft = indice === 0 ? "0px" : "-42px";
     carta.style.position = "relative";
     carta.style.zIndex = indice + 1;
 
