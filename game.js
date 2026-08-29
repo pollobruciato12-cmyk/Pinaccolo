@@ -324,6 +324,8 @@ function pescaMazzo(){
 }
 
 function prendiScartiOnline(indice){
+  
+  alert("PRENDI SCARTI ONLINE - INDICE: " + indice);
 
     // =========================
     // CONTROLLO TURNO
