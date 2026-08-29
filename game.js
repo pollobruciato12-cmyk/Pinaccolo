@@ -2554,18 +2554,24 @@ function mostraScarti(){
             =========================
         */
 
-        div.onclick = function(event){
+div.onclick = function(event){
 
-            event.stopPropagation();
+    alert("CLICK MONTE SCARTI");
+
+    event.stopPropagation();
 
 
-if(modalitaGioco !== "cpu"){
-    return;
-}
+    if(modalitaGioco === "cpu"){
 
-prendiDalMazzoScarti(indice);
+        prendiDalMazzoScarti(indice);
 
-        };
+    }else{
+
+        prendiScartiOnline(indice);
+
+    }
+
+};
 
 
         area.appendChild(div);
