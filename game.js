@@ -3818,6 +3818,10 @@ if(carteSelezionate.length === 1){
 
 if(risultato === "entrambe"){
 
+console.log("🟡 RISULTATO ENTRAMBE", {
+    carta: carta,
+    combinazione: combinazioneSelezionata
+});
     apriPopupPosizioneCarta(
         carta,
         combinazioneSelezionata
@@ -4416,7 +4420,7 @@ function controllaAggiuntaCarta(carta, gruppo){
 
 
     // =========================
-    // PRENDIAMO LE CARTE NORMALI
+    // CARTE NORMALI
     // =========================
 
     let normali = carte.filter(c =>
@@ -4443,178 +4447,98 @@ function controllaAggiuntaCarta(carta, gruppo){
 
 
     // =========================
-    // POSIZIONI
+    // CARTA SPECIALE
     // =========================
 
-    let posizioni = normali.map(c =>
-        ordine.indexOf(c.valore)
-    );
-
-
-    if(posizioni.includes(-1)){
-        return "nessuna";
-    }
+    let cartaSpeciale =
+        carta.valore === "Jolly" ||
+        carta.pinella === true;
 
 
     // =========================
     // CARTA NORMALE
     // =========================
 
-    if(
-        carta.valore !== "Jolly" &&
-        carta.pinella !== true
-    ){
+    if(!cartaSpeciale){
 
         if(carta.seme !== seme){
             return "nessuna";
         }
 
-    }
+        let posizioneCarta =
+            ordine.indexOf(carta.valore);
+
+        if(posizioneCarta === -1){
+            return "nessuna";
+        }
 
 
-    // =========================
-    // PROVIAMO A SINISTRA
-    // =========================
+        // -------------------------
+        // ESTREMITÀ ATTUALI
+        // -------------------------
 
-    let sinistra = [
-        carta,
-        ...carte
-    ];
+        let posizioni =
+            normali.map(c =>
+                ordine.indexOf(c.valore)
+            );
 
+        let prima =
+            Math.min(...posizioni);
 
-    let validaSinistra =
-        combinazioneValida(sinistra);
-
-
-    // =========================
-    // PROVIAMO A DESTRA
-    // =========================
-
-    let destra = [
-        ...carte,
-        carta
-    ];
+        let ultima =
+            Math.max(...posizioni);
 
 
-    let validaDestra =
-        combinazioneValida(destra);
-
-
-    /*
-        ATTENZIONE:
-
-        combinazioneValida() considera
-        l'insieme delle carte.
-
-        Quindi ora controlliamo anche
-        la posizione reale rispetto
-        alle estremità.
-    */
-
-
-    // =========================
-    // TROVIAMO ESTREMITÀ
-    // =========================
-
-    let posizioniOrdinate =
-        [...posizioni].sort(
-            (a,b) => a - b
-        );
-
-
-    let prima =
-        posizioniOrdinate[0];
-
-    let ultima =
-        posizioniOrdinate[
-            posizioniOrdinate.length - 1
-        ];
-
-
-    let posizioneCarta =
-        carta.valore === "Jolly" ||
-        carta.pinella === true
-        ? -1
-        : ordine.indexOf(carta.valore);
-
-
-    // =========================
-    // CONTROLLO SINISTRA
-    // =========================
-
-    let possibileSinistra = false;
-
-    if(posizioneCarta !== -1){
+        // -------------------------
+        // SINISTRA
+        // -------------------------
 
         let precedente =
             (prima - 1 + ordine.length) %
             ordine.length;
 
-        if(posizioneCarta === precedente){
-
-            possibileSinistra = true;
-
-        }
-
-    }
-
-
-    // =========================
-    // CONTROLLO DESTRA
-    // =========================
-
-    let possibileDestra = false;
-
-    if(posizioneCarta !== -1){
-
-        let successiva =
-            (ultima + 1) %
+        // Correzione sicurezza
+        precedente =
+            (prima - 1 + ordine.length) %
             ordine.length;
 
-        if(posizioneCarta === successiva){
 
-            possibileDestra = true;
-
-        }
-
-    }
+        let sinistra =
+            [carta, ...carte];
 
 
-    // =========================
-    // SPECIALI
-    // =========================
-
-    if(
-        carta.valore === "Jolly" ||
-        carta.pinella === true
-    ){
-
-        /*
-            Per ora gli speciali
-            vengono lasciati alla
-            verifica della combinazione.
-
-            Non decidiamo ancora
-            automaticamente la posizione.
-        */
-
-        if(validaSinistra && validaDestra){
-
-            return "entrambe";
-
-        }
-
-        if(validaSinistra){
+        if(
+            posizioneCarta === precedente &&
+            combinazioneValida(sinistra)
+        ){
 
             return "sinistra";
 
         }
 
-        if(validaDestra){
+
+        // -------------------------
+        // DESTRA
+        // -------------------------
+
+        let successiva =
+            (ultima + 1) %
+            ordine.length;
+
+
+        let destra =
+            [...carte, carta];
+
+
+        if(
+            posizioneCarta === successiva &&
+            combinazioneValida(destra)
+        ){
 
             return "destra";
 
         }
+
 
         return "nessuna";
 
@@ -4622,25 +4546,35 @@ function controllaAggiuntaCarta(carta, gruppo){
 
 
     // =========================
-    // RISULTATO NORMALE
+    // PINELLA / JOLLY
     // =========================
 
-    if(possibileSinistra && validaSinistra){
+    let sinistra =
+        [carta, ...carte];
 
-        if(possibileDestra && validaDestra){
-
-            return "entrambe";
-
-        }
-
-        return "sinistra";
-
-    }
+    let destra =
+        [...carte, carta];
 
 
-    if(possibileDestra && validaDestra){
+    let validaSinistra =
+        combinazioneValida(sinistra);
 
-        return "destra";
+    let validaDestra =
+        combinazioneValida(destra);
+
+
+    /*
+        La Pinella/Jolly può essere inserita
+        su entrambe le estremità.
+
+        Se almeno una configurazione è valida,
+        restituiamo "entrambe" e sarà il popup
+        a far scegliere al giocatore.
+    */
+
+    if(validaSinistra || validaDestra){
+
+        return "entrambe";
 
     }
 
