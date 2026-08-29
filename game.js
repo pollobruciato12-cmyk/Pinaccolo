@@ -3812,12 +3812,100 @@ if(carteSelezionate.length === 1){
     }
 
 
+// =========================
+// AGGIUNGE LA CARTA
+// ALLA COMBINAZIONE
+// =========================
+
+if(risultato === "sinistra"){
+
+    combinazioneSelezionata.carte.unshift(carta);
+
+}
+
+if(risultato === "destra"){
+
+    combinazioneSelezionata.carte.push(carta);
+
+}
+
+
+// =========================
+// RIMUOVE LA CARTA DALLA MANO
+// =========================
+
+let indiceCarta =
+    mano.indexOf(carta);
+
+if(indiceCarta !== -1){
+
+    mano.splice(indiceCarta, 1);
+
+}
+
+
+// =========================
+// DESELEZIONA
+// =========================
+
+carteSelezionate = [];
+
+combinazioneSelezionata = null;
+
+
+// =========================
+// AGGIORNA CPU
+// =========================
+
+if(modalitaGioco === "cpu"){
+
+    partitaCPU.giocatore = mano;
+
+}
+
+
+// =========================
+// AGGIORNA FIREBASE
+// =========================
+
+if(modalitaGioco === "online"){
+
+    let percorsoBase =
+        "partite/" +
+        codicePartitaAttuale +
+        "/giocatori/" +
+        mioGiocatore;
+
+    update(
+        ref(database, percorsoBase),
+        {
+            mano: mano,
+            combinazioni: combinazioni
+        }
+    );
+
+}
+
+
+// =========================
+// AGGIORNA SCHERMO
+// =========================
+
+mostraMano();
+
+mostraCombinazioni();
+
+
 console.log(
-    "🟡 AGGIUNTA CARTA → POSIZIONE:",
-    risultato
+    "🟢 CARTA AGGIUNTA:",
+    {
+        carta: carta,
+        posizione: risultato,
+        combinazioni: combinazioni
+    }
 );
 
-    return;
+return;
 
 }
 
