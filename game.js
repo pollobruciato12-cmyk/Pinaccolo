@@ -3775,17 +3775,65 @@ function calaCarte(){
     }
 
 
-    // =========================
-    // CARTE SELEZIONATE
-    // =========================
+// =========================
+// CARTE SELEZIONATE
+// =========================
 
-    if(carteSelezionate.length < 3){
+// UNA SOLA CARTA + COMBINAZIONE SELEZIONATA
+// = tentativo di aggiunta
 
-        alert("Seleziona almeno 3 carte.");
+if(carteSelezionate.length === 1){
+
+    if(!combinazioneSelezionata){
+
+        alert("Seleziona prima una combinazione.");
 
         return;
 
     }
+
+    let carta = carteSelezionate[0];
+
+    let risultato =
+        controllaAggiuntaCarta(
+            carta,
+            combinazioneSelezionata
+        );
+
+
+    if(risultato === "nessuna"){
+
+        alert(
+            "Questa carta non può essere aggiunta alla combinazione."
+        );
+
+        return;
+
+    }
+
+
+    console.log(
+        "🟡 AGGIUNTA CARTA:",
+        {
+            carta: carta,
+            combinazione: combinazioneSelezionata,
+            posizione: risultato
+        }
+    );
+
+    return;
+
+}
+
+
+// DUE CARTE
+if(carteSelezionate.length === 2){
+
+    alert("Seleziona almeno 3 carte per creare una nuova combinazione.");
+
+    return;
+
+}
 
 
     // =========================
@@ -4236,7 +4284,59 @@ if(!specialiSeparati){
 
 }
 
+function controllaAggiuntaCarta(carta, gruppo){
 
+    // =========================
+    // PROVA A SINISTRA
+    // =========================
+
+    let aSinistra = [
+        carta,
+        ...gruppo.carte
+    ];
+
+    let validaSinistra =
+        combinazioneValida(aSinistra);
+
+
+    // =========================
+    // PROVA A DESTRA
+    // =========================
+
+    let aDestra = [
+        ...gruppo.carte,
+        carta
+    ];
+
+    let validaDestra =
+        combinazioneValida(aDestra);
+
+
+    // =========================
+    // RISULTATO
+    // =========================
+
+    if(validaSinistra && validaDestra){
+
+        return "entrambe";
+
+    }
+
+    if(validaSinistra){
+
+        return "sinistra";
+
+    }
+
+    if(validaDestra){
+
+        return "destra";
+
+    }
+
+    return "nessuna";
+
+}
 
 
 
