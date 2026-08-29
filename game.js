@@ -23,6 +23,7 @@ let cartaTrascinata = null;
 let indiceCartaTrascinata = null;
 let scarti = [];
 let combinazioni = [];
+let haPresoScartiOnline = false;
 
 let hoPescato = false;
 
@@ -241,12 +242,18 @@ function pescaMazzo(){
     }
 
 
-    // =========================
-    // PESCA 2 CARTE
-    // =========================
+// =========================
+// PESCA
+// =========================
+
+let numeroCarte =
+    haPresoScartiOnline ? 1 : 2;
+
+for(let i = 0; i < numeroCarte; i++){
 
     mano.push(mazzo.pop());
-    mano.push(mazzo.pop());
+
+}
 
 
     console.log(
@@ -263,6 +270,8 @@ function pescaMazzo(){
     partita.fase = "gioco";
 
     hoPescato = true;
+    
+    haPresoScartiOnline = false;
 
 
     // =========================
@@ -392,6 +401,7 @@ function prendiScartiOnline(indice){
     // =========================
 
     mano.push(...cartePrese);
+    haPresoScartiOnline = true;
     
     alert(
     "CARTE PRESE: " + cartePrese.length +
@@ -416,11 +426,11 @@ function prendiScartiOnline(indice){
             scarti:
                 scarti,
 
-            fase:
-                "gioco",
+fase:
+    "pesca",
 
-            pescaCompletata:
-                true
+pescaCompletata:
+    false
 
         }
     )
