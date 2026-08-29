@@ -3810,6 +3810,22 @@ if(carteSelezionate.length === 1){
         return;
 
     }
+    
+    // =========================
+// PINELLA / JOLLY
+// SCELTA POSIZIONE
+// =========================
+
+if(risultato === "entrambe"){
+
+    apriPopupPosizioneCarta(
+        carta,
+        combinazioneSelezionata
+    );
+
+    return;
+
+}
 
 
 // =========================
@@ -5974,3 +5990,71 @@ document.getElementById("bottoneCala").onclick = function(){
 document.getElementById("bottoneScarta").onclick = function(){
     scarta();
 };
+
+// =========================
+// POPUP POSIZIONE CARTA
+// =========================
+
+function apriPopupPosizioneCarta(carta, gruppo){
+
+    let popup =
+        document.getElementById("popupPosizioneCarta");
+
+    let area =
+        document.getElementById("popupCombinazione");
+
+    if(!popup || !area){
+
+        console.log("❌ Popup posizione carta non trovato");
+
+        return;
+
+    }
+
+
+    // =========================
+    // MOSTRA COMBINAZIONE
+    // =========================
+
+    area.innerHTML = "";
+
+
+    gruppo.carte.forEach(c => {
+
+        let elemento =
+            document.createElement("div");
+
+        elemento.className =
+            "carta-popup";
+
+        elemento.textContent =
+            c.valore;
+
+        area.appendChild(elemento);
+
+    });
+
+
+    // =========================
+    // MOSTRA CARTA DA INSERIRE
+    // =========================
+
+    let nuovaCarta =
+        document.createElement("div");
+
+    nuovaCarta.className =
+        "carta-popup carta-da-inserire";
+
+    nuovaCarta.textContent =
+        carta.valore;
+
+    area.appendChild(nuovaCarta);
+
+
+    // =========================
+    // MOSTRA POPUP
+    // =========================
+
+    popup.style.display = "flex";
+
+}
