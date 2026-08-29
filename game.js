@@ -392,6 +392,11 @@ function prendiScartiOnline(indice){
     // =========================
 
     mano.push(...cartePrese);
+    
+    alert(
+    "CARTE PRESE: " + cartePrese.length +
+    "\nCARTE IN MANO: " + mano.length
+);
 
 
     // =========================
