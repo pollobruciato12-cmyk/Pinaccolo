@@ -3812,14 +3812,10 @@ if(carteSelezionate.length === 1){
     }
 
 
-    console.log(
-        "🟡 AGGIUNTA CARTA:",
-        {
-            carta: carta,
-            combinazione: combinazioneSelezionata,
-            posizione: risultato
-        }
-    );
+console.log(
+    "🟡 AGGIUNTA CARTA → POSIZIONE:",
+    risultato
+);
 
     return;
 
