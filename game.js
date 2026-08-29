@@ -4282,53 +4282,252 @@ if(!specialiSeparati){
 
 function controllaAggiuntaCarta(carta, gruppo){
 
+    let carte = gruppo.carte;
+
+    if(!carte || carte.length < 3){
+        return "nessuna";
+    }
+
+
     // =========================
-    // PROVA A SINISTRA
+    // ORDINE DEL PINACOLO
     // =========================
 
-    let aSinistra = [
-        carta,
-        ...gruppo.carte
+    let ordine = [
+        "A","3","4","5","6","7",
+        "8","9","10","J","Q","K"
     ];
 
-    let validaSinistra =
-        combinazioneValida(aSinistra);
+
+    // =========================
+    // PRENDIAMO LE CARTE NORMALI
+    // =========================
+
+    let normali = carte.filter(c =>
+        c.valore !== "Jolly" &&
+        c.pinella !== true
+    );
+
+
+    if(normali.length < 2){
+        return "nessuna";
+    }
 
 
     // =========================
-    // PROVA A DESTRA
+    // SEME
     // =========================
 
-    let aDestra = [
-        ...gruppo.carte,
-        carta
-    ];
+    let seme = normali[0].seme;
 
-    let validaDestra =
-        combinazioneValida(aDestra);
+
+    if(!normali.every(c => c.seme === seme)){
+        return "nessuna";
+    }
 
 
     // =========================
-    // RISULTATO
+    // POSIZIONI
     // =========================
 
-    if(validaSinistra && validaDestra){
+    let posizioni = normali.map(c =>
+        ordine.indexOf(c.valore)
+    );
 
-        return "entrambe";
+
+    if(posizioni.includes(-1)){
+        return "nessuna";
+    }
+
+
+    // =========================
+    // CARTA NORMALE
+    // =========================
+
+    if(
+        carta.valore !== "Jolly" &&
+        carta.pinella !== true
+    ){
+
+        if(carta.seme !== seme){
+            return "nessuna";
+        }
 
     }
 
-    if(validaSinistra){
+
+    // =========================
+    // PROVIAMO A SINISTRA
+    // =========================
+
+    let sinistra = [
+        carta,
+        ...carte
+    ];
+
+
+    let validaSinistra =
+        combinazioneValida(sinistra);
+
+
+    // =========================
+    // PROVIAMO A DESTRA
+    // =========================
+
+    let destra = [
+        ...carte,
+        carta
+    ];
+
+
+    let validaDestra =
+        combinazioneValida(destra);
+
+
+    /*
+        ATTENZIONE:
+
+        combinazioneValida() considera
+        l'insieme delle carte.
+
+        Quindi ora controlliamo anche
+        la posizione reale rispetto
+        alle estremità.
+    */
+
+
+    // =========================
+    // TROVIAMO ESTREMITÀ
+    // =========================
+
+    let posizioniOrdinate =
+        [...posizioni].sort(
+            (a,b) => a - b
+        );
+
+
+    let prima =
+        posizioniOrdinate[0];
+
+    let ultima =
+        posizioniOrdinate[
+            posizioniOrdinate.length - 1
+        ];
+
+
+    let posizioneCarta =
+        carta.valore === "Jolly" ||
+        carta.pinella === true
+        ? -1
+        : ordine.indexOf(carta.valore);
+
+
+    // =========================
+    // CONTROLLO SINISTRA
+    // =========================
+
+    let possibileSinistra = false;
+
+    if(posizioneCarta !== -1){
+
+        let precedente =
+            (prima - 1 + ordine.length) %
+            ordine.length;
+
+        if(posizioneCarta === precedente){
+
+            possibileSinistra = true;
+
+        }
+
+    }
+
+
+    // =========================
+    // CONTROLLO DESTRA
+    // =========================
+
+    let possibileDestra = false;
+
+    if(posizioneCarta !== -1){
+
+        let successiva =
+            (ultima + 1) %
+            ordine.length;
+
+        if(posizioneCarta === successiva){
+
+            possibileDestra = true;
+
+        }
+
+    }
+
+
+    // =========================
+    // SPECIALI
+    // =========================
+
+    if(
+        carta.valore === "Jolly" ||
+        carta.pinella === true
+    ){
+
+        /*
+            Per ora gli speciali
+            vengono lasciati alla
+            verifica della combinazione.
+
+            Non decidiamo ancora
+            automaticamente la posizione.
+        */
+
+        if(validaSinistra && validaDestra){
+
+            return "entrambe";
+
+        }
+
+        if(validaSinistra){
+
+            return "sinistra";
+
+        }
+
+        if(validaDestra){
+
+            return "destra";
+
+        }
+
+        return "nessuna";
+
+    }
+
+
+    // =========================
+    // RISULTATO NORMALE
+    // =========================
+
+    if(possibileSinistra && validaSinistra){
+
+        if(possibileDestra && validaDestra){
+
+            return "entrambe";
+
+        }
 
         return "sinistra";
 
     }
 
-    if(validaDestra){
+
+    if(possibileDestra && validaDestra){
 
         return "destra";
 
     }
+
 
     return "nessuna";
 
