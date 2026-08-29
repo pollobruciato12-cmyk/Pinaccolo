@@ -323,6 +323,128 @@ function pescaMazzo(){
 
 }
 
+function prendiScartiOnline(indice){
+
+    // =========================
+    // CONTROLLO TURNO
+    // =========================
+
+    let mioNumero =
+        mioGiocatore === "giocatore1" ? 1 : 2;
+
+
+    if(Number(partita.turno) !== mioNumero){
+
+        alert("Non è il tuo turno.");
+
+        return;
+
+    }
+
+
+    // =========================
+    // CONTROLLO FASE
+    // =========================
+
+    if(partita.fase !== "pesca"){
+
+        alert("Hai già pescato.");
+
+        return;
+
+    }
+
+
+    // =========================
+    // CONTROLLO SCARTI
+    // =========================
+
+    if(scarti.length === 0){
+
+        alert("Non ci sono scarti.");
+
+        return;
+
+    }
+
+
+    // =========================
+    // CARTA OBBLIGATORIA
+    // =========================
+
+    let cartaObbligatoria =
+        scarti[indice];
+
+
+    // =========================
+    // PRENDE CARTA + TUTTE
+    // QUELLE SOPRA
+    // =========================
+
+    let cartePrese =
+        scarti.splice(indice);
+
+
+    // =========================
+    // AGGIUNGE ALLA MANO
+    // =========================
+
+    mano.push(...cartePrese);
+
+
+    // =========================
+    // SALVA SU FIREBASE
+    // =========================
+
+    update(
+        ref(
+            database,
+            "partite/" + codicePartitaAttuale
+        ),
+        {
+
+            ["giocatori/" + mioGiocatore + "/mano"]:
+                mano,
+
+            scarti:
+                scarti,
+
+            fase:
+                "gioco",
+
+            pescaCompletata:
+                true
+
+        }
+    )
+    .then(() => {
+
+        console.log(
+            "🃏 SCARTI PRESI ONLINE:",
+            cartePrese
+        );
+
+        console.log(
+            "🔴 CARTA OBBLIGATORIA:",
+            cartaObbligatoria
+        );
+
+        mostraMano();
+
+        mostraScarti();
+
+    })
+    .catch((errore) => {
+
+        console.error(
+            "❌ ERRORE PRENDI SCARTI:",
+            errore
+        );
+
+    });
+
+}
+
 
 function scarta(){
 
@@ -2435,12 +2557,11 @@ function mostraScarti(){
             event.stopPropagation();
 
 
-            if(modalitaGioco !== "cpu"){
-                return;
-            }
+if(modalitaGioco !== "cpu"){
+    return;
+}
 
-
-            prendiDalMazzoScarti(indice);
+prendiDalMazzoScarti(indice);
 
         };
 
