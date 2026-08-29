@@ -2471,3 +2471,129 @@ position: fixed !important;
 #mano .carta-mano {
     overflow: visible !important;
 }
+
+/* =========================
+   POPUP POSIZIONE CARTA
+========================= */
+
+.popup-posizione-carta {
+
+    display: none;
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.75);
+
+    z-index: 9999;
+
+    align-items: center;
+    justify-content: center;
+}
+
+
+.popup-contenuto {
+
+    background: #ffffff;
+
+    width: 90%;
+    max-width: 600px;
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+    text-align: center;
+
+    box-sizing: border-box;
+}
+
+
+.popup-contenuto h3 {
+
+    margin-top: 0;
+    margin-bottom: 20px;
+
+    font-size: 20px;
+}
+
+
+.popup-combinazione {
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 5px;
+
+    min-height: 100px;
+
+    overflow-x: auto;
+
+    padding: 10px;
+}
+
+
+.popup-frecce {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 20px;
+
+    padding: 0 20px;
+}
+
+
+.bottone-freccia {
+
+    font-size: 40px;
+
+    width: 80px;
+    height: 60px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #eeeeee;
+
+    cursor: pointer;
+}
+
+
+.bottone-freccia:active {
+
+    transform: scale(0.9);
+}
+.carta-popup {
+
+    min-width: 45px;
+    height: 65px;
+
+    border: 2px solid #333;
+    border-radius: 6px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: white;
+
+    font-weight: bold;
+}
+
+
+.carta-da-inserire {
+
+    border: 3px solid red;
+
+    transform: scale(1.05);
+}
