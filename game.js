@@ -3821,10 +3821,11 @@ if(risultato === "sinistra"){
 
     combinazioneSelezionata.carte.unshift(carta);
 
-    console.log(
-        "🟣 DOPO INSERIMENTO SINISTRA:",
-        combinazioneSelezionata.carte
-    );
+console.log(
+    "🟣 DOPO INSERIMENTO SINISTRA:",
+    combinazioneSelezionata.carte.length,
+    combinazioneSelezionata.carte.map(c => c.valore + c.seme)
+);
 
 }
 
@@ -3832,10 +3833,11 @@ if(risultato === "destra"){
 
     combinazioneSelezionata.carte.push(carta);
 
-    console.log(
-        "🔵 DOPO INSERIMENTO DESTRA:",
-        combinazioneSelezionata.carte
-    );
+console.log(
+    "🔵 DOPO INSERIMENTO DESTRA:",
+    combinazioneSelezionata.carte.length,
+    combinazioneSelezionata.carte.map(c => c.valore + c.seme)
+);
 
 }
 
