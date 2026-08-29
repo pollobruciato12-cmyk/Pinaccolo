@@ -24,6 +24,7 @@ let indiceCartaTrascinata = null;
 let scarti = [];
 let combinazioni = [];
 let haPresoScartiOnline = false;
+let cartaObbligatoriaOnline = null;
 
 let hoPescato = false;
 
@@ -385,6 +386,7 @@ function prendiScartiOnline(indice){
 
     let cartaObbligatoria =
         scarti[indice];
+        cartaObbligatoriaOnline = cartaObbligatoria;
 
 
     // =========================
@@ -5109,6 +5111,7 @@ function iniziaPartita(){
         fase: "pesca",
 
         pescaCompletata: false,
+        cartaObbligatoria: cartaObbligatoriaOnline
 
         // Ora il mazzo NON contiene
         // la carta degli scarti
