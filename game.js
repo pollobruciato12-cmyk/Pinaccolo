@@ -386,7 +386,6 @@ function prendiScartiOnline(indice){
 
     let cartaObbligatoria =
         scarti[indice];
-        cartaObbligatoriaOnline = cartaObbligatoria;
 
 
     // =========================
@@ -5111,7 +5110,6 @@ function iniziaPartita(){
         fase: "pesca",
 
         pescaCompletata: false,
-        cartaObbligatoria: cartaObbligatoriaOnline
 
         // Ora il mazzo NON contiene
         // la carta degli scarti
