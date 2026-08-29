@@ -401,6 +401,7 @@ function prendiScartiOnline(indice){
     // =========================
 
     mano.push(...cartePrese);
+    carteSelezionate = [];
     haPresoScartiOnline = true;
     
     alert(
