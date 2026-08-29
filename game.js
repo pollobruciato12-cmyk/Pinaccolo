@@ -270,9 +270,11 @@ for(let i = 0; i < numeroCarte; i++){
 
     partita.fase = "gioco";
 
-    hoPescato = true;
-    
-    haPresoScartiOnline = false;
+hoPescato = true;
+
+carteSelezionate = [];
+
+haPresoScartiOnline = false;
 
 
     // =========================
