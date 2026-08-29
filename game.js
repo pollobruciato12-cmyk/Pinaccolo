@@ -3821,11 +3821,21 @@ if(risultato === "sinistra"){
 
     combinazioneSelezionata.carte.unshift(carta);
 
+    console.log(
+        "🟣 DOPO INSERIMENTO SINISTRA:",
+        combinazioneSelezionata.carte
+    );
+
 }
 
 if(risultato === "destra"){
 
     combinazioneSelezionata.carte.push(carta);
+
+    console.log(
+        "🔵 DOPO INSERIMENTO DESTRA:",
+        combinazioneSelezionata.carte
+    );
 
 }
 
