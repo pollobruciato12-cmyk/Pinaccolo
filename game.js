@@ -4078,14 +4078,118 @@ let ordine = [
     "8","9","10","J","Q","K"
 ];
 
-let carteOrdinate =
-    [...carteSelezionate].sort((a, b) => {
+let carteDaOrdinare = [...carteSelezionate];
 
-        return ordine.indexOf(a.valore) -
-               ordine.indexOf(b.valore);
+let normali = carteDaOrdinare.filter(c =>
+    c.valore !== "Jolly" &&
+    c.pinella !== true
+);
 
-    });
+let speciali = carteDaOrdinare.filter(c =>
+    c.valore === "Jolly" ||
+    c.pinella === true
+);
 
+
+// =========================
+// TROVA LA SEQUENZA
+// =========================
+
+let posizioniNormali = normali.map(c =>
+    ordine.indexOf(c.valore)
+);
+
+let sequenzaTrovata = null;
+
+for(let partenza = 0; partenza < ordine.length; partenza++){
+
+    let sequenza = [];
+
+    for(let i = 0; i < carteDaOrdinare.length; i++){
+
+        sequenza.push(
+            (partenza + i) % ordine.length
+        );
+
+    }
+
+    let tuttePresenti = posizioniNormali.every(pos =>
+        sequenza.includes(pos)
+    );
+
+    if(!tuttePresenti){
+        continue;
+    }
+
+    let posizioniPresenti = new Set(posizioniNormali);
+
+    let buchi = sequenza.filter(pos =>
+        !posizioniPresenti.has(pos)
+    );
+
+    if(buchi.length === speciali.length){
+
+        sequenzaTrovata = sequenza;
+
+        break;
+
+    }
+
+}
+
+
+// =========================
+// COSTRUISCE LA SCALA
+// =========================
+
+let carteOrdinate = [];
+
+if(sequenzaTrovata){
+
+    let normaliRimaste = [...normali];
+    let specialiRimasti = [...speciali];
+
+    for(let posizione of sequenzaTrovata){
+
+        let cartaNormale =
+            normaliRimaste.find(c =>
+                ordine.indexOf(c.valore) === posizione
+            );
+
+        if(cartaNormale){
+
+            carteOrdinate.push(cartaNormale);
+
+            normaliRimaste =
+                normaliRimaste.filter(c =>
+                    c !== cartaNormale
+                );
+
+        }else{
+
+            let cartaSpeciale =
+                specialiRimaste.shift();
+
+            if(cartaSpeciale){
+
+                carteOrdinate.push(cartaSpeciale);
+
+            }
+
+        }
+
+    }
+
+}else{
+
+    carteOrdinate = [...carteDaOrdinare];
+
+}
+
+
+// =========================
+// NUOVA COMBINAZIONE
+// =========================
 
 let nuovaCombinazione = {
 
