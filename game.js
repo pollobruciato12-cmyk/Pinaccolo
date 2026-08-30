@@ -3927,6 +3927,11 @@ if(indiceCarta !== -1){
 
 }
 
+console.log(
+    "🟠 PRIMA DI DESELEZIONARE:",
+    JSON.stringify(combinazioni)
+);
+
 
 // =========================
 // DESELEZIONA
@@ -3935,6 +3940,11 @@ if(indiceCarta !== -1){
 carteSelezionate = [];
 
 combinazioneSelezionata = null;
+
+console.log(
+    "🟠 DOPO DESELEZIONA:",
+    JSON.stringify(combinazioni)
+);
 
 
 // =========================
