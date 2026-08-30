@@ -3959,6 +3959,11 @@ if(modalitaGioco === "online"){
         codicePartitaAttuale +
         "/giocatori/" +
         mioGiocatore;
+        
+        console.log(
+    "🔥 PRIMA UPDATE FIREBASE:",
+    JSON.stringify(combinazioni)
+);
 
     update(
         ref(database, percorsoBase),
