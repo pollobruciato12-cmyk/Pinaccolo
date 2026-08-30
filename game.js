@@ -166,6 +166,14 @@ function pescaMazzo(){
     // =========================
 
     if(modalitaGioco === "cpu"){
+      
+console.log("🟣 haPresoScarti =", partitaCPU.haPresoScarti);
+
+console.log("🟣 cartaObbligatoria =", partitaCPU.cartaObbligatoria);
+
+console.log("🟣 cartaObbligatoriaUsata =", partitaCPU.cartaObbligatoriaUsata);
+
+console.log("🟣 carteDaPescare =", partitaCPU.carteDaPescare);
 
         if(partitaCPU.turno !== "giocatore"){
             alert("Aspetta, sta giocando la CPU");
@@ -179,6 +187,13 @@ function pescaMazzo(){
 
         let numeroCarte =
             partitaCPU.carteDaPescare || 2;
+            
+            if(!partitaCPU.haPresoScarti){
+
+    partitaCPU.cartaObbligatoria = null;
+    partitaCPU.cartaObbligatoriaUsata = false;
+
+}
 
         if(partitaCPU.mazzo.length < numeroCarte){
             alert("Mazzo finito!");
@@ -196,7 +211,8 @@ function pescaMazzo(){
         mano = partitaCPU.giocatore;
 
         partitaCPU.fase = "scarto";
-        partitaCPU.carteDaPescare = 2;
+partitaCPU.carteDaPescare =
+    partitaCPU.haPresoScarti ? 1 : 2;
 
         carteSelezionate = [];
 
@@ -2073,12 +2089,21 @@ if(indice !== -1){
     mostraScarti();
 
 
-    /*
-        4. PASSA IL TURNO AL GIOCATORE
-    */
+/*
+    4. PASSA IL TURNO AL GIOCATORE
+*/
 
-    partitaCPU.turno = "giocatore";
-    partitaCPU.fase = "pesca";
+// La regola della carta obbligatoria
+// appartiene esclusivamente al turno
+// della CPU che ha preso gli scarti.
+
+partitaCPU.haPresoScarti = false;
+partitaCPU.cartaObbligatoria = null;
+partitaCPU.cartaObbligatoriaUsata = false;
+partitaCPU.carteDaPescare = 2;
+
+partitaCPU.turno = "giocatore";
+partitaCPU.fase = "pesca";
 
     aggiornaTurnoCPU();
 
@@ -3106,6 +3131,7 @@ function mostraMano(){
 
     area.style.position = "relative";
 
+
     /*
         =========================
         INDICATORE
@@ -3143,8 +3169,11 @@ function mostraMano(){
 
         div.className = "carta-mano";
 
+
         /*
+            =========================
             COLORE
+            =========================
         */
 
         let colore =
@@ -3155,40 +3184,202 @@ function mostraMano(){
 
 
         /*
-            CONTENUTO
+            =========================
+            NOME IMMAGINE
+            =========================
         */
+
+        let nomeCarta = "";
+
 
         if(carta.valore === "Jolly"){
 
-            div.innerHTML = `
-                <div class="cartaValore jolly">
-                    JOLLY
-                </div>
+            /*
+                Cerca il colore del Jolly
+            */
 
-                <div class="cartaSeme jolly">
-                    🃏
-                </div>
-            `;
+            if(
+                carta.colore === "blu" ||
+                carta.colore === "rosso"
+            ){
+
+                nomeCarta =
+                    "jolly_" +
+                    carta.colore;
+
+            }else{
+
+                /*
+                    Se il colore non è
+                    specificato, proviamo
+                    entrambi più avanti.
+                */
+
+                nomeCarta = "jolly";
+
+            }
 
         }else{
 
-            div.innerHTML = `
-                <div class="cartaAngolo cartaAlto ${colore}">
-                    <div>${carta.valore}</div>
-                    <div>${carta.seme}</div>
-                </div>
+            /*
+                Conversione ASSO
+            */
 
-                <div class="cartaSemeCentro ${colore}">
-                    ${carta.seme}
-                </div>
+            let valoreImmagine =
+                carta.valore === "A"
+                ? "asso"
+                : carta.valore;
 
-                <div class="cartaAngolo cartaBasso ${colore}">
-                    <div>${carta.valore}</div>
-                    <div>${carta.seme}</div>
-                </div>
-            `;
+
+            /*
+                Conversione SEME
+            */
+
+            let semeImmagine = "";
+
+            switch(carta.seme){
+
+                case "♥":
+                    semeImmagine = "cuori";
+                    break;
+
+                case "♦":
+                    semeImmagine = "quadri";
+                    break;
+
+                case "♣":
+                    semeImmagine = "fiori";
+                    break;
+
+                case "♠":
+                    semeImmagine = "picche";
+                    break;
+
+            }
+
+
+            nomeCarta =
+                valoreImmagine +
+                "_" +
+                semeImmagine;
 
         }
+
+
+        /*
+            =========================
+            CREA IMMAGINE
+            =========================
+        */
+
+        let immagine =
+            document.createElement("img");
+
+        immagine.className =
+            "immagineCarta";
+
+        immagine.alt =
+            carta.valore === "Jolly"
+            ? "Jolly"
+            : carta.valore + " " + carta.seme;
+
+
+        /*
+            =========================
+            PROVA PNG
+            =========================
+        */
+
+        let percorsoPNG =
+            "images/carte/" +
+            nomeCarta +
+            ".png";
+
+
+        /*
+            =========================
+            FALLBACK JPG
+            =========================
+        */
+
+        let percorsoJPG =
+            "images/carte/" +
+            nomeCarta +
+            ".jpg";
+
+
+        immagine.src = percorsoPNG;
+
+
+        /*
+            Se PNG non esiste,
+            prova JPG.
+        */
+
+        immagine.onerror = function(){
+
+            if(
+                immagine.src.endsWith(".png")
+            ){
+
+                immagine.src =
+                    percorsoJPG;
+
+            }else{
+
+                /*
+                    =========================
+                    NESSUNA IMMAGINE
+                    =========================
+                    Torniamo alla grafica
+                    precedente.
+                */
+
+                immagine.remove();
+
+
+                if(carta.valore === "Jolly"){
+
+                    div.innerHTML = `
+                        <div class="cartaValore jolly">
+                            JOLLY
+                        </div>
+
+                        <div class="cartaSeme jolly">
+                            🃏
+                        </div>
+                    `;
+
+                }else{
+
+                    div.innerHTML = `
+                        <div class="cartaAngolo cartaAlto ${colore}">
+                            <div>${carta.valore}</div>
+                            <div>${carta.seme}</div>
+                        </div>
+
+                        <div class="cartaSemeCentro ${colore}">
+                            ${carta.seme}
+                        </div>
+
+                        <div class="cartaAngolo cartaBasso ${colore}">
+                            <div>${carta.valore}</div>
+                            <div>${carta.seme}</div>
+                        </div>
+                    `;
+
+                }
+
+            }
+
+        };
+
+
+        /*
+            Inserisce l'immagine
+        */
+
+        div.appendChild(immagine);
 
 
         /*
@@ -3206,6 +3397,7 @@ function mostraMano(){
                 return;
 
             }
+
 
             let posizione =
                 carteSelezionate.indexOf(carta);
@@ -3235,6 +3427,7 @@ function mostraMano(){
 
                 div.style.transform =
                     "translateY(0px)";
+
 
                 document
                     .querySelectorAll(
@@ -3354,20 +3547,11 @@ function mostraMano(){
                     );
 
 
-                /*
-                    Rimuoviamo la carta
-                    trascinata
-                */
-
                 let altreCarte =
                     carteDOM.filter(
                         c => c !== div
                     );
 
-
-                /*
-                    Nessun'altra carta
-                */
 
                 if(altreCarte.length === 0){
 
@@ -3403,7 +3587,7 @@ function mostraMano(){
 
                 /*
                     =========================
-                    CERCA LA CARTA PIÙ VICINA
+                    CERCA LO SLOT
                     =========================
                 */
 
@@ -3411,10 +3595,6 @@ function mostraMano(){
 
                 let posizioneIndicatore = null;
 
-
-                /*
-                    PRIMA DELLA PRIMA
-                */
 
                 if(event.clientX < centri[0].x){
 
@@ -3425,11 +3605,11 @@ function mostraMano(){
 
                 }else{
 
-                    /*
-                        CONTROLLIAMO OGNI CENTRO
-                    */
-
-                    for(let i = 0; i < centri.length; i++){
+                    for(
+                        let i = 0;
+                        i < centri.length;
+                        i++
+                    ){
 
                         if(
                             event.clientX <
@@ -3447,10 +3627,6 @@ function mostraMano(){
 
                     }
 
-
-                    /*
-                        DOPO L'ULTIMA
-                    */
 
                     if(posizioneIndicatore === null){
 
@@ -3492,12 +3668,6 @@ function mostraMano(){
                     "block";
 
 
-                /*
-                    =========================
-                    POSIZIONE ARRAY
-                    =========================
-                */
-
                 posizioneCorrente = slot;
 
             }
@@ -3525,10 +3695,6 @@ function mostraMano(){
                 }
 
 
-                /*
-                    NASCONDE INDICATORE
-                */
-
                 indicatore.style.display =
                     "none";
 
@@ -3546,19 +3712,9 @@ function mostraMano(){
                     )[0];
 
 
-                /*
-                    CORREGGIAMO L'INDICE
-                    SE LA CARTA ERA PRIMA
-                    DELLO SLOT
-                */
+                let nuovoIndice =
+                    posizioneCorrente;
 
-let nuovoIndice =
-    posizioneCorrente;
-
-
-                /*
-                    LIMITI
-                */
 
                 nuovoIndice =
                     Math.max(
@@ -3569,10 +3725,6 @@ let nuovoIndice =
                         )
                     );
 
-
-                /*
-                    INSERISCE
-                */
 
                 mano.splice(
                     nuovoIndice,
@@ -3595,12 +3747,6 @@ let nuovoIndice =
 
                 posizioneCorrente = nuovoIndice;
 
-
-                /*
-                    =========================
-                    RIDISEGNA
-                    =========================
-                */
 
                 mostraMano();
 
@@ -3625,35 +3771,37 @@ let nuovoIndice =
         =========================
     */
 
-let margine = -45;
+    let margine = -45;
 
-mano.forEach((carta, i) => {
+    mano.forEach((carta, i) => {
 
-    let c =
-        document.querySelectorAll(
-            "#mano .carta-mano"
-        )[i];
+        let c =
+            document.querySelectorAll(
+                "#mano .carta-mano"
+            )[i];
 
-    if(!c){
-        return;
-    }
+        if(!c){
+            return;
+        }
 
-    if(i === 0){
 
-        c.style.marginLeft = "0px";
+        if(i === 0){
 
-    }else{
+            c.style.marginLeft = "0px";
 
-        c.style.marginLeft =
-            margine + "px";
+        }else{
 
-    }
+            c.style.marginLeft =
+                margine + "px";
 
-    c.style.flexShrink = "0";
-    c.style.position = "relative";
-    c.style.zIndex = i + 1;
+        }
 
-});
+
+        c.style.flexShrink = "0";
+        c.style.position = "relative";
+        c.style.zIndex = i + 1;
+
+    });
 
 
     /*
@@ -3668,21 +3816,21 @@ mano.forEach((carta, i) => {
         );
 
 
-if(contatore){
+    if(contatore){
 
-    if(modalitaGioco === "cpu"){
+        if(modalitaGioco === "cpu"){
 
-        contatore.innerHTML =
-            partitaCPU.mazzo.length;
+            contatore.innerHTML =
+                partitaCPU.mazzo.length;
 
-    }else{
+        }else{
 
-        contatore.innerHTML =
-            mazzo.length;
+            contatore.innerHTML =
+                mazzo.length;
+
+        }
 
     }
-
-}
 
 }
 
@@ -4092,6 +4240,109 @@ let speciali = carteDaOrdinare.filter(c =>
 
 
 // =========================
+// CONTROLLO POSIZIONE SPECIALI
+// =========================
+
+let deveSceglierePosizione = false;
+
+if(speciali.length === 1 && normali.length >= 2){
+
+    let posizioni = normali.map(c =>
+        ordine.indexOf(c.valore)
+    );
+
+    let prima = Math.min(...posizioni);
+    let ultima = Math.max(...posizioni);
+
+    let primaPosizione =
+        (prima - 1 + ordine.length) % ordine.length;
+
+    let dopoPosizione =
+        (ultima + 1) % ordine.length;
+
+    /*
+        Se le normali sono Q K,
+
+        il Jolly può stare:
+
+        Q K Jolly
+
+        oppure
+
+        Jolly Q K
+
+        quindi lasciamo scegliere il giocatore.
+    */
+
+    if(
+        primaPosizione !== dopoPosizione &&
+        speciali.length === 1
+    ){
+
+        /*
+            Controlliamo entrambe le possibilità.
+        */
+
+        let sinistra = [
+            speciali[0],
+            ...normali
+        ];
+
+        let destra = [
+            ...normali,
+            speciali[0]
+        ];
+
+        if(
+            combinazioneValida(sinistra) &&
+            combinazioneValida(destra)
+        ){
+
+            deveSceglierePosizione = true;
+
+        }
+
+    }
+
+}
+
+
+// =========================
+// APRI POPUP
+// =========================
+
+if(deveSceglierePosizione){
+
+    console.log(
+        "🟡 JOLLY/PINELLA: SCELTA POSIZIONE"
+    );
+
+    /*
+        Creiamo temporaneamente un gruppo
+        che rappresenta la nuova combinazione.
+    */
+
+    let gruppoTemporaneo = {
+
+        tipo: "scala",
+
+        carte: [...normali]
+
+    };
+
+
+    apriPopupPosizioneCarta(
+        speciali[0],
+        gruppoTemporaneo
+    );
+
+
+    return;
+
+}
+
+
+// =========================
 // TROVA LA SEQUENZA
 // =========================
 
@@ -4101,11 +4352,19 @@ let posizioniNormali = normali.map(c =>
 
 let sequenzaTrovata = null;
 
-for(let partenza = 0; partenza < ordine.length; partenza++){
+for(
+    let partenza = 0;
+    partenza < ordine.length;
+    partenza++
+){
 
     let sequenza = [];
 
-    for(let i = 0; i < carteDaOrdinare.length; i++){
+    for(
+        let i = 0;
+        i < carteDaOrdinare.length;
+        i++
+    ){
 
         sequenza.push(
             (partenza + i) % ordine.length
@@ -4113,19 +4372,29 @@ for(let partenza = 0; partenza < ordine.length; partenza++){
 
     }
 
-    let tuttePresenti = posizioniNormali.every(pos =>
-        sequenza.includes(pos)
-    );
+
+    let tuttePresenti =
+        posizioniNormali.every(pos =>
+            sequenza.includes(pos)
+        );
+
 
     if(!tuttePresenti){
+
         continue;
+
     }
 
-    let posizioniPresenti = new Set(posizioniNormali);
 
-    let buchi = sequenza.filter(pos =>
-        !posizioniPresenti.has(pos)
-    );
+    let posizioniPresenti =
+        new Set(posizioniNormali);
+
+
+    let buchi =
+        sequenza.filter(pos =>
+            !posizioniPresenti.has(pos)
+        );
+
 
     if(buchi.length === speciali.length){
 
@@ -4144,10 +4413,13 @@ for(let partenza = 0; partenza < ordine.length; partenza++){
 
 let carteOrdinate = [];
 
+
 if(sequenzaTrovata){
 
     let normaliRimaste = [...normali];
+
     let specialiRimaste = [...speciali];
+
 
     for(let posizione of sequenzaTrovata){
 
@@ -4155,6 +4427,7 @@ if(sequenzaTrovata){
             normaliRimaste.find(c =>
                 ordine.indexOf(c.valore) === posizione
             );
+
 
         if(cartaNormale){
 
@@ -4180,9 +4453,11 @@ if(sequenzaTrovata){
 
     }
 
+
 }else{
 
-    carteOrdinate = [...carteDaOrdinare];
+    carteOrdinate =
+        [...carteDaOrdinare];
 
 }
 
@@ -6262,9 +6537,16 @@ function apriPopupPosizioneCarta(carta, gruppo){
     let area =
         document.getElementById("popupCombinazione");
 
-    if(!popup || !area){
+    let frecciaSinistra =
+        document.getElementById("frecciaSinistra");
 
-        console.log("❌ Popup posizione carta non trovato");
+    let frecciaDestra =
+        document.getElementById("frecciaDestra");
+
+
+    if(!popup || !area || !frecciaSinistra || !frecciaDestra){
+
+        console.log("❌ Elementi popup non trovati");
 
         return;
 
@@ -6283,11 +6565,19 @@ function apriPopupPosizioneCarta(carta, gruppo){
         let elemento =
             document.createElement("div");
 
-        elemento.className =
-            "carta-popup";
+        elemento.className = "carta-popup";
 
-        elemento.textContent =
-            c.valore;
+
+        if(c.valore === "Jolly"){
+
+            elemento.textContent = "🃏";
+
+        }else{
+
+            elemento.innerHTML =
+                c.valore + "<br>" + c.seme;
+
+        }
 
         area.appendChild(elemento);
 
@@ -6304,10 +6594,63 @@ function apriPopupPosizioneCarta(carta, gruppo){
     nuovaCarta.className =
         "carta-popup carta-da-inserire";
 
-    nuovaCarta.textContent =
-        carta.valore;
+
+    if(carta.valore === "Jolly"){
+
+        nuovaCarta.textContent = "🃏";
+
+    }else{
+
+        nuovaCarta.innerHTML =
+            carta.valore + "<br>" + carta.seme;
+
+    }
 
     area.appendChild(nuovaCarta);
+
+
+    // =========================
+    // CLICK SINISTRA
+    // =========================
+
+    frecciaSinistra.onclick = function(){
+
+        console.log(
+            "⬅️ INSERIMENTO A SINISTRA"
+        );
+
+
+        gruppo.carte.unshift(carta);
+
+
+        completaInserimentoCarta(
+            carta,
+            gruppo
+        );
+
+    };
+
+
+    // =========================
+    // CLICK DESTRA
+    // =========================
+
+    frecciaDestra.onclick = function(){
+
+        console.log(
+            "➡️ INSERIMENTO A DESTRA"
+        );
+
+
+        gruppo.carte.push(carta);
+
+
+        completaInserimentoCarta(
+            carta,
+            gruppo
+        );
+
+    };
 
 
     // =========================
@@ -6315,5 +6658,115 @@ function apriPopupPosizioneCarta(carta, gruppo){
     // =========================
 
     popup.style.display = "flex";
+
+}
+
+
+
+function completaInserimentoCarta(carta, gruppo){
+  
+      // =========================
+    // NUOVA CALATA
+    // =========================
+
+    if(!combinazioni.includes(gruppo)){
+
+        combinazioni.push(gruppo);
+
+        console.log(
+            "🟢 NUOVA COMBINAZIONE CREATA DAL POPUP:",
+            gruppo
+        );
+
+    }
+
+    // =========================
+    // CHIUDE POPUP
+    // =========================
+
+    let popup =
+        document.getElementById("popupPosizioneCarta");
+
+    if(popup){
+
+        popup.style.display = "none";
+
+    }
+
+
+    // =========================
+    // RIMUOVE CARTA DALLA MANO
+    // =========================
+
+    let indiceCarta =
+        mano.indexOf(carta);
+
+    if(indiceCarta !== -1){
+
+        mano.splice(indiceCarta, 1);
+
+    }
+
+
+    // =========================
+    // DESELEZIONA
+    // =========================
+
+    carteSelezionate = [];
+
+    combinazioneSelezionata = null;
+
+
+    // =========================
+    // AGGIORNA CPU
+    // =========================
+
+    if(modalitaGioco === "cpu"){
+
+        partitaCPU.giocatore = mano;
+
+    }
+
+
+    // =========================
+    // AGGIORNA FIREBASE
+    // =========================
+
+    if(modalitaGioco === "online"){
+
+        let percorsoBase =
+            "partite/" +
+            codicePartitaAttuale +
+            "/giocatori/" +
+            mioGiocatore;
+
+
+        update(
+            ref(database, percorsoBase),
+            {
+                mano: mano,
+                combinazioni: combinazioni
+            }
+        );
+
+    }
+
+
+    // =========================
+    // AGGIORNA SCHERMO
+    // =========================
+
+    mostraMano();
+
+    mostraCombinazioni();
+
+
+    console.log(
+        "🟢 INSERIMENTO SPECIALE COMPLETATO:",
+        {
+            carta: carta,
+            combinazione: gruppo
+        }
+    );
 
 }
