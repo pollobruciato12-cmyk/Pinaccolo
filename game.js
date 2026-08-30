@@ -3132,6 +3132,21 @@ function mostraMano(){
     area.style.position = "relative";
 
 
+    // =========================
+    // SCROLL MANO OLTRE 22 CARTE
+    // =========================
+
+    if(mano.length > 22){
+
+        area.classList.add("scroll-attivo");
+
+    }else{
+
+        area.classList.remove("scroll-attivo");
+
+    }
+
+
     /*
         =========================
         INDICATORE
@@ -3194,10 +3209,6 @@ function mostraMano(){
 
         if(carta.valore === "Jolly"){
 
-            /*
-                Cerca il colore del Jolly
-            */
-
             if(
                 carta.colore === "blu" ||
                 carta.colore === "rosso"
@@ -3208,12 +3219,6 @@ function mostraMano(){
                     carta.colore;
 
             }else{
-
-                /*
-                    Se il colore non è
-                    specificato, proviamo
-                    entrambi più avanti.
-                */
 
                 nomeCarta = "jolly";
 
@@ -3331,8 +3336,6 @@ function mostraMano(){
                     =========================
                     NESSUNA IMMAGINE
                     =========================
-                    Torniamo alla grafica
-                    precedente.
                 */
 
                 immagine.remove();
@@ -3457,7 +3460,13 @@ function mostraMano(){
 
         let trascinamento = false;
 
+        let scrollMano = false;
+
         let posizioneInizialeX = 0;
+
+        let posizioneInizialeY = 0;
+
+        let scrollIniziale = 0;
 
         let posizioneCorrente = indice;
 
@@ -3481,7 +3490,15 @@ function mostraMano(){
                 posizioneInizialeX =
                     event.clientX;
 
+                posizioneInizialeY =
+                    event.clientY;
+
+                scrollIniziale =
+                    area.scrollLeft;
+
                 trascinamento = false;
+
+                scrollMano = false;
 
                 div.setPointerCapture(
                     event.pointerId
@@ -3506,28 +3523,87 @@ function mostraMano(){
                 }
 
 
-                let distanza =
-                    Math.abs(
-                        event.clientX -
-                        posizioneInizialeX
-                    );
+                let distanzaX =
+                    event.clientX -
+                    posizioneInizialeX;
 
 
-                if(distanza < 10){
+                let distanzaY =
+                    event.clientY -
+                    posizioneInizialeY;
+
+
+                /*
+                    =========================
+                    DECIDIAMO SE SCROLLARE
+                    =========================
+                */
+
+                if(
+                    mano.length > 22 &&
+                    !trascinamento &&
+                    !scrollMano &&
+                    Math.abs(distanzaX) > 15 &&
+                    Math.abs(distanzaX) >
+                    Math.abs(distanzaY) * 1.3
+                ){
+
+                    scrollMano = true;
+
+                    indicatore.style.display =
+                        "none";
+
+                }
+
+
+                /*
+                    =========================
+                    SCROLL
+                    =========================
+                */
+
+                if(scrollMano){
+
+                    area.scrollLeft =
+                        scrollIniziale -
+                        distanzaX;
+
+                    return;
+
+                }
+
+
+                /*
+                    =========================
+                    DISTANZA MINIMA
+                    =========================
+                */
+
+                if(
+                    Math.abs(distanzaX) < 10
+                ){
                     return;
                 }
 
 
+                /*
+                    =========================
+                    TRASCINAMENTO CARTA
+                    =========================
+                */
+
                 trascinamento = true;
 
-                div.dataset.trascinata = "true";
+                div.dataset.trascinata =
+                    "true";
 
 
                 /*
                     SOLLEVA LA CARTA
                 */
 
-                div.style.zIndex = "9999";
+                div.style.zIndex =
+                    "9999";
 
                 div.style.transform =
                     "translateY(-30px) scale(1.05)";
@@ -3571,18 +3647,27 @@ function mostraMano(){
                     =========================
                 */
 
-                let centri = altreCarte.map(c => {
+                let centri =
+                    altreCarte.map(c => {
 
-                    let rect =
-                        c.getBoundingClientRect();
+                        let rect =
+                            c.getBoundingClientRect();
 
-                    return {
-                        x: rect.left + rect.width / 2,
-                        left: rect.left,
-                        right: rect.right
-                    };
+                        return {
 
-                });
+                            x:
+                                rect.left +
+                                rect.width / 2,
+
+                            left:
+                                rect.left,
+
+                            right:
+                                rect.right
+
+                        };
+
+                    });
 
 
                 /*
@@ -3591,12 +3676,17 @@ function mostraMano(){
                     =========================
                 */
 
-                let slot = altreCarte.length;
+                let slot =
+                    altreCarte.length;
 
-                let posizioneIndicatore = null;
+                let posizioneIndicatore =
+                    null;
 
 
-                if(event.clientX < centri[0].x){
+                if(
+                    event.clientX <
+                    centri[0].x
+                ){
 
                     slot = 0;
 
@@ -3628,9 +3718,13 @@ function mostraMano(){
                     }
 
 
-                    if(posizioneIndicatore === null){
+                    if(
+                        posizioneIndicatore ===
+                        null
+                    ){
 
-                        slot = altreCarte.length;
+                        slot =
+                            altreCarte.length;
 
                         posizioneIndicatore =
                             centri[
@@ -3668,7 +3762,8 @@ function mostraMano(){
                     "block";
 
 
-                posizioneCorrente = slot;
+                posizioneCorrente =
+                    slot;
 
             }
         );
@@ -3683,6 +3778,39 @@ function mostraMano(){
         div.addEventListener(
             "pointerup",
             function(event){
+
+                /*
+                    =========================
+                    FINE SCROLL
+                    =========================
+                */
+
+                if(scrollMano){
+
+                    indicatore.style.display =
+                        "none";
+
+                    cartaTrascinata = null;
+
+                    indiceCartaTrascinata = null;
+
+                    scrollMano = false;
+
+                    trascinamento = false;
+
+                    div.dataset.trascinata =
+                        "false";
+
+                    return;
+
+                }
+
+
+                /*
+                    =========================
+                    NON È TRASCINAMENTO
+                    =========================
+                */
 
                 if(!trascinamento){
 
@@ -3745,7 +3873,10 @@ function mostraMano(){
 
                 trascinamento = false;
 
-                posizioneCorrente = nuovoIndice;
+                scrollMano = false;
+
+                posizioneCorrente =
+                    nuovoIndice;
 
 
                 mostraMano();
@@ -6245,7 +6376,6 @@ if(dati.fase){
                 }
 
 
-                ordinaManoIniziale();
 
                 mazzo = dati.mazzo;
                 
