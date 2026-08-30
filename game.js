@@ -3906,6 +3906,13 @@ console.log(
 
 }
 
+alert(
+    "DOPO INSERIMENTO:\n" +
+    combinazioneSelezionata.carte.map(
+        c => c.valore + c.seme
+    ).join(" - ")
+);
+
 
 // =========================
 // RIMUOVE LA CARTA DALLA MANO
