@@ -3773,6 +3773,51 @@ function calaCarte(){
         }
 
     }
+    
+    // =========================
+// PARTITA ONLINE
+// =========================
+
+if(modalitaGioco === "online"){
+
+    let mioNumero =
+        mioGiocatore === "giocatore1" ? 1 : 2;
+
+
+    // CONTROLLO TURNO
+
+    if(Number(partita.turno) !== mioNumero){
+
+        alert("Non è il tuo turno.");
+
+        return;
+
+    }
+
+
+    // CONTROLLO PESCA
+
+    if(!hoPescato){
+
+        alert("Prima devi pescare.");
+
+        return;
+
+    }
+
+}
+    
+    // =========================
+// CONTROLLO PESCA ONLINE
+// =========================
+
+if(modalitaGioco === "online" && !hoPescato){
+
+    alert("Prima devi pescare.");
+
+    return;
+
+}
 
 
 // =========================
