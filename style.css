@@ -2609,3 +2609,21 @@ position: fixed !important;
 
     background: #fff4f4;
 }
+
+/* ==========================
+   SCROLL MANO OLTRE 22 CARTE
+========================== */
+
+#mano.scroll-attivo {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    justify-content: flex-start !important;
+}
+
+#mano.scroll-attivo::-webkit-scrollbar {
+    display: none;
+}
+
+#mano.scroll-attivo {
+    scrollbar-width: none;
+}
