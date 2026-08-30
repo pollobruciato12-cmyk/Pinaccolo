@@ -5816,10 +5816,14 @@ console.log(
                     dati.giocatori[altroGiocatore]?.mano?.length
                 );
 
-                console.log(
-                    "COMBINAZIONI AVVERSARIO:",
-                    dati.giocatori[altroGiocatore]?.combinazioni
-                );
+console.log(
+    "🟢 G2 COMBINAZIONI AVVERSARIO:",
+    JSON.stringify(
+        dati.giocatori[altroGiocatore]?.combinazioni,
+        null,
+        2
+    )
+);
 
 
                 if(
