@@ -5576,21 +5576,35 @@ function ascoltaPartita(){
             console.log("DATI FIREBASE:", dati);
 
 
-            if(!dati){
-                return;
-            }
+if(dati.fase){
+
+    partita.fase = dati.fase;
+
+    // =========================
+    // SINCRONIZZA PESCA ONLINE
+    // =========================
+
+    if(dati.fase === "pesca"){
+
+        hoPescato = false;
+
+    }
+
+    if(dati.fase === "gioco"){
+
+        hoPescato = true;
+
+    }
 
 
-            if(dati.fase){
+    console.log(
+        "Fase aggiornata:",
+        partita.fase,
+        "hoPescato:",
+        hoPescato
+    );
 
-                partita.fase = dati.fase;
-
-                console.log(
-                    "Fase aggiornata:",
-                    partita.fase
-                );
-
-            }
+}
 
 
             if(dati.giocatori){
