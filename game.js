@@ -4147,7 +4147,7 @@ let carteOrdinate = [];
 if(sequenzaTrovata){
 
     let normaliRimaste = [...normali];
-    let specialiRimasti = [...speciali];
+    let specialiRimaste = [...speciali];
 
     for(let posizione of sequenzaTrovata){
 
