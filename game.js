@@ -4190,9 +4190,11 @@ function mostraCombinazioni(){
 
             combinazioneSelezionata = gruppo;
 
-            console.log("Combinazione selezionata:", gruppo);
-
-        };
+console.log(
+    "🔍 CONTROLLO RIFERIMENTO:",
+    combinazioneSelezionata === gruppo,
+    combinazioni.includes(gruppo)
+);
 
 
         gruppo.carte.forEach(carta => {
