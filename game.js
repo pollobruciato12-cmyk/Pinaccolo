@@ -417,27 +417,30 @@ function prendiScartiOnline(indice){
     // SALVA SU FIREBASE
     // =========================
 
-    update(
-        ref(
-            database,
-            "partite/" + codicePartitaAttuale
-        ),
-        {
+update(
+    ref(
+        database,
+        "partite/" + codicePartitaAttuale
+    ),
+    {
 
-            ["giocatori/" + mioGiocatore + "/mano"]:
-                mano,
+        ["giocatori/" + mioGiocatore + "/mano"]:
+            mano,
 
-            scarti:
-                scarti,
+        ["giocatori/" + mioGiocatore + "/combinazioni"]:
+            combinazioni,
 
-fase:
-    "pesca",
+        scarti:
+            scarti,
 
-pescaCompletata:
-    false
+        fase:
+            "pesca",
 
-        }
-    )
+        pescaCompletata:
+            false
+
+    }
+)
     .then(() => {
 
         console.log(
