@@ -4515,7 +4515,6 @@ function controllaAggiuntaCarta(carta, gruppo){
 
     let seme = normali[0].seme;
 
-
     if(!normali.every(c => c.seme === seme)){
         return "nessuna";
     }
@@ -4548,14 +4547,15 @@ function controllaAggiuntaCarta(carta, gruppo){
         }
 
 
-        // -------------------------
-        // ESTREMITÀ ATTUALI
-        // -------------------------
+        // =========================
+        // POSIZIONI DELLE NORMALI
+        // =========================
 
         let posizioni =
             normali.map(c =>
                 ordine.indexOf(c.valore)
             );
+
 
         let prima =
             Math.min(...posizioni);
@@ -4564,41 +4564,125 @@ function controllaAggiuntaCarta(carta, gruppo){
             Math.max(...posizioni);
 
 
-        // -------------------------
+        // =========================
+        // SPECIALI PRESENTI
+        // =========================
+
+        let speciali = carte.filter(c =>
+            c.valore === "Jolly" ||
+            c.pinella === true
+        );
+
+
+        // =========================
         // SINISTRA
-        // -------------------------
+        // =========================
+
+        let puoSinistra = false;
+
+        /*
+            Caso normale:
+
+            4 5 6
+            + 3
+
+            Caso con speciale all'inizio:
+
+            Jolly 7 8 9
+            + 5
+
+            Il Jolly occupa il 6,
+            quindi il 5 può essere aggiunto
+            a sinistra.
+        */
 
         let precedente =
             (prima - 1 + ordine.length) %
             ordine.length;
 
-        // Correzione sicurezza
-        precedente =
-            (prima - 1 + ordine.length) %
-            ordine.length;
 
+        if(posizioneCarta === precedente){
 
-        let sinistra =
-            [carta, ...carte];
+            let sinistra =
+                [carta, ...carte];
 
-
-        if(
-            posizioneCarta === precedente &&
-            combinazioneValida(sinistra)
-        ){
-
-            return "sinistra";
+            if(combinazioneValida(sinistra)){
+                puoSinistra = true;
+            }
 
         }
 
 
-        // -------------------------
+        // =========================
+        // CARTA PRIMA DELLA PRIMA
+        // CON UNO SPECIALE
+        // =========================
+
+        if(!puoSinistra && speciali.length > 0){
+
+            /*
+                Cerchiamo se la carta può entrare
+                prima di una sequenza che inizia
+                con uno o più speciali.
+
+                Esempio:
+
+                Jolly 7 8 9
+
+                Jolly = 6
+
+                quindi:
+
+                5 Jolly 7 8 9
+
+                è valida.
+            */
+
+            let minimoNormale =
+                Math.min(...posizioni);
+
+            let precedenteSpeciale =
+                (minimoNormale - 1 + ordine.length) %
+                ordine.length;
+
+
+            /*
+                Se la carta è due posizioni prima
+                della prima normale, significa che
+                lo speciale occupa la posizione
+                intermedia.
+            */
+
+            let duePrima =
+                (minimoNormale - 2 + ordine.length) %
+                ordine.length;
+
+
+            if(posizioneCarta === duePrima){
+
+                let sinistra =
+                    [carta, ...carte];
+
+                if(combinazioneValida(sinistra)){
+                    puoSinistra = true;
+                }
+
+            }
+
+        }
+
+
+        if(puoSinistra){
+            return "sinistra";
+        }
+
+
+        // =========================
         // DESTRA
-        // -------------------------
+        // =========================
 
         let successiva =
-            (ultima + 1) %
-            ordine.length;
+            (ultima + 1) % ordine.length;
 
 
         let destra =
@@ -4611,6 +4695,29 @@ function controllaAggiuntaCarta(carta, gruppo){
         ){
 
             return "destra";
+
+        }
+
+
+        /*
+            Controlliamo anche il caso in cui
+            ci sia uno speciale dopo l'ultima
+            carta normale.
+        */
+
+        if(speciali.length > 0){
+
+            let dueDopo =
+                (ultima + 2) % ordine.length;
+
+
+            if(posizioneCarta === dueDopo){
+
+                if(combinazioneValida(destra)){
+                    return "destra";
+                }
+
+            }
 
         }
 
