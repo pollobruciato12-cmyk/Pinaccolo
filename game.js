@@ -5725,6 +5725,13 @@ if(dati.fase){
                     dati.giocatori[mioGiocatore].combinazioni
                 ){
 
+                    console.log(
+                        "🔴 ASCOLTAPARTITA STA RISCRIVENDO COMBINAZIONI:",
+                        JSON.stringify(
+                            dati.giocatori[mioGiocatore].combinazioni
+                        )
+                    );
+
                     combinazioni =
                         dati.giocatori[mioGiocatore].combinazioni;
 
