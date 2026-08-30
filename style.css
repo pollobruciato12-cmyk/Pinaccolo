@@ -2575,8 +2575,9 @@ position: fixed !important;
 }
 .carta-popup {
 
-    min-width: 45px;
-    height: 65px;
+    min-width: 60px;
+    width: 60px;
+    height: 85px;
 
     border: 2px solid #333;
     border-radius: 6px;
@@ -2587,7 +2588,16 @@ position: fixed !important;
 
     background: white;
 
+    color: black;
+
     font-weight: bold;
+    font-size: 20px;
+
+    text-align: center;
+
+    flex-shrink: 0;
+
+    box-sizing: border-box;
 }
 
 
@@ -2596,4 +2606,6 @@ position: fixed !important;
     border: 3px solid red;
 
     transform: scale(1.05);
+
+    background: #fff4f4;
 }
