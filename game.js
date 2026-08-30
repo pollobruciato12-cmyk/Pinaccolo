@@ -4190,11 +4190,13 @@ function mostraCombinazioni(){
 
             combinazioneSelezionata = gruppo;
 
-console.log(
-    "🔍 CONTROLLO RIFERIMENTO:",
-    combinazioneSelezionata === gruppo,
-    combinazioni.includes(gruppo)
-);
+            console.log(
+                "🔍 CONTROLLO RIFERIMENTO:",
+                combinazioneSelezionata === gruppo,
+                combinazioni.includes(gruppo)
+            );
+
+        };
 
 
         gruppo.carte.forEach(carta => {
@@ -4204,44 +4206,45 @@ console.log(
             c.className = "carta-mano carta-calata";
 
 
-let immagine = nomeImmagineCarta(carta);
+            let immagine = nomeImmagineCarta(carta);
 
-let colore =
-    (carta.seme === "♥" || carta.seme === "♦")
-    ? "rosso"
-    : "nero";
+            let colore =
+                (carta.seme === "♥" || carta.seme === "♦")
+                ? "rosso"
+                : "nero";
 
-if(carta.valore === "Jolly"){
 
-    c.innerHTML = `
-        <div class="cartaValore jolly">
-            JOLLY
-        </div>
+            if(carta.valore === "Jolly"){
 
-        <div class="cartaSeme jolly">
-            🃏
-        </div>
-    `;
+                c.innerHTML = `
+                    <div class="cartaValore jolly">
+                        JOLLY
+                    </div>
 
-}else{
+                    <div class="cartaSeme jolly">
+                        🃏
+                    </div>
+                `;
 
-    c.innerHTML = `
-        <div class="cartaAngolo cartaAlto ${colore}">
-            <div>${carta.valore}</div>
-            <div>${carta.seme}</div>
-        </div>
+            }else{
 
-        <div class="cartaSemeCentro ${colore}">
-            ${carta.seme}
-        </div>
+                c.innerHTML = `
+                    <div class="cartaAngolo cartaAlto ${colore}">
+                        <div>${carta.valore}</div>
+                        <div>${carta.seme}</div>
+                    </div>
 
-        <div class="cartaAngolo cartaBasso ${colore}">
-            <div>${carta.valore}</div>
-            <div>${carta.seme}</div>
-        </div>
-    `;
+                    <div class="cartaSemeCentro ${colore}">
+                        ${carta.seme}
+                    </div>
 
-}
+                    <div class="cartaAngolo cartaBasso ${colore}">
+                        <div>${carta.valore}</div>
+                        <div>${carta.seme}</div>
+                    </div>
+                `;
+
+            }
 
 
             div.appendChild(c);
