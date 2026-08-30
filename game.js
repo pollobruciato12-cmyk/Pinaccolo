@@ -4183,7 +4183,7 @@ function mostraCombinazioni(){
 
     area.innerHTML = "";
 
-    combinazioni.forEach(gruppo => {
+    combinazioni.forEach((gruppo, indice) => {
 
         let div = document.createElement("div");
 
@@ -4191,7 +4191,7 @@ function mostraCombinazioni(){
 
         div.onclick = function(){
 
-            combinazioneSelezionata = gruppo;
+            combinazioneSelezionata = combinazioni[indice];
 
             console.log(
                 "🔍 CONTROLLO RIFERIMENTO:",
