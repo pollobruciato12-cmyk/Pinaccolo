@@ -4069,17 +4069,31 @@ if(carteSelezionate.length === 2){
     }
 
 
-    // =========================
-    // CREA COPIA DELLA SCALA
-    // =========================
+// =========================
+// CREA LA SCALA IN ORDINE
+// =========================
 
-    let nuovaCombinazione = {
+let ordine = [
+    "A","3","4","5","6","7",
+    "8","9","10","J","Q","K"
+];
 
-        tipo: "scala",
+let carteOrdinate =
+    [...carteSelezionate].sort((a, b) => {
 
-        carte: [...carteSelezionate]
+        return ordine.indexOf(a.valore) -
+               ordine.indexOf(b.valore);
 
-    };
+    });
+
+
+let nuovaCombinazione = {
+
+    tipo: "scala",
+
+    carte: carteOrdinate
+
+};
 
 
     // =========================
