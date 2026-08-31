@@ -4593,6 +4593,13 @@ if(speciali.length === 1 && normali.length >= 2){
     */
 
     let posizioniValide = [];
+    
+    console.log("🔎 CONTROLLO SPECIALI", {
+    giocatore: mioGiocatore,
+    speciali: speciali,
+    normali: normali,
+    carteSelezionate: carteSelezionate
+});
 
     for(
         let partenza = 0;
@@ -4698,6 +4705,8 @@ if(speciali.length === 1 && normali.length >= 2){
         → il Jolly deve essere 3
         → nessun popup
     */
+
+console.log("🔎 POSIZIONI VALIDE:", posizioniValide);
 
     if(posizioniValide.length === 1){
 
