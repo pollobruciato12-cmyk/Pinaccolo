@@ -26,6 +26,12 @@ let combinazioni = [];
 let haPresoScartiOnline = false;
 let cartaObbligatoriaOnline = null;
 
+let cartaSpecialeSelezionata = null;
+let combinazioneSpecialeSelezionata = null;
+let proprietarioSpeciale = null;
+
+let cartaRubataObbligatoria = null;
+
 let hoPescato = false;
 
 let partita = {
@@ -46,6 +52,10 @@ let giocatori = [];
 let giocatoreAttivo = 0;
 let modalita = "singolo";
 let squadra = false;
+
+let cartaRubabileSelezionata = null;
+let combinazioneRubabileSelezionata = null;
+let proprietarioCombinazioneRubabile = null;
 
 
 const semi = ["♠", "♣", "♥", "♦"];
@@ -547,6 +557,23 @@ function scarta(){
     // =========================
     // PRENDE LA CARTA
     // =========================
+    
+    // =========================
+// CONTROLLO CARTA RUBATA
+// =========================
+
+if(
+    cartaRubataObbligatoria &&
+    stessaCarta(carta, cartaRubataObbligatoria)
+){
+
+    alert(
+        "Devi prima utilizzare la carta rubata in una combinazione."
+    );
+
+    return;
+
+}
 
     let carta = carteSelezionate[0];
 
@@ -2144,6 +2171,41 @@ function mostraCombinazioniCPU(){
 
             c.className =
                 "carta-mano carta-calata";
+                
+                // =========================
+// CARTA RUBABILE CPU
+// =========================
+
+if(
+    carta.valore === "Jolly" ||
+    carta.pinella === true
+){
+
+    c.style.cursor = "pointer";
+
+    c.onclick = function(event){
+
+        event.stopPropagation();
+
+        cartaRubabileSelezionata = carta;
+
+        combinazioneRubabileSelezionata = gruppo;
+
+        proprietarioCombinazioneRubabile = "avversario";
+
+        console.log(
+            "🟡 CARTA RUBABILE CPU:",
+            carta
+        );
+
+        console.log(
+            "🟡 COMBINAZIONE CPU:",
+            gruppo
+        );
+
+    };
+
+}
 
 
             /*
@@ -4101,7 +4163,144 @@ if(modalitaGioco === "online" && !hoPescato){
 
 }
 
+// =========================
+// FURTO JOLLY
+// =========================
 
+if(
+    carteSelezionate.length === 1 &&
+    cartaRubabileSelezionata &&
+    cartaRubabileSelezionata.valore === "Jolly"
+){
+
+    let cartaDaCalare =
+        carteSelezionate[0];
+
+    console.log(
+        "🟡 TENTATIVO FURTO JOLLY:",
+        cartaDaCalare
+    );
+
+// =========================
+// SOSTITUZIONE JOLLY
+// =========================
+
+// Trova il Jolly nella combinazione
+let indiceJolly =
+    combinazioneRubabileSelezionata.carte.indexOf(
+        cartaRubabileSelezionata
+    );
+
+if(indiceJolly === -1){
+
+    alert("Jolly non trovato nella combinazione.");
+
+    return;
+
+}
+
+
+// =========================
+// TOGLIE IL JOLLY
+// =========================
+
+combinazioneRubabileSelezionata.carte.splice(
+    indiceJolly,
+    1
+);
+
+
+// =========================
+// INSERISCE LA CARTA
+// =========================
+
+combinazioneRubabileSelezionata.carte.splice(
+    indiceJolly,
+    0,
+    cartaDaCalare
+);
+
+
+// =========================
+// METTE IL JOLLY IN MANO
+// =========================
+
+mano.push(
+    cartaRubabileSelezionata
+);
+
+
+// =========================
+// DESELEZIONA
+// =========================
+
+carteSelezionate = [];
+
+cartaRubabileSelezionata = null;
+
+combinazioneRubabileSelezionata = null;
+
+proprietarioCombinazioneRubabile = null;
+
+
+// =========================
+// AGGIORNA CPU
+// =========================
+
+if(modalitaGioco === "cpu"){
+
+    partitaCPU.giocatore = mano;
+
+}
+
+
+// =========================
+// AGGIORNA FIREBASE
+// =========================
+
+if(modalitaGioco === "online"){
+
+    let percorsoBase =
+        "partite/" +
+        codicePartitaAttuale +
+        "/giocatori/" +
+        mioGiocatore;
+
+
+    update(
+        ref(database, percorsoBase),
+        {
+            mano: mano,
+            combinazioni: combinazioni
+        }
+    );
+
+}
+
+
+// =========================
+// AGGIORNA SCHERMO
+// =========================
+
+mostraMano();
+
+mostraCombinazioni();
+
+mostraCombinazioniAvversarioOnline();
+
+
+console.log(
+    "🟢 FURTO JOLLY COMPLETATO:",
+    {
+        cartaCalata: cartaDaCalare,
+        jollyRecuperato: cartaRubabileSelezionata,
+        combinazione: combinazioneRubabileSelezionata
+    }
+);
+
+return;
+
+}
 // =========================
 // CARTE SELEZIONATE
 // =========================
@@ -4382,56 +4581,142 @@ if(speciali.length === 1 && normali.length >= 2){
         ordine.indexOf(c.valore)
     );
 
-    let prima = Math.min(...posizioni);
-    let ultima = Math.max(...posizioni);
-
-    let primaPosizione =
-        (prima - 1 + ordine.length) % ordine.length;
-
-    let dopoPosizione =
-        (ultima + 1) % ordine.length;
-
     /*
-        Se le normali sono Q K,
+        Cerchiamo tutte le sequenze possibili
+        della lunghezza della combinazione.
 
-        il Jolly può stare:
-
-        Q K Jolly
-
-        oppure
-
-        Jolly Q K
-
-        quindi lasciamo scegliere il giocatore.
+        Per ogni sequenza controlliamo se:
+        - tutte le carte normali sono presenti
+        - esiste esattamente un buco
+        - quel buco può essere occupato
+          dallo speciale
     */
 
-    if(
-        primaPosizione !== dopoPosizione &&
-        speciali.length === 1
+    let posizioniValide = [];
+
+    for(
+        let partenza = 0;
+        partenza < ordine.length;
+        partenza++
     ){
 
-        /*
-            Controlliamo entrambe le possibilità.
-        */
+        let sequenza = [];
 
-        let sinistra = [
-            speciali[0],
-            ...normali
-        ];
-
-        let destra = [
-            ...normali,
-            speciali[0]
-        ];
-
-        if(
-            combinazioneValida(sinistra) &&
-            combinazioneValida(destra)
+        for(
+            let i = 0;
+            i < normali.length + 1;
+            i++
         ){
 
-            deveSceglierePosizione = true;
+            sequenza.push(
+                (partenza + i) % ordine.length
+            );
 
         }
+
+        let tuttePresenti =
+            posizioni.every(pos =>
+                sequenza.includes(pos)
+            );
+
+        if(!tuttePresenti){
+            continue;
+        }
+
+        let posizioniPresenti =
+            new Set(posizioni);
+
+        let buchi =
+            sequenza.filter(pos =>
+                !posizioniPresenti.has(pos)
+            );
+
+        /*
+            Con un solo speciale deve esserci
+            esattamente un buco.
+        */
+
+        if(buchi.length === 1){
+
+            /*
+                Costruiamo la combinazione
+                sostituendo temporaneamente
+                il buco con lo speciale.
+            */
+
+            let combinazioneTest = [];
+
+            for(let posizione of sequenza){
+
+                let cartaNormale =
+                    normali.find(c =>
+                        ordine.indexOf(c.valore) === posizione
+                    );
+
+                if(cartaNormale){
+
+                    combinazioneTest.push(
+                        cartaNormale
+                    );
+
+                }else{
+
+                    combinazioneTest.push(
+                        speciali[0]
+                    );
+
+                }
+
+            }
+
+            /*
+                Se la combinazione è valida,
+                questa è una posizione possibile.
+            */
+
+            if(combinazioneValida(combinazioneTest)){
+
+                posizioniValide.push(
+                    sequenza
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /*
+        UNA SOLA POSIZIONE POSSIBILE
+        =============================
+
+        Esempio:
+
+        A Jolly 4 5
+
+        → il Jolly deve essere 3
+        → nessun popup
+    */
+
+    if(posizioniValide.length === 1){
+
+        deveSceglierePosizione = false;
+
+    }
+
+
+    /*
+        PIÙ POSIZIONI POSSIBILI
+        =======================
+
+        In questo caso lasciamo scegliere
+        il giocatore tramite il popup.
+    */
+
+    if(posizioniValide.length > 1){
+
+        deveSceglierePosizione = true;
 
     }
 
@@ -4696,6 +4981,207 @@ if(modalitaGioco === "online"){
 
 }
 
+function rubaCartaSpeciale(){
+
+    if(!cartaRubabileSelezionata){
+        return;
+    }
+
+
+    let carta =
+        cartaRubabileSelezionata;
+
+    let gruppo =
+        combinazioneRubabileSelezionata;
+
+
+    // =========================
+    // CONTROLLO PINELLA
+    // =========================
+
+    if(
+        carta.pinella === true &&
+        proprietarioCombinazioneRubabile !== "io"
+    ){
+
+        alert(
+            "La Pinella può essere rubata solo dalla propria combinazione."
+        );
+
+        return;
+
+    }
+
+
+    // =========================
+    // CONTROLLO JOLLY / PINELLA
+    // =========================
+
+    if(
+        carta.valore !== "Jolly" &&
+        carta.pinella !== true
+    ){
+
+        return;
+
+    }
+
+
+    // =========================
+    // CONTROLLO TURNO
+    // =========================
+
+    if(modalitaGioco === "cpu"){
+
+        if(partitaCPU.turno !== "giocatore"){
+            alert("Non è il tuo turno.");
+            return;
+        }
+
+    }
+
+
+    if(modalitaGioco === "online"){
+
+        let mioNumero =
+            mioGiocatore === "giocatore1"
+            ? 1
+            : 2;
+
+        if(Number(partita.turno) !== mioNumero){
+
+            alert("Non è il tuo turno.");
+
+            return;
+
+        }
+
+        if(!hoPescato){
+
+            alert("Prima devi pescare.");
+
+            return;
+
+        }
+
+    }
+
+
+    // =========================
+    // RIMUOVE DALLA COMBINAZIONE
+    // =========================
+
+    let indice =
+        gruppo.carte.indexOf(carta);
+
+
+    if(indice === -1){
+
+        alert("Carta non trovata nella combinazione.");
+
+        return;
+
+    }
+
+
+    gruppo.carte.splice(indice, 1);
+
+
+    // =========================
+    // AGGIUNGE ALLA MANO
+    // =========================
+
+    mano.push(carta);
+
+
+    // =========================
+    // CARTA OBBLIGATORIA
+    // =========================
+
+    cartaRubataObbligatoria = carta;
+
+
+    // =========================
+    // RESET SELEZIONE
+    // =========================
+
+    cartaRubabileSelezionata = null;
+
+    combinazioneRubabileSelezionata = null;
+
+    proprietarioCombinazioneRubabile = null;
+
+
+    // =========================
+    // AGGIORNA CPU
+    // =========================
+
+    if(modalitaGioco === "cpu"){
+
+        partitaCPU.giocatore = mano;
+
+    }
+
+
+    // =========================
+    // RIMUOVE EVENTUALE
+    // COMBINAZIONE VUOTA
+    // =========================
+
+    if(gruppo.carte.length === 0){
+
+        if(
+            modalitaGioco === "cpu" &&
+            combinazioniCPU.includes(gruppo)
+        ){
+
+            combinazioniCPU =
+                combinazioniCPU.filter(
+                    c => c !== gruppo
+                );
+
+        }
+
+        else{
+
+            combinazioni =
+                combinazioni.filter(
+                    c => c !== gruppo
+                );
+
+        }
+
+    }
+
+
+    // =========================
+    // AGGIORNA SCHERMO
+    // =========================
+
+    mostraMano();
+
+    mostraCombinazioni();
+
+
+    if(modalitaGioco === "cpu"){
+
+        mostraCombinazioniCPU();
+
+    }
+
+
+    console.log(
+        "🃏 CARTA RUBATA:",
+        carta
+    );
+
+    console.log(
+        "🟡 ORA È OBBLIGATORIA:",
+        cartaRubataObbligatoria
+    );
+
+}
+
 function mostraCombinazioni(){
 
     let area = document.getElementById("mieCombinazioni");
@@ -4731,57 +5217,92 @@ function mostraCombinazioni(){
             let c = document.createElement("div");
 
             c.className = "carta-mano carta-calata";
+            
+// =========================
+// CARTA RUBABILE
+// =========================
+
+if(
+    carta.valore === "Jolly" ||
+    carta.pinella === true
+){
+
+    c.style.cursor = "pointer";
+
+    c.onclick = function(event){
+
+        event.stopPropagation();
+
+        cartaRubabileSelezionata = carta;
+
+        combinazioneRubabileSelezionata = gruppo;
+
+        proprietarioCombinazioneRubabile = "io";
+
+        console.log(
+            "🟡 CARTA RUBABILE SELEZIONATA:",
+            carta
+        );
+
+        console.log(
+            "🟡 COMBINAZIONE:",
+            gruppo
+        );
+
+    };
+
+}
 
 
-            let immagine = nomeImmagineCarta(carta);
+let immagine = nomeImmagineCarta(carta);
 
-            let colore =
-                (carta.seme === "♥" || carta.seme === "♦")
-                ? "rosso"
-                : "nero";
-
-
-            if(carta.valore === "Jolly"){
-
-                c.innerHTML = `
-                    <div class="cartaValore jolly">
-                        JOLLY
-                    </div>
-
-                    <div class="cartaSeme jolly">
-                        🃏
-                    </div>
-                `;
-
-            }else{
-
-                c.innerHTML = `
-                    <div class="cartaAngolo cartaAlto ${colore}">
-                        <div>${carta.valore}</div>
-                        <div>${carta.seme}</div>
-                    </div>
-
-                    <div class="cartaSemeCentro ${colore}">
-                        ${carta.seme}
-                    </div>
-
-                    <div class="cartaAngolo cartaBasso ${colore}">
-                        <div>${carta.valore}</div>
-                        <div>${carta.seme}</div>
-                    </div>
-                `;
-
-            }
+let colore =
+    (carta.seme === "♥" || carta.seme === "♦")
+    ? "rosso"
+    : "nero";
 
 
-            div.appendChild(c);
+if(carta.valore === "Jolly"){
 
-        });
+    c.innerHTML = `
+        <div class="cartaValore jolly">
+            JOLLY
+        </div>
+
+        <div class="cartaSeme jolly">
+            🃏
+        </div>
+    `;
+
+}else{
+
+    c.innerHTML = `
+        <div class="cartaAngolo cartaAlto ${colore}">
+            <div>${carta.valore}</div>
+            <div>${carta.seme}</div>
+        </div>
+
+        <div class="cartaSemeCentro ${colore}">
+            ${carta.seme}
+        </div>
+
+        <div class="cartaAngolo cartaBasso ${colore}">
+            <div>${carta.valore}</div>
+            <div>${carta.seme}</div>
+        </div>
+    `;
+
+}
 
 
-        area.appendChild(div);
+div.appendChild(c);
 
-    });
+});
+
+
+area.appendChild(div);
+
+});
 
 }
 
@@ -6576,6 +7097,59 @@ function mostraCombinazioniAvversarioOnline(){
 
             c.className =
                 "carta-mano carta-calata";
+                
+                c.onclick = function(){
+
+    if(carta.valore === "Jolly"){
+
+        cartaSpecialeSelezionata = carta;
+        combinazioneSpecialeSelezionata = gruppo;
+        proprietarioSpeciale = "avversario";
+
+        console.log(
+            "🃏 JOLLY AVVERSARIO SELEZIONATO:",
+            carta,
+            gruppo
+        );
+
+    }
+
+};
+                
+                // =========================
+// CARTA RUBABILE AVVERSARIO
+// =========================
+
+if(
+    carta.valore === "Jolly" ||
+    carta.pinella === true
+){
+
+    c.style.cursor = "pointer";
+
+    c.onclick = function(event){
+
+        event.stopPropagation();
+
+        cartaRubabileSelezionata = carta;
+
+        combinazioneRubabileSelezionata = gruppo;
+
+        proprietarioCombinazioneRubabile = "avversario";
+
+        console.log(
+            "🟡 CARTA RUBABILE AVVERSARIO:",
+            carta
+        );
+
+        console.log(
+            "🟡 COMBINAZIONE AVVERSARIA:",
+            gruppo
+        );
+
+    };
+
+}
 
             let colore =
                 (carta.seme === "♥" ||
