@@ -2725,7 +2725,10 @@ function stessaCarta(a, b){
 }
 
 
-function puoUtilizzareCartaObbligatoria(carta){
+function puoUtilizzareCartaObbligatoria(
+    carta,
+    carteDaPrendere = []
+){
 
     if(!carta){
         return false;
@@ -2750,13 +2753,66 @@ function puoUtilizzareCartaObbligatoria(carta){
 
 
     // =====================================
-    // 2. PUÒ FORMARE UNA NUOVA SCALA
-    //    CON LE CARTE IN MANO?
+    // 2. CARTE DISPONIBILI PER LA NUOVA SCALA
     // =====================================
 
-    let altreCarte = partitaCPU.giocatore.filter(c =>
-        c !== carta
-    );
+    /*
+        Oltre alla carta obbligatoria,
+        consideriamo TUTTE le carte che verranno
+        prese dal monte scarti.
+
+        Esempio:
+
+        SCARTI:
+        4❤️ → 7♣️ → 6❤️
+
+        MANO:
+        5❤️
+
+        carta obbligatoria = 4❤️
+
+        carteDaPrendere =
+        4❤️, 7♣️, 6❤️
+
+        Le carte disponibili per creare
+        una nuova scala saranno quindi:
+
+        5❤️ + 7♣️ + 6❤️
+
+        mentre 4❤️ viene aggiunta
+        obbligatoriamente alla combinazione.
+    */
+
+
+    let manoDisponibile =
+        [...partitaCPU.giocatore];
+
+
+    /*
+        Aggiungiamo le carte prese dagli scarti,
+        evitando di aggiungere nuovamente
+        la carta obbligatoria.
+    */
+
+    for(let c of carteDaPrendere){
+
+        if(c === carta){
+            continue;
+        }
+
+        manoDisponibile.push(c);
+
+    }
+
+
+    // =====================================
+    // 3. CERCA UNA NUOVA SCALA
+    // =====================================
+
+    let altreCarte =
+        manoDisponibile.filter(c =>
+            c !== carta
+        );
 
 
     /*
@@ -2787,13 +2843,21 @@ function puoUtilizzareCartaObbligatoria(carta){
         }
 
 
-        for(let i = indice; i < altreCarte.length; i++){
+        for(
+            let i = indice;
+            i < altreCarte.length;
+            i++
+        ){
 
-            scelte.push(altreCarte[i]);
+            scelte.push(
+                altreCarte[i]
+            );
+
 
             if(cerca(i + 1, scelte)){
                 return true;
             }
+
 
             scelte.pop();
 
@@ -2857,6 +2921,13 @@ function prendiDalMazzoScarti(indice){
 
     let cartaObbligatoria =
         partitaCPU.scarti[indice];
+        
+        // ==========================================
+// CARTE CHE VERRANNO PRESE DAL MONTE SCARTI
+// ==========================================
+
+let carteDaPrendere =
+    partitaCPU.scarti.slice(indice);
 
 
     /*
@@ -2872,7 +2943,12 @@ function prendiDalMazzoScarti(indice){
         NON PRENDIAMO NESSUNA CARTA.
     */
 
-    if(!puoUtilizzareCartaObbligatoria(cartaObbligatoria)){
+if(
+    !puoUtilizzareCartaObbligatoria(
+        cartaObbligatoria,
+        carteDaPrendere
+    )
+){
 
         alert(
             "Non puoi prendere questi scarti: " +
