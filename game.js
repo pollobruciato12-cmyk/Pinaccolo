@@ -26,6 +26,11 @@ let combinazioni = [];
 let haPresoScartiOnline = false;
 let cartaObbligatoriaOnline = null;
 
+let cartaDragElemento = null;
+let cartaDragAttiva = false;
+
+let combinazioneDragSelezionata = null;
+
 let cartaSpecialeSelezionata = null;
 let combinazioneSpecialeSelezionata = null;
 let proprietarioSpeciale = null;
@@ -2538,172 +2543,168 @@ function controllaCPU(){
 
             });
 
-            aggiornaNumeroCarteCPU();
-            mostraCombinazioniCPU();
+aggiornaNumeroCarteCPU();  
+        mostraCombinazioniCPU();  
 
-            console.log(
-                "🤖 CPU ha calato una scala:",
-                scala.carte
-            );
+        console.log(  
+            "🤖 CPU ha calato una scala:",  
+            scala.carte  
+        );  
 
-            combinazioneTrovata = true;
+        combinazioneTrovata = true;  
 
-        }
+    }  
 
-    }
+}  
 
-    console.log(
-        "🤖 CPU ha finito di cercare scale"
-    );
+console.log(  
+    "🤖 CPU ha finito di cercare scale"  
+);
 
 }
 
 function aggiornaTurnoCPU(){
 
-    let mio = document.getElementById("turnoMio");
-    let cpu = document.getElementById("turnoCPU");
+let mio = document.getElementById("turnoMio");  
+let cpu = document.getElementById("turnoCPU");  
 
 
-    if(partitaCPU.turno === "giocatore"){
+if(partitaCPU.turno === "giocatore"){  
 
-        mio.style.display = "flex";
-        cpu.style.display = "none";
+    mio.style.display = "flex";  
+    cpu.style.display = "none";  
 
-    }else{
+}else{  
 
-        mio.style.display = "none";
-        cpu.style.display = "flex";
-
-    }
+    mio.style.display = "none";  
+    cpu.style.display = "flex";  
 
 }
 
-
+}
 
 function mostraScarti(){
 
-    let area = document.getElementById("scarti");
+let area = document.getElementById("scarti");  
 
-    area.innerHTML = "";
+area.innerHTML = "";  
 
 
-    let listaScarti = modalitaGioco === "cpu"
-        ? partitaCPU.scarti
-        : scarti;
-        
-        console.log(
-    "🃏 NUMERO SCARTI:",
-    listaScarti.length,
-    listaScarti
+let listaScarti = modalitaGioco === "cpu"  
+    ? partitaCPU.scarti  
+    : scarti;  
+      
+    console.log(  
+"🃏 NUMERO SCARTI:",  
+listaScarti.length,  
+listaScarti
+
 );
 
+listaScarti.forEach((carta, indice) => {  
 
-    listaScarti.forEach((carta, indice) => {
+    let div = document.createElement("div");  
 
-        let div = document.createElement("div");
-
-        div.className = "carta-mano carta-scarto";
-
-
-        /*
-            =========================
-            COLORE
-            =========================
-        */
-
-        let colore =
-            (carta.seme === "♥" || carta.seme === "♦")
-            ? "rosso"
-            : "nero";
+    div.className = "carta-mano carta-scarto";  
 
 
-        /*
-            =========================
-            CONTENUTO CARTA
-            UGUALE ALLA MANO
-            =========================
-        */
+    /*  
+        =========================  
+        COLORE  
+        =========================  
+    */  
 
-        if(carta.valore === "Jolly"){
-
-            div.innerHTML = `
-                <div class="cartaValore jolly">
-                    JOLLY
-                </div>
-
-                <div class="cartaSeme jolly">
-                    🃏
-                </div>
-            `;
-
-        }else{
-
-            div.innerHTML = `
-                <div class="cartaAngolo cartaAlto ${colore}">
-                    <div>${carta.valore}</div>
-                    <div>${carta.seme}</div>
-                </div>
-
-                <div class="cartaSemeCentro ${colore}">
-                    ${carta.seme}
-                </div>
-
-                <div class="cartaAngolo cartaBasso ${colore}">
-                    <div>${carta.valore}</div>
-                    <div>${carta.seme}</div>
-                </div>
-            `;
-
-        }
+    let colore =  
+        (carta.seme === "♥" || carta.seme === "♦")  
+        ? "rosso"  
+        : "nero";  
 
 
-        /*
-            =========================
-            CLIC SUL MONTE SCARTI
-            =========================
-        */
+    /*  
+        =========================  
+        CONTENUTO CARTA  
+        UGUALE ALLA MANO  
+        =========================  
+    */  
+
+    if(carta.valore === "Jolly"){  
+
+        div.innerHTML = `  
+            <div class="cartaValore jolly">  
+                JOLLY  
+            </div>  
+
+            <div class="cartaSeme jolly">  
+                🃏  
+            </div>  
+        `;  
+
+    }else{  
+
+        div.innerHTML = `  
+            <div class="cartaAngolo cartaAlto ${colore}">  
+                <div>${carta.valore}</div>  
+                <div>${carta.seme}</div>  
+            </div>  
+
+            <div class="cartaSemeCentro ${colore}">  
+                ${carta.seme}  
+            </div>  
+
+            <div class="cartaAngolo cartaBasso ${colore}">  
+                <div>${carta.valore}</div>  
+                <div>${carta.seme}</div>  
+            </div>  
+        `;  
+
+    }  
+
+
+    /*  
+        =========================  
+        CLIC SUL MONTE SCARTI  
+        =========================  
+    */
 
 div.onclick = function(event){
 
-    alert("CLICK MONTE SCARTI");
+alert("CLICK MONTE SCARTI");  
 
-    event.stopPropagation();
+event.stopPropagation();  
 
 
-    if(modalitaGioco === "cpu"){
+if(modalitaGioco === "cpu"){  
 
-        prendiDalMazzoScarti(indice);
+    prendiDalMazzoScarti(indice);  
 
-    }else{
+}else{  
 
-        prendiScartiOnline(indice);
+    prendiScartiOnline(indice);  
 
-    }
+}
 
 };
 
+area.appendChild(div);  
 
-        area.appendChild(div);
-
-    });
-
+});
 
 /*
-    =========================
-    MONTE SCARTI
-    SOVRAPPOSIZIONE FISSA
-    =========================
+=========================
+MONTE SCARTI
+SOVRAPPOSIZIONE FISSA
+=========================
 */
 
 let carteScarto =
-    document.querySelectorAll("#scarti .carta-scarto");
+document.querySelectorAll("#scarti .carta-scarto");
 
 carteScarto.forEach((carta, indice) => {
 
-    carta.style.flexShrink = "0";
-    carta.style.marginLeft = indice === 0 ? "0px" : "-42px";
-    carta.style.position = "relative";
-    carta.style.zIndex = indice + 1;
+carta.style.flexShrink = "0";  
+carta.style.marginLeft = indice === 0 ? "0px" : "-42px";  
+carta.style.position = "relative";  
+carta.style.zIndex = indice + 1;
 
 });
 
@@ -2711,1531 +2712,1778 @@ carteScarto.forEach((carta, indice) => {
 
 function stessaCarta(a, b){
 
-    if(!a || !b){
-        return false;
-    }
+if(!a || !b){  
+    return false;  
+}  
 
-    return (
-        a.valore === b.valore &&
-        a.seme === b.seme &&
-        a.colore === b.colore &&
-        a.pinella === b.pinella
-    );
+return (  
+    a.valore === b.valore &&  
+    a.seme === b.seme &&  
+    a.colore === b.colore &&  
+    a.pinella === b.pinella  
+);
 
 }
 
-
 function puoUtilizzareCartaObbligatoria(
-    carta,
-    carteDaPrendere = []
+carta,
+carteDaPrendere = []
 ){
 
-    if(!carta){
-        return false;
-    }
+if(!carta){  
+    return false;  
+}  
 
 
-    // =====================================
-    // 1. PUÒ ESSERE AGGIUNTA A UNA SCALA?
-    // =====================================
+// =====================================  
+// 1. PUÒ ESSERE AGGIUNTA A UNA SCALA?  
+// =====================================  
 
-    for(let combinazione of combinazioni){
+for(let combinazione of combinazioni){  
 
-        if(combinazione.tipo !== "scala"){
-            continue;
-        }
+    if(combinazione.tipo !== "scala"){  
+        continue;  
+    }  
 
-        if(puoAggiungereCarta(carta, combinazione)){
-            return true;
-        }
+    if(puoAggiungereCarta(carta, combinazione)){  
+        return true;  
+    }  
 
-    }
-
-
-    // =====================================
-    // 2. CARTE DISPONIBILI PER LA NUOVA SCALA
-    // =====================================
-
-    /*
-        Oltre alla carta obbligatoria,
-        consideriamo TUTTE le carte che verranno
-        prese dal monte scarti.
-
-        Esempio:
-
-        SCARTI:
-        4❤️ → 7♣️ → 6❤️
-
-        MANO:
-        5❤️
-
-        carta obbligatoria = 4❤️
-
-        carteDaPrendere =
-        4❤️, 7♣️, 6❤️
-
-        Le carte disponibili per creare
-        una nuova scala saranno quindi:
-
-        5❤️ + 7♣️ + 6❤️
-
-        mentre 4❤️ viene aggiunta
-        obbligatoriamente alla combinazione.
-    */
+}  
 
 
-    let manoDisponibile =
-        [...partitaCPU.giocatore];
+// =====================================  
+// 2. CARTE DISPONIBILI PER LA NUOVA SCALA  
+// =====================================  
+
+/*  
+    Oltre alla carta obbligatoria,  
+    consideriamo TUTTE le carte che verranno  
+    prese dal monte scarti.  
+
+    Esempio:  
+
+    SCARTI:  
+    4❤️ → 7♣️ → 6❤️  
+
+    MANO:  
+    5❤️  
+
+    carta obbligatoria = 4❤️  
+
+    carteDaPrendere =  
+    4❤️, 7♣️, 6❤️  
+
+    Le carte disponibili per creare  
+    una nuova scala saranno quindi:  
+
+    5❤️ + 7♣️ + 6❤️  
+
+    mentre 4❤️ viene aggiunta  
+    obbligatoriamente alla combinazione.  
+*/  
 
 
-    /*
-        Aggiungiamo le carte prese dagli scarti,
-        evitando di aggiungere nuovamente
-        la carta obbligatoria.
-    */
-
-    for(let c of carteDaPrendere){
-
-        if(c === carta){
-            continue;
-        }
-
-        manoDisponibile.push(c);
-
-    }
+let manoDisponibile =  
+    [...partitaCPU.giocatore];  
 
 
-    // =====================================
-    // 3. CERCA UNA NUOVA SCALA
-    // =====================================
+/*  
+    Aggiungiamo le carte prese dagli scarti,  
+    evitando di aggiungere nuovamente  
+    la carta obbligatoria.  
+*/  
 
-    let altreCarte =
-        manoDisponibile.filter(c =>
-            c !== carta
-        );
+for(let c of carteDaPrendere){  
 
+    if(c === carta){  
+        continue;  
+    }  
 
-    /*
-        Generiamo tutte le possibili combinazioni
-        contenenti la carta obbligatoria.
+    manoDisponibile.push(c);  
 
-        Una scala deve avere almeno 3 carte.
-    */
-
-    function cerca(indice, scelte){
-
-        if(scelte.length >= 2){
-
-            let combinazione = [
-                carta,
-                ...scelte
-            ];
-
-            if(combinazioneValida(combinazione)){
-                return true;
-            }
-
-        }
+}  
 
 
-        if(scelte.length >= 12){
-            return false;
-        }
+// =====================================  
+// 3. CERCA UNA NUOVA SCALA  
+// =====================================  
+
+let altreCarte =  
+    manoDisponibile.filter(c =>  
+        c !== carta  
+    );  
 
 
-        for(
-            let i = indice;
-            i < altreCarte.length;
-            i++
-        ){
+/*  
+    Generiamo tutte le possibili combinazioni  
+    contenenti la carta obbligatoria.  
 
-            scelte.push(
-                altreCarte[i]
-            );
+    Una scala deve avere almeno 3 carte.  
+*/  
 
+function cerca(indice, scelte){  
 
-            if(cerca(i + 1, scelte)){
-                return true;
-            }
+    if(scelte.length >= 2){  
 
+        let combinazione = [  
+            carta,  
+            ...scelte  
+        ];  
 
-            scelte.pop();
+        if(combinazioneValida(combinazione)){  
+            return true;  
+        }  
 
-        }
-
-        return false;
-
-    }
+    }  
 
 
-    return cerca(0, []);
+    if(scelte.length >= 12){  
+        return false;  
+    }  
+
+
+    for(  
+        let i = indice;  
+        i < altreCarte.length;  
+        i++  
+    ){  
+
+        scelte.push(  
+            altreCarte[i]  
+        );  
+
+
+        if(cerca(i + 1, scelte)){  
+            return true;  
+        }  
+
+
+        scelte.pop();  
+
+    }  
+
+    return false;  
+
+}  
+
+
+return cerca(0, []);
 
 }
 
 function prendiDalMazzoScarti(indice){
 
-    if(modalitaGioco !== "cpu"){
-        return;
-    }
+if(modalitaGioco !== "cpu"){  
+    return;  
+}  
 
 
-    if(partitaCPU.turno !== "giocatore"){
+if(partitaCPU.turno !== "giocatore"){  
 
-        alert("Non è il tuo turno");
+    alert("Non è il tuo turno");  
 
-        return;
+    return;  
 
-    }
-
-
-    if(partitaCPU.fase !== "pesca"){
-
-        alert("Hai già pescato");
-
-        return;
-
-    }
+}  
 
 
-    if(partitaCPU.scarti.length === 0){
+if(partitaCPU.fase !== "pesca"){  
 
-        alert("Non ci sono scarti");
+    alert("Hai già pescato");  
 
-        return;
+    return;  
 
-    }
+}  
 
 
-    /*
-        La carta scelta è la carta più vecchia
-        tra quelle che verranno raccolte.
+if(partitaCPU.scarti.length === 0){  
 
-        Esempio:
+    alert("Non ci sono scarti");  
 
-        3♠ → 4♥ → Q♦
+    return;  
 
-        indice 0 = prende tutte
-        indice 1 = prende 4♥ + Q♦
-        indice 2 = prende solo Q♦
-    */
+}  
 
-    let cartaObbligatoria =
-        partitaCPU.scarti[indice];
-        
-        // ==========================================
+
+/*  
+    La carta scelta è la carta più vecchia  
+    tra quelle che verranno raccolte.  
+
+    Esempio:  
+
+    3♠ → 4♥ → Q♦  
+
+    indice 0 = prende tutte  
+    indice 1 = prende 4♥ + Q♦  
+    indice 2 = prende solo Q♦  
+*/  
+
+let cartaObbligatoria =  
+    partitaCPU.scarti[indice];  
+      
+    // ==========================================
+
 // CARTE CHE VERRANNO PRESE DAL MONTE SCARTI
 // ==========================================
 
 let carteDaPrendere =
-    partitaCPU.scarti.slice(indice);
+partitaCPU.scarti.slice(indice);
 
+/*  
+    ==========================================  
+    CONTROLLO PREVENTIVO  
+    ==========================================  
 
-    /*
-        ==========================================
-        CONTROLLO PREVENTIVO
-        ==========================================
+    Prima di prendere gli scarti controlliamo  
+    se la carta obbligatoria può essere  
+    effettivamente utilizzata.  
 
-        Prima di prendere gli scarti controlliamo
-        se la carta obbligatoria può essere
-        effettivamente utilizzata.
-
-        Se non può essere utilizzata:
-        NON PRENDIAMO NESSUNA CARTA.
-    */
+    Se non può essere utilizzata:  
+    NON PRENDIAMO NESSUNA CARTA.  
+*/
 
 if(
-    !puoUtilizzareCartaObbligatoria(
-        cartaObbligatoria,
-        carteDaPrendere
-    )
+!puoUtilizzareCartaObbligatoria(
+cartaObbligatoria,
+carteDaPrendere
+)
 ){
 
-        alert(
-            "Non puoi prendere questi scarti: " +
-            "la prima carta che prenderesti " +
-            "non può essere utilizzata in nessuna scala valida."
-        );
+alert(  
+        "Non puoi prendere questi scarti: " +  
+        "la prima carta che prenderesti " +  
+        "non può essere utilizzata in nessuna scala valida."  
+    );  
 
-        return;
+    return;  
 
-    }
-
-
-    /*
-        ==========================================
-        PRENDIAMO GLI SCARTI
-        ==========================================
-    */
-
-    let cartePrese =
-        partitaCPU.scarti.splice(indice);
+}  
 
 
-    /*
-        Aggiunge le carte alla mano
-    */
+/*  
+    ==========================================  
+    PRENDIAMO GLI SCARTI  
+    ==========================================  
+*/  
 
-    partitaCPU.giocatore.push(...cartePrese);
-
-
-    /*
-        ==========================================
-        MEMORIZZA LA CARTA OBBLIGATORIA
-        ==========================================
-    */
-
-    partitaCPU.haPresoScarti = true;
-
-    partitaCPU.cartaObbligatoria =
-        cartaObbligatoria;
-
-    partitaCPU.cartaObbligatoriaUsata = false;
+let cartePrese =  
+    partitaCPU.scarti.splice(indice);  
 
 
-    /*
-        Dopo aver preso dagli scarti
-        deve ancora pescare UNA carta
-        dal mazzo.
-    */
+/*  
+    Aggiunge le carte alla mano  
+*/  
 
-    partitaCPU.carteDaPescare = 1;
+partitaCPU.giocatore.push(...cartePrese);  
 
 
-    /*
-        IMPORTANTISSIMO:
+/*  
+    ==========================================  
+    MEMORIZZA LA CARTA OBBLIGATORIA  
+    ==========================================  
+*/  
 
-        Rimaniamo nella fase "pesca".
+partitaCPU.haPresoScarti = true;  
 
-        Quindi:
+partitaCPU.cartaObbligatoria =  
+    cartaObbligatoria;  
 
-        SCARTI → CALA
-
-        viene automaticamente bloccato.
-
-        Prima deve fare:
-
-        SCARTI → PESCA DAL MAZZO
-    */
-
-    partitaCPU.fase = "pesca";
+partitaCPU.cartaObbligatoriaUsata = false;  
 
 
-    mano = partitaCPU.giocatore;
+/*  
+    Dopo aver preso dagli scarti  
+    deve ancora pescare UNA carta  
+    dal mazzo.  
+*/  
+
+partitaCPU.carteDaPescare = 1;  
 
 
-    mostraMano();
+/*  
+    IMPORTANTISSIMO:  
 
-    mostraScarti();
+    Rimaniamo nella fase "pesca".  
+
+    Quindi:  
+
+    SCARTI → CALA  
+
+    viene automaticamente bloccato.  
+
+    Prima deve fare:  
+
+    SCARTI → PESCA DAL MAZZO  
+*/  
+
+partitaCPU.fase = "pesca";  
 
 
-    console.log(
-        "🗑️ Carte prese dagli scarti:",
-        cartePrese
-    );
+mano = partitaCPU.giocatore;  
 
-    console.log(
-        "🔴 Carta obbligatoria:",
-        cartaObbligatoria
-    );
+
+mostraMano();  
+
+mostraScarti();  
+
+
+console.log(  
+    "🗑️ Carte prese dagli scarti:",  
+    cartePrese  
+);  
+
+console.log(  
+    "🔴 Carta obbligatoria:",  
+    cartaObbligatoria  
+);
 
 }
 
 function generaCodice(){
 
-    let lettere = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+let lettere = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";  
 
-    let codice = "";
+let codice = "";  
 
-    for(let i = 0; i < 6; i++){
+for(let i = 0; i < 6; i++){  
 
-        codice += lettere[
-            Math.floor(Math.random()*lettere.length)
-        ];
+    codice += lettere[  
+        Math.floor(Math.random()*lettere.length)  
+    ];  
 
-    }
+}  
 
-    return codice;
+return codice;
 
 }
 
 function cambiaTurno(){
 
-    giocatoreAttivo++;
+giocatoreAttivo++;  
 
-    if(giocatoreAttivo >= giocatori.length){
+if(giocatoreAttivo >= giocatori.length){  
 
-        giocatoreAttivo = 0;
+    giocatoreAttivo = 0;  
 
-    }
+}  
 
-    console.log(
-        "Turno di:",
-        giocatori[giocatoreAttivo].nome
-    );
+console.log(  
+    "Turno di:",  
+    giocatori[giocatoreAttivo].nome  
+);
 
 }
 
 function creaMazzo(){
 
-    mazzo = [];
+mazzo = [];  
 
 
-    for(let partita = 0; partita < 2; partita++){
-      let coloreJolly = partita === 0 ? "rosso" : "blu";
+for(let partita = 0; partita < 2; partita++){  
+  let coloreJolly = partita === 0 ? "rosso" : "blu";  
 
 
-        for(let seme of semi){
-
+    for(let seme of semi){
 
 for(let valore of valori){
 
-    // niente 2 di cuori e 2 di quadri
-    if(valore === "2" && (seme === "♥" || seme === "♦")){
-        continue;
-    }
+// niente 2 di cuori e 2 di quadri  
+if(valore === "2" && (seme === "♥" || seme === "♦")){  
+    continue;  
+}  
 
 
-    mazzo.push({
+mazzo.push({  
 
-        valore: valore,
+    valore: valore,  
 
-        seme: seme,
+    seme: seme,  
 
-        pinella:
-        valore === "2" && (seme === "♠" || seme === "♣")
+    pinella:  
+    valore === "2" && (seme === "♠" || seme === "♣")  
 
-    });
+});
 
 }
 
-        }
-
+}
 
 // Jolly
 
 mazzo.push({
 
-    valore:"Jolly",
+valore:"Jolly",  
 
-    seme:"⭐",
+seme:"⭐",
 
 colore: coloreJolly
 
 });
-
 
 mazzo.push({
 
-    valore:"Jolly",
+valore:"Jolly",  
 
-    seme:"⭐",
+seme:"⭐",
 
 colore: coloreJolly
 
 });
 
-
-    }
-
-
-
-
+}
 
 console.log("Totale carte:", mazzo.length);
 
 console.log(
-    "Jolly creati:",
-    mazzo.filter(c => c.valore === "Jolly")
+"Jolly creati:",
+mazzo.filter(c => c.valore === "Jolly")
 );
-    mescola();
+mescola();
 
 }
 
 function mescola(){
 
-    mazzo.sort(()=>Math.random()-0.5);
+mazzo.sort(()=>Math.random()-0.5);
 
 }
-
-
 
 function distribuisci(){
 
-    mano = [];
+mano = [];  
 
-    for(let i=0;i<15;i++){
+for(let i=0;i<15;i++){  
 
-        mano.push(mazzo.pop());
+    mano.push(mazzo.pop());  
 
-    }
+}  
 
-    mostraMano();
+mostraMano();
 
 }
 
-
 function distribuisciGiocatori(){
 
-    for(let giocatore of giocatori){
+for(let giocatore of giocatori){  
 
-        giocatore.mano = [];
+    giocatore.mano = [];  
 
-        for(let i = 0; i < 15; i++){
+    for(let i = 0; i < 15; i++){  
 
-            giocatore.mano.push(mazzo.pop());
+        giocatore.mano.push(mazzo.pop());  
 
-        }
+    }  
 
-    }
+}
 
 }
 
 function ordinaManoIniziale(){
 
-    const ordineSemi = {
-        "♠": 0,
-        "♣": 1,
-        "♥": 2,
-        "♦": 3
-    };
-
-    const ordineValori = {
-        "A": 0,
-        "3": 1,
-        "4": 2,
-        "5": 3,
-        "6": 4,
-        "7": 5,
-        "8": 6,
-        "9": 7,
-        "10": 8,
-        "J": 9,
-        "Q": 10,
-        "K": 11
-    };
-
-    mano.sort((a, b) => {
-
-        // Jolly per primi
-        if(a.valore === "Jolly" && b.valore !== "Jolly"){
-            return -1;
-        }
-
-        if(a.valore !== "Jolly" && b.valore === "Jolly"){
-            return 1;
-        }
-
-        // Jolly con Jolly
-        if(a.valore === "Jolly" && b.valore === "Jolly"){
-            return 0;
-        }
-
-        // Pinelle dopo i Jolly
-        if(a.pinella === true && b.pinella !== true){
-            return -1;
-        }
-
-        if(a.pinella !== true && b.pinella === true){
-            return 1;
-        }
-
-        // Pinella con Pinella
-        if(a.pinella === true && b.pinella === true){
-            return 0;
-        }
-
-        // Prima il seme
-        let semeA = ordineSemi[a.seme];
-        let semeB = ordineSemi[b.seme];
-
-        if(semeA !== semeB){
-            return semeA - semeB;
-        }
-
-        // Poi il valore
-        return ordineValori[a.valore] - ordineValori[b.valore];
-
-    });
-
-}
-
-
-
-function mostraMano(){
-
-    let area = document.getElementById("mano");
-
-    area.innerHTML = "";
-
-    area.style.position = "relative";
-
-
-    // =========================
-    // SCROLL MANO OLTRE 22 CARTE
-    // =========================
-
-    if(mano.length > 22){
-
-        area.classList.add("scroll-attivo");
-
-    }else{
-
-        area.classList.remove("scroll-attivo");
-
-    }
-
-
-    /*
-        =========================
-        INDICATORE
-        =========================
-    */
-
-    let indicatore = document.createElement("div");
-
-    indicatore.id = "indicatoreInserimento";
-
-    indicatore.style.position = "absolute";
-    indicatore.style.width = "4px";
-    indicatore.style.height = "115px";
-    indicatore.style.background = "#00ff88";
-    indicatore.style.borderRadius = "5px";
-    indicatore.style.boxShadow =
-        "0 0 8px #00ff88, 0 0 18px #00ff88";
-
-    indicatore.style.display = "none";
-    indicatore.style.zIndex = "10000";
-    indicatore.style.pointerEvents = "none";
-
-    area.appendChild(indicatore);
-
-
-    /*
-        =========================
-        CREA LE CARTE
-        =========================
-    */
-
-    mano.forEach((carta, indice) => {
-
-        let div = document.createElement("div");
-
-        div.className = "carta-mano";
-
-
-        /*
-            =========================
-            COLORE
-            =========================
-        */
-
-        let colore =
-            carta.seme === "♥" ||
-            carta.seme === "♦"
-            ? "rosso"
-            : "nero";
-
-
-        /*
-            =========================
-            NOME IMMAGINE
-            =========================
-        */
-
-        let nomeCarta = "";
-
-
-        if(carta.valore === "Jolly"){
-
-            if(
-                carta.colore === "blu" ||
-                carta.colore === "rosso"
-            ){
-
-                nomeCarta =
-                    "jolly_" +
-                    carta.colore;
-
-            }else{
-
-                nomeCarta = "jolly";
-
-            }
-
-        }else{
-
-            /*
-                Conversione ASSO
-            */
-
-            let valoreImmagine =
-                carta.valore === "A"
-                ? "asso"
-                : carta.valore;
-
-
-            /*
-                Conversione SEME
-            */
-
-            let semeImmagine = "";
-
-            switch(carta.seme){
-
-                case "♥":
-                    semeImmagine = "cuori";
-                    break;
-
-                case "♦":
-                    semeImmagine = "quadri";
-                    break;
-
-                case "♣":
-                    semeImmagine = "fiori";
-                    break;
-
-                case "♠":
-                    semeImmagine = "picche";
-                    break;
-
-            }
-
-
-            nomeCarta =
-                valoreImmagine +
-                "_" +
-                semeImmagine;
-
-        }
-
-
-        /*
-            =========================
-            CREA IMMAGINE
-            =========================
-        */
-
-        let immagine =
-            document.createElement("img");
-
-        immagine.className =
-            "immagineCarta";
-
-        immagine.alt =
-            carta.valore === "Jolly"
-            ? "Jolly"
-            : carta.valore + " " + carta.seme;
-
-
-        /*
-            =========================
-            PROVA PNG
-            =========================
-        */
-
-        let percorsoPNG =
-            "images/carte/" +
-            nomeCarta +
-            ".png";
-
-
-        /*
-            =========================
-            FALLBACK JPG
-            =========================
-        */
-
-        let percorsoJPG =
-            "images/carte/" +
-            nomeCarta +
-            ".jpg";
-
-
-        immagine.src = percorsoPNG;
-
-
-        /*
-            Se PNG non esiste,
-            prova JPG.
-        */
-
-        immagine.onerror = function(){
-
-            if(
-                immagine.src.endsWith(".png")
-            ){
-
-                immagine.src =
-                    percorsoJPG;
-
-            }else{
-
-                /*
-                    =========================
-                    NESSUNA IMMAGINE
-                    =========================
-                */
-
-                immagine.remove();
-
-
-                if(carta.valore === "Jolly"){
-
-                    div.innerHTML = `
-                        <div class="cartaValore jolly">
-                            JOLLY
-                        </div>
-
-                        <div class="cartaSeme jolly">
-                            🃏
-                        </div>
-                    `;
-
-                }else{
-
-                    div.innerHTML = `
-                        <div class="cartaAngolo cartaAlto ${colore}">
-                            <div>${carta.valore}</div>
-                            <div>${carta.seme}</div>
-                        </div>
-
-                        <div class="cartaSemeCentro ${colore}">
-                            ${carta.seme}
-                        </div>
-
-                        <div class="cartaAngolo cartaBasso ${colore}">
-                            <div>${carta.valore}</div>
-                            <div>${carta.seme}</div>
-                        </div>
-                    `;
-
-                }
-
-            }
-
-        };
-
-
-        /*
-            Inserisce l'immagine
-        */
-
-        div.appendChild(immagine);
-
-
-        /*
-            =========================
-            SELEZIONE
-            =========================
-        */
-
-        div.onclick = function(){
-
-            if(div.dataset.trascinata === "true"){
-
-                div.dataset.trascinata = "false";
-
-                return;
-
-            }
-
-
-            let posizione =
-                carteSelezionate.indexOf(carta);
-
-
-            if(posizione === -1){
-
-                carteSelezionate.push(carta);
-
-                div.classList.add("selezionata");
-
-                div.style.zIndex = "9999";
-
-                div.style.transform =
-                    "translateY(-85px)";
-
-            }else{
-
-                carteSelezionate.splice(
-                    posizione,
-                    1
-                );
-
-                div.classList.remove(
-                    "selezionata"
-                );
-
-                div.style.transform =
-                    "translateY(0px)";
-
-
-                document
-                    .querySelectorAll(
-                        "#mano .carta-mano"
-                    )
-                    .forEach((c, i) => {
-
-                        c.style.zIndex = i + 1;
-
-                    });
-
-            }
-
-        };
-
-
-        /*
-            =========================
-            TRASCINAMENTO
-            =========================
-        */
-
-        div.style.touchAction = "none";
-
-        div.dataset.trascinata = "false";
-
-
-        let trascinamento = false;
-
-        let scrollMano = false;
-
-        let posizioneInizialeX = 0;
-
-        let posizioneInizialeY = 0;
-
-        let scrollIniziale = 0;
-
-        let posizioneCorrente = indice;
-
-
-        /*
-            =========================
-            POINTER DOWN
-            =========================
-        */
-
-        div.addEventListener(
-            "pointerdown",
-            function(event){
-
-                cartaTrascinata = carta;
-
-                indiceCartaTrascinata = indice;
-
-                posizioneCorrente = indice;
-
-                posizioneInizialeX =
-                    event.clientX;
-
-                posizioneInizialeY =
-                    event.clientY;
-
-                scrollIniziale =
-                    area.scrollLeft;
-
-                trascinamento = false;
-
-                scrollMano = false;
-
-                div.setPointerCapture(
-                    event.pointerId
-                );
-
-            }
-        );
-
-
-        /*
-            =========================
-            POINTER MOVE
-            =========================
-        */
-
-        div.addEventListener(
-            "pointermove",
-            function(event){
-
-                if(cartaTrascinata !== carta){
-                    return;
-                }
-
-
-                let distanzaX =
-                    event.clientX -
-                    posizioneInizialeX;
-
-
-                let distanzaY =
-                    event.clientY -
-                    posizioneInizialeY;
-
-
-                /*
-                    =========================
-                    DECIDIAMO SE SCROLLARE
-                    =========================
-                */
-
-                if(
-                    mano.length > 22 &&
-                    !trascinamento &&
-                    !scrollMano &&
-                    Math.abs(distanzaX) > 15 &&
-                    Math.abs(distanzaX) >
-                    Math.abs(distanzaY) * 1.3
-                ){
-
-                    scrollMano = true;
-
-                    indicatore.style.display =
-                        "none";
-
-                }
-
-
-                /*
-                    =========================
-                    SCROLL
-                    =========================
-                */
-
-                if(scrollMano){
-
-                    area.scrollLeft =
-                        scrollIniziale -
-                        distanzaX;
-
-                    return;
-
-                }
-
-
-                /*
-                    =========================
-                    DISTANZA MINIMA
-                    =========================
-                */
-
-                if(
-                    Math.abs(distanzaX) < 10
-                ){
-                    return;
-                }
-
-
-                /*
-                    =========================
-                    TRASCINAMENTO CARTA
-                    =========================
-                */
-
-                trascinamento = true;
-
-                div.dataset.trascinata =
-                    "true";
-
-
-                /*
-                    SOLLEVA LA CARTA
-                */
-
-                div.style.zIndex =
-                    "9999";
-
-                div.style.transform =
-                    "translateY(-30px) scale(1.05)";
-
-
-                /*
-                    =========================
-                    TROVIAMO LE CARTE
-                    =========================
-                */
-
-                let carteDOM =
-                    Array.from(
-                        document.querySelectorAll(
-                            "#mano .carta-mano"
-                        )
-                    );
-
-
-                let altreCarte =
-                    carteDOM.filter(
-                        c => c !== div
-                    );
-
-
-                if(altreCarte.length === 0){
-
-                    posizioneCorrente = 0;
-
-                    indicatore.style.display =
-                        "none";
-
-                    return;
-
-                }
-
-
-                /*
-                    =========================
-                    CENTRI DELLE CARTE
-                    =========================
-                */
-
-                let centri =
-                    altreCarte.map(c => {
-
-                        let rect =
-                            c.getBoundingClientRect();
-
-                        return {
-
-                            x:
-                                rect.left +
-                                rect.width / 2,
-
-                            left:
-                                rect.left,
-
-                            right:
-                                rect.right
-
-                        };
-
-                    });
-
-
-                /*
-                    =========================
-                    CERCA LO SLOT
-                    =========================
-                */
-
-                let slot =
-                    altreCarte.length;
-
-                let posizioneIndicatore =
-                    null;
-
-
-                if(
-                    event.clientX <
-                    centri[0].x
-                ){
-
-                    slot = 0;
-
-                    posizioneIndicatore =
-                        centri[0].left;
-
-                }else{
-
-                    for(
-                        let i = 0;
-                        i < centri.length;
-                        i++
-                    ){
-
-                        if(
-                            event.clientX <
-                            centri[i].x
-                        ){
-
-                            slot = i;
-
-                            posizioneIndicatore =
-                                centri[i].left;
-
-                            break;
-
-                        }
-
-                    }
-
-
-                    if(
-                        posizioneIndicatore ===
-                        null
-                    ){
-
-                        slot =
-                            altreCarte.length;
-
-                        posizioneIndicatore =
-                            centri[
-                                centri.length - 1
-                            ].right;
-
-                    }
-
-                }
-
-
-                /*
-                    =========================
-                    INDICATORE
-                    =========================
-                */
-
-                let areaRect =
-                    area.getBoundingClientRect();
-
-
-                indicatore.style.left =
-                    (
-                        posizioneIndicatore -
-                        areaRect.left -
-                        2
-                    ) + "px";
-
-
-                indicatore.style.top =
-                    "0px";
-
-
-                indicatore.style.display =
-                    "block";
-
-
-                posizioneCorrente =
-                    slot;
-
-            }
-        );
-
-
-        /*
-            =========================
-            RILASCIO
-            =========================
-        */
-
-        div.addEventListener(
-            "pointerup",
-            function(event){
-
-                /*
-                    =========================
-                    FINE SCROLL
-                    =========================
-                */
-
-                if(scrollMano){
-
-                    indicatore.style.display =
-                        "none";
-
-                    cartaTrascinata = null;
-
-                    indiceCartaTrascinata = null;
-
-                    scrollMano = false;
-
-                    trascinamento = false;
-
-                    div.dataset.trascinata =
-                        "false";
-
-                    return;
-
-                }
-
-
-                /*
-                    =========================
-                    NON È TRASCINAMENTO
-                    =========================
-                */
-
-                if(!trascinamento){
-
-                    cartaTrascinata = null;
-
-                    indiceCartaTrascinata = null;
-
-                    return;
-
-                }
-
-
-                indicatore.style.display =
-                    "none";
-
-
-                /*
-                    =========================
-                    RIMUOVE LA CARTA
-                    =========================
-                */
-
-                let cartaSpostata =
-                    mano.splice(
-                        indiceCartaTrascinata,
-                        1
-                    )[0];
-
-
-                let nuovoIndice =
-                    posizioneCorrente;
-
-
-                nuovoIndice =
-                    Math.max(
-                        0,
-                        Math.min(
-                            nuovoIndice,
-                            mano.length
-                        )
-                    );
-
-
-                mano.splice(
-                    nuovoIndice,
-                    0,
-                    cartaSpostata
-                );
-
-
-                /*
-                    =========================
-                    RESET
-                    =========================
-                */
-
-                cartaTrascinata = null;
-
-                indiceCartaTrascinata = null;
-
-                trascinamento = false;
-
-                scrollMano = false;
-
-                posizioneCorrente =
-                    nuovoIndice;
-
-
-                mostraMano();
-
-            }
-        );
-
-
-        /*
-            =========================
-            AGGIUNGE CARTA
-            =========================
-        */
-
-        area.appendChild(div);
-
-    });
-
-
-    /*
-        =========================
-        SOVRAPPOSIZIONE
-        =========================
-    */
-
-    let margine = -45;
-
-    mano.forEach((carta, i) => {
-
-        let c =
-            document.querySelectorAll(
-                "#mano .carta-mano"
-            )[i];
-
-        if(!c){
-            return;
-        }
-
-
-        if(i === 0){
-
-            c.style.marginLeft = "0px";
-
-        }else{
-
-            c.style.marginLeft =
-                margine + "px";
-
-        }
-
-
-        c.style.flexShrink = "0";
-        c.style.position = "relative";
-        c.style.zIndex = i + 1;
-
-    });
-
-
-    /*
-        =========================
-        CONTATORE MAZZO
-        =========================
-    */
-
-    let contatore =
-        document.getElementById(
-            "contatoreMazzo"
-        );
-
-
-    if(contatore){
-
-        if(modalitaGioco === "cpu"){
-
-            contatore.innerHTML =
-                partitaCPU.mazzo.length;
-
-        }else{
-
-            contatore.innerHTML =
-                mazzo.length;
-
-        }
-
-    }
-
-}
-
-function mostraCarteAvversarioOnline(){
-
-    let area =
-        document.getElementById("carteAvversario");
-
-    if(!area){
-        return;
-    }
-
-    area.innerHTML = "";
-
-    if(modalitaGioco === "cpu"){
-        return;
-    }
-
-    if(!window.datiPartitaOnline){
-        return;
-    }
-
-    let dati = window.datiPartitaOnline;
-
-    if(!dati.giocatori){
-        return;
-    }
-
-    let altroGiocatore =
-        mioGiocatore === "giocatore1"
-        ? "giocatore2"
-        : "giocatore1";
-
-    if(!dati.giocatori[altroGiocatore]){
-        return;
-    }
-
-    let manoAvversario =
-        dati.giocatori[altroGiocatore].mano || [];
-
-
-manoAvversario.forEach((carta, indice) => {
-
-    let img =
-        document.createElement("img");
-
-img.src =
-    indice % 2 === 0
-    ? "images/carte/retro_rosso.jpg"
-    : "images/carte/retro_blu.jpg";
-
-    img.className = "cartaRetro";
-
-    area.appendChild(img);
+const ordineSemi = {  
+    "♠": 0,  
+    "♣": 1,  
+    "♥": 2,  
+    "♦": 3  
+};  
+
+const ordineValori = {  
+    "A": 0,  
+    "3": 1,  
+    "4": 2,  
+    "5": 3,  
+    "6": 4,  
+    "7": 5,  
+    "8": 6,  
+    "9": 7,  
+    "10": 8,  
+    "J": 9,  
+    "Q": 10,  
+    "K": 11  
+};  
+
+mano.sort((a, b) => {  
+
+    // Jolly per primi  
+    if(a.valore === "Jolly" && b.valore !== "Jolly"){  
+        return -1;  
+    }  
+
+    if(a.valore !== "Jolly" && b.valore === "Jolly"){  
+        return 1;  
+    }  
+
+    // Jolly con Jolly  
+    if(a.valore === "Jolly" && b.valore === "Jolly"){  
+        return 0;  
+    }  
+
+    // Pinelle dopo i Jolly  
+    if(a.pinella === true && b.pinella !== true){  
+        return -1;  
+    }  
+
+    if(a.pinella !== true && b.pinella === true){  
+        return 1;  
+    }  
+
+    // Pinella con Pinella  
+    if(a.pinella === true && b.pinella === true){  
+        return 0;  
+    }  
+
+    // Prima il seme  
+    let semeA = ordineSemi[a.seme];  
+    let semeB = ordineSemi[b.seme];  
+
+    if(semeA !== semeB){  
+        return semeA - semeB;  
+    }  
+
+    // Poi il valore  
+    return ordineValori[a.valore] - ordineValori[b.valore];  
 
 });
 
 }
 
+function mostraMano(){
 
+let area = document.getElementById("mano");  
+
+area.innerHTML = "";  
+
+area.style.position = "relative";  
+
+
+// =========================  
+// SCROLL MANO OLTRE 22 CARTE  
+// =========================  
+
+if(mano.length > 22){  
+
+    area.classList.add("scroll-attivo");  
+
+}else{  
+
+    area.classList.remove("scroll-attivo");  
+
+}  
+
+
+/*  
+    =========================  
+    INDICATORE  
+    =========================  
+*/  
+
+let indicatore = document.createElement("div");  
+
+indicatore.id = "indicatoreInserimento";  
+
+indicatore.style.position = "absolute";  
+indicatore.style.width = "4px";  
+indicatore.style.height = "115px";  
+indicatore.style.background = "#00ff88";  
+indicatore.style.borderRadius = "5px";  
+indicatore.style.boxShadow =  
+    "0 0 8px #00ff88, 0 0 18px #00ff88";  
+
+indicatore.style.display = "none";  
+indicatore.style.zIndex = "10000";  
+indicatore.style.pointerEvents = "none";  
+
+area.appendChild(indicatore);  
+
+
+/*  
+    =========================  
+    CREA LE CARTE  
+    =========================  
+*/  
+
+mano.forEach((carta, indice) => {  
+
+    let div = document.createElement("div");  
+
+    div.className = "carta-mano";  
+
+
+    /*  
+        =========================  
+        COLORE  
+        =========================  
+    */  
+
+    let colore =  
+        carta.seme === "♥" ||  
+        carta.seme === "♦"  
+        ? "rosso"  
+        : "nero";  
+
+
+    /*  
+        =========================  
+        NOME IMMAGINE  
+        =========================  
+    */  
+
+    let nomeCarta = "";  
+
+
+    if(carta.valore === "Jolly"){  
+
+        if(  
+            carta.colore === "blu" ||  
+            carta.colore === "rosso"  
+        ){  
+
+            nomeCarta =  
+                "jolly_" +  
+                carta.colore;  
+
+        }else{  
+
+            nomeCarta = "jolly";  
+
+        }  
+
+    }else{  
+
+        /*  
+            Conversione ASSO  
+        */  
+
+        let valoreImmagine =  
+            carta.valore === "A"  
+            ? "asso"  
+            : carta.valore;  
+
+
+        /*  
+            Conversione SEME  
+        */  
+
+        let semeImmagine = "";  
+
+        switch(carta.seme){  
+
+            case "♥":  
+                semeImmagine = "cuori";  
+                break;  
+
+            case "♦":  
+                semeImmagine = "quadri";  
+                break;  
+
+            case "♣":  
+                semeImmagine = "fiori";  
+                break;  
+
+            case "♠":  
+                semeImmagine = "picche";  
+                break;  
+
+        }  
+
+
+        nomeCarta =  
+            valoreImmagine +  
+            "_" +  
+            semeImmagine;  
+
+    }  
+
+
+    /*  
+        =========================  
+        CREA IMMAGINE  
+        =========================  
+    */  
+
+    let immagine =  
+        document.createElement("img");  
+
+    immagine.className =  
+        "immagineCarta";  
+
+    immagine.alt =  
+        carta.valore === "Jolly"  
+        ? "Jolly"  
+        : carta.valore + " " + carta.seme;  
+
+
+    /*  
+        =========================  
+        PROVA PNG  
+        =========================  
+    */  
+
+    let percorsoPNG =  
+        "images/carte/" +  
+        nomeCarta +  
+        ".png";  
+
+
+    /*  
+        =========================  
+        FALLBACK JPG  
+        =========================  
+    */  
+
+    let percorsoJPG =  
+        "images/carte/" +  
+        nomeCarta +  
+        ".jpg";  
+
+
+    immagine.src = percorsoPNG;  
+
+
+    /*  
+        Se PNG non esiste,  
+        prova JPG.  
+    */  
+
+    immagine.onerror = function(){  
+
+        if(  
+            immagine.src.endsWith(".png")  
+        ){  
+
+            immagine.src =  
+                percorsoJPG;  
+
+        }else{  
+
+            /*  
+                =========================  
+                NESSUNA IMMAGINE  
+                =========================  
+            */  
+
+            immagine.remove();  
+
+
+            if(carta.valore === "Jolly"){  
+
+                div.innerHTML = `  
+                    <div class="cartaValore jolly">  
+                        JOLLY  
+                    </div>  
+
+                    <div class="cartaSeme jolly">  
+                        🃏  
+                    </div>  
+                `;  
+
+            }else{  
+
+                div.innerHTML = `  
+                    <div class="cartaAngolo cartaAlto ${colore}">  
+                        <div>${carta.valore}</div>  
+                        <div>${carta.seme}</div>  
+                    </div>  
+
+                    <div class="cartaSemeCentro ${colore}">  
+                        ${carta.seme}  
+                    </div>  
+
+                    <div class="cartaAngolo cartaBasso ${colore}">  
+                        <div>${carta.valore}</div>  
+                        <div>${carta.seme}</div>  
+                    </div>  
+                `;  
+
+            }  
+
+        }  
+
+    };  
+
+
+    /*  
+        Inserisce l'immagine  
+    */  
+
+    div.appendChild(immagine);  
+
+
+    /*  
+        =========================  
+        SELEZIONE  
+        =========================  
+    */  
+
+    div.onclick = function(){  
+
+        if(div.dataset.trascinata === "true"){  
+
+            div.dataset.trascinata = "false";  
+
+            return;  
+
+        }  
+
+
+        let posizione =  
+            carteSelezionate.indexOf(carta);  
+
+
+        if(posizione === -1){  
+
+            carteSelezionate.push(carta);  
+
+            div.classList.add("selezionata");  
+
+            div.style.zIndex = "9999";  
+
+            div.style.transform =  
+                "translateY(-85px)";  
+
+        }else{  
+
+            carteSelezionate.splice(  
+                posizione,  
+                1  
+            );  
+
+            div.classList.remove(  
+                "selezionata"  
+            );  
+
+            div.style.transform =  
+                "translateY(0px)";  
+
+
+            document  
+                .querySelectorAll(  
+                    "#mano .carta-mano"  
+                )  
+                .forEach((c, i) => {  
+
+                    c.style.zIndex = i + 1;  
+
+                });  
+
+        }  
+
+    };  
+
+
+    /*  
+        =========================  
+        TRASCINAMENTO  
+        =========================  
+    */  
+
+    div.style.touchAction = "none";  
+
+    div.dataset.trascinata = "false";  
+
+
+    let trascinamento = false;  
+
+    let scrollMano = false;  
+
+    let posizioneInizialeX = 0;  
+
+    let posizioneInizialeY = 0;  
+
+    let scrollIniziale = 0;  
+
+    let posizioneCorrente = indice;  
+
+
+    /*  
+        =========================  
+        POINTER DOWN  
+        =========================  
+    */  
+
+    div.addEventListener(  
+        "pointerdown",  
+        function(event){  
+
+            cartaTrascinata = carta;  
+
+            indiceCartaTrascinata = indice;  
+
+            posizioneCorrente = indice;  
+
+            posizioneInizialeX =  
+                event.clientX;  
+
+            posizioneInizialeY =  
+                event.clientY;  
+
+            scrollIniziale =  
+                area.scrollLeft;  
+
+            trascinamento = false;  
+
+            scrollMano = false;  
+
+            div.setPointerCapture(  
+                event.pointerId  
+            );  
+
+        }  
+    );  
+
+
+    /*  
+        =========================  
+        POINTER MOVE  
+        =========================  
+    */  
+
+    div.addEventListener(  
+        "pointermove",  
+        function(event){  
+
+            if(cartaTrascinata !== carta){  
+                return;  
+            }  
+
+
+            let distanzaX =  
+                event.clientX -  
+                posizioneInizialeX;  
+
+
+            let distanzaY =  
+                event.clientY -  
+                posizioneInizialeY;  
+
+
+            /*  
+                =========================  
+                DECIDIAMO SE SCROLLARE  
+                =========================  
+            */  
+
+            if(  
+                mano.length > 22 &&  
+                !trascinamento &&  
+                !scrollMano &&  
+                Math.abs(distanzaX) > 15 &&  
+                Math.abs(distanzaX) >  
+                Math.abs(distanzaY) * 1.3  
+            ){  
+
+                scrollMano = true;  
+
+                indicatore.style.display =  
+                    "none";  
+
+            }  
+
+
+            /*  
+                =========================  
+                SCROLL  
+                =========================  
+            */  
+
+            if(scrollMano){  
+
+                area.scrollLeft =  
+                    scrollIniziale -  
+                    distanzaX;  
+
+                return;  
+
+            }  
+
+
+            /*  
+                =========================  
+                DISTANZA MINIMA  
+                =========================  
+            */  
+
+if(
+    Math.abs(distanzaX) < 10 &&
+    Math.abs(distanzaY) < 10
+){
+    return;
+}
+
+
+/*  
+    =========================  
+    TRASCINAMENTO CARTA  
+=========================  
+*/
+
+trascinamento = true;
+
+div.dataset.trascinata = "true";
+
+cartaDragElemento = div;
+cartaDragAttiva = true;
+
+/*
+    =========================
+    POSIZIONE CARTA TRASCINATA
+    =========================
+*/
+
+if(cartaDragAttiva && cartaDragElemento === div){
+
+    let areaRect =
+        area.getBoundingClientRect();
+
+    let x =
+        event.clientX -
+        areaRect.left -
+        (div.offsetWidth / 2);
+
+    let y =
+        event.clientY -
+        areaRect.top -
+        (div.offsetHeight / 2);
+
+    div.style.position = "absolute";
+
+    div.style.left = x + "px";
+    div.style.top = y + "px";
+
+}
+
+/*
+    =========================
+    DIMENSIONI CARTA CALATA
+    =========================
+*/
+
+let cartaCalata =
+    document.querySelector(
+        "#mieCombinazioni .carta-calata"
+    );
+
+if(cartaCalata){
+
+    let rectCalata =
+        cartaCalata.getBoundingClientRect();
+
+    div.style.width =
+        rectCalata.width + "px";
+
+    div.style.height =
+        rectCalata.height + "px";
+
+}
+
+
+/*
+    =========================
+    CARTA SOLLEVATA
+=========================
+*/
+
+div.style.zIndex = "99999";
+
+div.style.transform =
+    "scale(1.05)";
+    
+    /*
+    =========================
+    CERCA COMBINAZIONE
+=========================
+*/
+
+let combinazioniDOM =
+    Array.from(
+        document.querySelectorAll(
+            "#mieCombinazioni .combinazione"
+        )
+    );
+
+let combinazioneTrovata = null;
+
+for(let i = 0; i < combinazioniDOM.length; i++){
+
+    let rect =
+        combinazioniDOM[i].getBoundingClientRect();
+
+    if(
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom
+    ){
+
+        combinazioneTrovata =
+            combinazioni[i];
+
+        combinazioniDOM[i].style.outline =
+            "3px solid #00ff88";
+
+        break;
+    }
+}
+
+
+/*
+    =========================
+    RIMUOVE VECCHIO EVIDENZIAMENTO
+=========================
+*/
+
+combinazioniDOM.forEach((elemento, indice) => {
+
+    if(
+        combinazioni[indice] !==
+        combinazioneTrovata
+    ){
+
+        elemento.style.outline = "";
+
+    }
+
+});
+
+
+/*
+    =========================
+    SALVA DESTINAZIONE
+=========================
+*/
+
+combinazioneDragSelezionata =
+    combinazioneTrovata;
+
+
+            /*  
+                =========================  
+                TROVIAMO LE CARTE  
+                =========================  
+            */  
+
+            let carteDOM =  
+                Array.from(  
+                    document.querySelectorAll(  
+                        "#mano .carta-mano"  
+                    )  
+                );  
+
+
+            let altreCarte =  
+                carteDOM.filter(  
+                    c => c !== div  
+                );  
+
+
+            if(altreCarte.length === 0){  
+
+                posizioneCorrente = 0;  
+
+                indicatore.style.display =  
+                    "none";  
+
+                return;  
+
+            }  
+
+
+            /*  
+                =========================  
+                CENTRI DELLE CARTE  
+                =========================  
+            */  
+
+            let centri =  
+                altreCarte.map(c => {  
+
+                    let rect =  
+                        c.getBoundingClientRect();  
+
+                    return {  
+
+                        x:  
+                            rect.left +  
+                            rect.width / 2,  
+
+                        left:  
+                            rect.left,  
+
+                        right:  
+                            rect.right  
+
+                    };  
+
+                });  
+
+
+            /*  
+                =========================  
+                CERCA LO SLOT  
+                =========================  
+            */  
+
+            let slot =  
+                altreCarte.length;  
+
+            let posizioneIndicatore =  
+                null;  
+
+
+            if(  
+                event.clientX <  
+                centri[0].x  
+            ){  
+
+                slot = 0;  
+
+                posizioneIndicatore =  
+                    centri[0].left;  
+
+            }else{  
+
+                for(  
+                    let i = 0;  
+                    i < centri.length;  
+                    i++  
+                ){  
+
+                    if(  
+                        event.clientX <  
+                        centri[i].x  
+                    ){  
+
+                        slot = i;  
+
+                        posizioneIndicatore =  
+                            centri[i].left;  
+
+                        break;  
+
+                    }  
+
+                }  
+
+
+                if(  
+                    posizioneIndicatore ===  
+                    null  
+                ){  
+
+                    slot =  
+                        altreCarte.length;  
+
+                    posizioneIndicatore =  
+                        centri[  
+                            centri.length - 1  
+                        ].right;  
+
+                }  
+
+            }  
+
+
+            /*  
+                =========================  
+                INDICATORE  
+                =========================  
+            */  
+
+            let areaRect =  
+                area.getBoundingClientRect();  
+
+
+            indicatore.style.left =  
+                (  
+                    posizioneIndicatore -  
+                    areaRect.left -  
+                    2  
+                ) + "px";  
+
+
+            indicatore.style.top =  
+                "0px";  
+
+
+            indicatore.style.display =  
+                "block";  
+
+
+            posizioneCorrente =  
+                slot;  
+
+        }  
+    );  
+
+
+    /*  
+        =========================  
+        RILASCIO  
+        =========================  
+    */  
+
+    div.addEventListener(  
+        "pointerup",  
+        function(event){  
+
+            /*  
+                =========================  
+                FINE SCROLL  
+                =========================  
+            */  
+
+            if(scrollMano){  
+
+                indicatore.style.display =  
+                    "none";  
+
+                cartaTrascinata = null;  
+
+                indiceCartaTrascinata = null;  
+
+                scrollMano = false;  
+
+                trascinamento = false;  
+
+                div.dataset.trascinata =  
+                    "false";  
+
+                return;  
+
+            }  
+
+
+            /*  
+                =========================  
+                NON È TRASCINAMENTO  
+                =========================  
+            */  
+
+            if(!trascinamento){  
+
+                cartaTrascinata = null;  
+
+                indiceCartaTrascinata = null;  
+
+                return;  
+
+            }  
+
+
+            indicatore.style.display =  
+                "none";  
+                
+                /*
+    =========================
+    RILASCIO SU COMBINAZIONE
+    =========================
+*/
+
+if(combinazioneDragSelezionata){
+
+    let cartaDaAggiungere =
+        cartaTrascinata;
+
+    let gruppo =
+        combinazioneDragSelezionata;
+
+    let risultato =
+        controllaAggiuntaCarta(
+            cartaDaAggiungere,
+            gruppo
+        );
+
+    console.log(
+        "🎯 RISULTATO DRAG:",
+        risultato
+    );
+    
+    if(risultato === "destra"){
+      
+      
+
+    gruppo.carte.push(
+        cartaDaAggiungere
+    );
+
+    let indiceCarta =
+        mano.indexOf(
+            cartaDaAggiungere
+        );
+
+    if(indiceCarta !== -1){
+
+        mano.splice(
+            indiceCarta,
+            1
+        );
+
+    }
+
+    console.log(
+        "✅ CARTA AGGIUNTA A DESTRA:",
+        cartaDaAggiungere
+    );
+
+    combinazioneDragSelezionata = null;
+
+    cartaDragElemento = null;
+    cartaDragAttiva = false;
+
+    cartaTrascinata = null;
+    indiceCartaTrascinata = null;
+
+    trascinamento = false;
+    scrollMano = false;
+
+    mostraMano();
+    mostraCombinazioni();
+
+    return;
+}
+
+if(risultato === "sinistra"){
+
+    gruppo.carte.unshift(
+        cartaDaAggiungere
+    );
+
+    let indiceCarta =
+        mano.indexOf(
+            cartaDaAggiungere
+        );
+
+    if(indiceCarta !== -1){
+
+        mano.splice(
+            indiceCarta,
+            1
+        );
+
+    }
+
+    console.log(
+        "✅ CARTA AGGIUNTA A SINISTRA:",
+        cartaDaAggiungere
+    );
+
+    combinazioneDragSelezionata = null;
+
+    cartaDragElemento = null;
+    cartaDragAttiva = false;
+
+    cartaTrascinata = null;
+    indiceCartaTrascinata = null;
+
+    trascinamento = false;
+    scrollMano = false;
+
+    mostraMano();
+    mostraCombinazioni();
+
+    return;
+}
+
+if(risultato === "entrambe"){
+
+    console.log(
+        "🟡 CARTA INSERIBILE A DESTRA O SINISTRA:",
+        cartaDaAggiungere
+    );
+
+    apriPopupPosizioneCarta(
+        cartaDaAggiungere,
+        gruppo
+    );
+
+    combinazioneDragSelezionata = null;
+
+    cartaDragElemento = null;
+    cartaDragAttiva = false;
+
+    cartaTrascinata = null;
+    indiceCartaTrascinata = null;
+
+    trascinamento = false;
+    scrollMano = false;
+
+    return;
+}
+
+}
+
+
+            /*  
+                =========================  
+                RIMUOVE LA CARTA  
+                =========================  
+            */  
+
+            let cartaSpostata =  
+                mano.splice(  
+                    indiceCartaTrascinata,  
+                    1  
+                )[0];  
+
+
+            let nuovoIndice =  
+                posizioneCorrente;  
+
+
+            nuovoIndice =  
+                Math.max(  
+                    0,  
+                    Math.min(  
+                        nuovoIndice,  
+                        mano.length  
+                    )  
+                );  
+
+
+            mano.splice(  
+                nuovoIndice,  
+                0,  
+                cartaSpostata  
+            );  
+
+
+            /*  
+                =========================  
+                RESET  
+                =========================  
+            */  
+
+            cartaTrascinata = null;  
+
+            indiceCartaTrascinata = null;  
+
+            trascinamento = false;  
+
+            scrollMano = false;  
+
+            posizioneCorrente =  
+                nuovoIndice;  
+
+
+            mostraMano();  
+
+        }  
+    );  
+
+
+    /*  
+        =========================  
+        AGGIUNGE CARTA  
+        =========================  
+    */  
+
+    area.appendChild(div);  
+
+});  
+
+
+/*  
+    =========================  
+    SOVRAPPOSIZIONE  
+    =========================  
+*/  
+
+let margine = -45;  
+
+mano.forEach((carta, i) => {  
+
+    let c =  
+        document.querySelectorAll(  
+            "#mano .carta-mano"  
+        )[i];  
+
+    if(!c){  
+        return;  
+    }  
+
+
+    if(i === 0){  
+
+        c.style.marginLeft = "0px";  
+
+    }else{  
+
+        c.style.marginLeft =  
+            margine + "px";  
+
+    }  
+
+
+    c.style.flexShrink = "0";  
+    c.style.position = "relative";  
+    c.style.zIndex = i + 1;  
+
+});  
+
+
+/*  
+    =========================  
+    CONTATORE MAZZO  
+    =========================  
+*/  
+
+let contatore =  
+    document.getElementById(  
+        "contatoreMazzo"  
+    );  
+
+
+if(contatore){  
+
+    if(modalitaGioco === "cpu"){  
+
+        contatore.innerHTML =  
+            partitaCPU.mazzo.length;  
+
+    }else{  
+
+        contatore.innerHTML =  
+            mazzo.length;  
+
+    }  
+
+}
+
+}
+
+function mostraCarteAvversarioOnline(){
+
+let area =  
+    document.getElementById("carteAvversario");  
+
+if(!area){  
+    return;  
+}  
+
+area.innerHTML = "";  
+
+if(modalitaGioco === "cpu"){  
+    return;  
+}  
+
+if(!window.datiPartitaOnline){  
+    return;  
+}  
+
+let dati = window.datiPartitaOnline;  
+
+if(!dati.giocatori){  
+    return;  
+}  
+
+let altroGiocatore =  
+    mioGiocatore === "giocatore1"  
+    ? "giocatore2"  
+    : "giocatore1";  
+
+if(!dati.giocatori[altroGiocatore]){  
+    return;  
+}  
+
+let manoAvversario =  
+    dati.giocatori[altroGiocatore].mano || [];
+
+manoAvversario.forEach((carta, indice) => {
+
+let img =  
+    document.createElement("img");
+
+img.src =
+indice % 2 === 0
+? "images/carte/retro_rosso.jpg"
+: "images/carte/retro_blu.jpg";
+
+img.className = "cartaRetro";  
+
+area.appendChild(img);
+
+});
+
+}
 
 function calaCarte(){
 
-    console.log("🟢 CALA PREMUTO", {
-        modalita: modalitaGioco,
-        mioGiocatore: mioGiocatore,
-        selezionate: carteSelezionate
-    });
+console.log("🟢 CALA PREMUTO", {  
+    modalita: modalitaGioco,  
+    mioGiocatore: mioGiocatore,  
+    selezionate: carteSelezionate  
+});  
 
 
-    // =========================
-    // PARTITA CPU
-    // =========================
+// =========================  
+// PARTITA CPU  
+// =========================  
 
-    if(modalitaGioco === "cpu"){
+if(modalitaGioco === "cpu"){  
 
-        if(partitaCPU.turno !== "giocatore"){
+    if(partitaCPU.turno !== "giocatore"){  
 
-            alert("Non è il tuo turno.");
+        alert("Non è il tuo turno.");  
 
-            return;
+        return;  
 
-        }
+    }  
 
-        if(partitaCPU.fase !== "scarto"){
+    if(partitaCPU.fase !== "scarto"){  
 
-            alert("Prima devi pescare dal mazzo.");
+        alert("Prima devi pescare dal mazzo.");  
 
-            return;
+        return;  
 
-        }
+    }  
 
-    }
-    
-    // =========================
+}  
+  
+// =========================
+
 // PARTITA ONLINE
 // =========================
 
 if(modalitaGioco === "online"){
 
-    let mioNumero =
-        mioGiocatore === "giocatore1" ? 1 : 2;
+let mioNumero =  
+    mioGiocatore === "giocatore1" ? 1 : 2;  
 
 
-    // CONTROLLO TURNO
+// CONTROLLO TURNO  
 
-    if(Number(partita.turno) !== mioNumero){
+if(Number(partita.turno) !== mioNumero){  
 
-        alert("Non è il tuo turno.");
+    alert("Non è il tuo turno.");  
 
-        return;
+    return;  
 
-    }
+}  
 
 
-    // CONTROLLO PESCA
+// CONTROLLO PESCA  
 
-    if(!hoPescato){
+if(!hoPescato){  
 
-        alert("Prima devi pescare.");
+    alert("Prima devi pescare.");  
 
-        return;
-
-    }
+    return;  
 
 }
-    
-    // =========================
+
+}
+
+// =========================
+
 // CONTROLLO PESCA ONLINE
 // =========================
 
 if(modalitaGioco === "online" && !hoPescato){
 
-    alert("Prima devi pescare.");
+alert("Prima devi pescare.");  
 
-    return;
+return;
 
 }
 
@@ -4244,18 +4492,18 @@ if(modalitaGioco === "online" && !hoPescato){
 // =========================
 
 if(
-    carteSelezionate.length === 1 &&
-    cartaRubabileSelezionata &&
-    cartaRubabileSelezionata.valore === "Jolly"
+carteSelezionate.length === 1 &&
+cartaRubabileSelezionata &&
+cartaRubabileSelezionata.valore === "Jolly"
 ){
 
-    let cartaDaCalare =
-        carteSelezionate[0];
+let cartaDaCalare =  
+    carteSelezionate[0];  
 
-    console.log(
-        "🟡 TENTATIVO FURTO JOLLY:",
-        cartaDaCalare
-    );
+console.log(  
+    "🟡 TENTATIVO FURTO JOLLY:",  
+    cartaDaCalare  
+);
 
 // =========================
 // SOSTITUZIONE JOLLY
@@ -4263,48 +4511,44 @@ if(
 
 // Trova il Jolly nella combinazione
 let indiceJolly =
-    combinazioneRubabileSelezionata.carte.indexOf(
-        cartaRubabileSelezionata
-    );
+combinazioneRubabileSelezionata.carte.indexOf(
+cartaRubabileSelezionata
+);
 
 if(indiceJolly === -1){
 
-    alert("Jolly non trovato nella combinazione.");
+alert("Jolly non trovato nella combinazione.");  
 
-    return;
+return;
 
 }
-
 
 // =========================
 // TOGLIE IL JOLLY
 // =========================
 
 combinazioneRubabileSelezionata.carte.splice(
-    indiceJolly,
-    1
+indiceJolly,
+1
 );
-
 
 // =========================
 // INSERISCE LA CARTA
 // =========================
 
 combinazioneRubabileSelezionata.carte.splice(
-    indiceJolly,
-    0,
-    cartaDaCalare
+indiceJolly,
+0,
+cartaDaCalare
 );
-
 
 // =========================
 // METTE IL JOLLY IN MANO
 // =========================
 
 mano.push(
-    cartaRubabileSelezionata
+cartaRubabileSelezionata
 );
-
 
 // =========================
 // DESELEZIONA
@@ -4318,17 +4562,15 @@ combinazioneRubabileSelezionata = null;
 
 proprietarioCombinazioneRubabile = null;
 
-
 // =========================
 // AGGIORNA CPU
 // =========================
 
 if(modalitaGioco === "cpu"){
 
-    partitaCPU.giocatore = mano;
+partitaCPU.giocatore = mano;
 
 }
-
 
 // =========================
 // AGGIORNA FIREBASE
@@ -4336,23 +4578,22 @@ if(modalitaGioco === "cpu"){
 
 if(modalitaGioco === "online"){
 
-    let percorsoBase =
-        "partite/" +
-        codicePartitaAttuale +
-        "/giocatori/" +
-        mioGiocatore;
+let percorsoBase =  
+    "partite/" +  
+    codicePartitaAttuale +  
+    "/giocatori/" +  
+    mioGiocatore;  
 
 
-    update(
-        ref(database, percorsoBase),
-        {
-            mano: mano,
-            combinazioni: combinazioni
-        }
-    );
+update(  
+    ref(database, percorsoBase),  
+    {  
+        mano: mano,  
+        combinazioni: combinazioni  
+    }  
+);
 
 }
-
 
 // =========================
 // AGGIORNA SCHERMO
@@ -4364,14 +4605,13 @@ mostraCombinazioni();
 
 mostraCombinazioniAvversarioOnline();
 
-
 console.log(
-    "🟢 FURTO JOLLY COMPLETATO:",
-    {
-        cartaCalata: cartaDaCalare,
-        jollyRecuperato: cartaRubabileSelezionata,
-        combinazione: combinazioneRubabileSelezionata
-    }
+"🟢 FURTO JOLLY COMPLETATO:",
+{
+cartaCalata: cartaDaCalare,
+jollyRecuperato: cartaRubabileSelezionata,
+combinazione: combinazioneRubabileSelezionata
+}
 );
 
 return;
@@ -4386,34 +4626,35 @@ return;
 
 if(carteSelezionate.length === 1){
 
-    if(!combinazioneSelezionata){
+if(!combinazioneSelezionata){  
 
-        alert("Seleziona prima una combinazione.");
+    alert("Seleziona prima una combinazione.");  
 
-        return;
+    return;  
 
-    }
+}  
 
-    let carta = carteSelezionate[0];
+let carta = carteSelezionate[0];  
 
-    let risultato =
-        controllaAggiuntaCarta(
-            carta,
-            combinazioneSelezionata
-        );
+let risultato =  
+    controllaAggiuntaCarta(  
+        carta,  
+        combinazioneSelezionata  
+    );  
 
 
-    if(risultato === "nessuna"){
+if(risultato === "nessuna"){  
 
-        alert(
-            "Questa carta non può essere aggiunta alla combinazione."
-        );
+    alert(  
+        "Questa carta non può essere aggiunta alla combinazione."  
+    );  
 
-        return;
+    return;  
 
-    }
-    
-    // =========================
+}  
+  
+// =========================
+
 // PINELLA / JOLLY
 // SCELTA POSIZIONE
 // =========================
@@ -4421,18 +4662,17 @@ if(carteSelezionate.length === 1){
 if(risultato === "entrambe"){
 
 console.log("🟡 RISULTATO ENTRAMBE", {
-    carta: carta,
-    combinazione: combinazioneSelezionata
+carta: carta,
+combinazione: combinazioneSelezionata
 });
-    apriPopupPosizioneCarta(
-        carta,
-        combinazioneSelezionata
-    );
+apriPopupPosizioneCarta(
+carta,
+combinazioneSelezionata
+);
 
-    return;
+return;
 
 }
-
 
 // =========================
 // AGGIUNGE LA CARTA
@@ -4441,54 +4681,52 @@ console.log("🟡 RISULTATO ENTRAMBE", {
 
 if(risultato === "sinistra"){
 
-    combinazioneSelezionata.carte.unshift(carta);
+combinazioneSelezionata.carte.unshift(carta);
 
 console.log(
-    "🟣 DOPO INSERIMENTO SINISTRA:",
-    combinazioneSelezionata.carte.length,
-    combinazioneSelezionata.carte.map(c => c.valore + c.seme)
+"🟣 DOPO INSERIMENTO SINISTRA:",
+combinazioneSelezionata.carte.length,
+combinazioneSelezionata.carte.map(c => c.valore + c.seme)
 );
 
 }
 
 if(risultato === "destra"){
 
-    combinazioneSelezionata.carte.push(carta);
+combinazioneSelezionata.carte.push(carta);
 
 console.log(
-    "🔵 DOPO INSERIMENTO DESTRA:",
-    combinazioneSelezionata.carte.length,
-    combinazioneSelezionata.carte.map(c => c.valore + c.seme)
+"🔵 DOPO INSERIMENTO DESTRA:",
+combinazioneSelezionata.carte.length,
+combinazioneSelezionata.carte.map(c => c.valore + c.seme)
 );
 
 }
 
 alert(
-    "DOPO INSERIMENTO:\n" +
-    combinazioneSelezionata.carte.map(
-        c => c.valore + c.seme
-    ).join(" - ")
+"DOPO INSERIMENTO:\n" +
+combinazioneSelezionata.carte.map(
+c => c.valore + c.seme
+).join(" - ")
 );
-
 
 // =========================
 // RIMUOVE LA CARTA DALLA MANO
 // =========================
 
 let indiceCarta =
-    mano.indexOf(carta);
+mano.indexOf(carta);
 
 if(indiceCarta !== -1){
 
-    mano.splice(indiceCarta, 1);
+mano.splice(indiceCarta, 1);
 
 }
 
 console.log(
-    "🟠 PRIMA DI DESELEZIONARE:",
-    JSON.stringify(combinazioni)
+"🟠 PRIMA DI DESELEZIONARE:",
+JSON.stringify(combinazioni)
 );
-
 
 // =========================
 // DESELEZIONA
@@ -4499,10 +4737,9 @@ carteSelezionate = [];
 combinazioneSelezionata = null;
 
 console.log(
-    "🟠 DOPO DESELEZIONA:",
-    JSON.stringify(combinazioni)
+"🟠 DOPO DESELEZIONA:",
+JSON.stringify(combinazioni)
 );
-
 
 // =========================
 // AGGIORNA CPU
@@ -4510,10 +4747,9 @@ console.log(
 
 if(modalitaGioco === "cpu"){
 
-    partitaCPU.giocatore = mano;
+partitaCPU.giocatore = mano;
 
 }
-
 
 // =========================
 // AGGIORNA FIREBASE
@@ -4521,27 +4757,27 @@ if(modalitaGioco === "cpu"){
 
 if(modalitaGioco === "online"){
 
-    let percorsoBase =
-        "partite/" +
-        codicePartitaAttuale +
-        "/giocatori/" +
-        mioGiocatore;
-        
-        console.log(
-    "🔥 PRIMA UPDATE FIREBASE:",
-    JSON.stringify(combinazioni)
+let percorsoBase =  
+    "partite/" +  
+    codicePartitaAttuale +  
+    "/giocatori/" +  
+    mioGiocatore;  
+      
+    console.log(  
+"🔥 PRIMA UPDATE FIREBASE:",  
+JSON.stringify(combinazioni)
+
 );
 
-    update(
-        ref(database, percorsoBase),
-        {
-            mano: mano,
-            combinazioni: combinazioni
-        }
-    );
+update(  
+    ref(database, percorsoBase),  
+    {  
+        mano: mano,  
+        combinazioni: combinazioni  
+    }  
+);
 
 }
-
 
 // =========================
 // AGGIORNA SCHERMO
@@ -4551,99 +4787,94 @@ mostraMano();
 
 mostraCombinazioni();
 
-
 console.log(
-    "🟢 CARTA AGGIUNTA:",
-    {
-        carta: carta,
-        posizione: risultato,
-        combinazioni: combinazioni
-    }
+"🟢 CARTA AGGIUNTA:",
+{
+carta: carta,
+posizione: risultato,
+combinazioni: combinazioni
+}
 );
 
 return;
 
 }
 
-
 // DUE CARTE
 if(carteSelezionate.length === 2){
 
-    alert("Seleziona almeno 3 carte per creare una nuova combinazione.");
+alert("Seleziona almeno 3 carte per creare una nuova combinazione.");  
 
-    return;
+return;
 
 }
 
+// =========================  
+// CONTROLLA SCALA  
+// =========================  
 
-    // =========================
-    // CONTROLLA SCALA
-    // =========================
+if(!combinazioneValida(carteSelezionate)){  
 
-    if(!combinazioneValida(carteSelezionate)){
+    alert("Combinazione non valida.");  
 
-        alert("Combinazione non valida.");
+    return;  
 
-        return;
-
-    }
+}  
 
 
-    // =========================
-    // CARTA OBBLIGATORIA
-    // =========================
+// =========================  
+// CARTA OBBLIGATORIA  
+// =========================  
 
-    if(
-        modalitaGioco === "cpu" &&
-        partitaCPU.haPresoScarti &&
-        !partitaCPU.cartaObbligatoriaUsata
-    ){
+if(  
+    modalitaGioco === "cpu" &&  
+    partitaCPU.haPresoScarti &&  
+    !partitaCPU.cartaObbligatoriaUsata  
+){  
 
-        let contieneObbligatoria =
-            carteSelezionate.some(carta =>
-                stessaCarta(
-                    carta,
-                    partitaCPU.cartaObbligatoria
-                )
-            );
+    let contieneObbligatoria =  
+        carteSelezionate.some(carta =>  
+            stessaCarta(  
+                carta,  
+                partitaCPU.cartaObbligatoria  
+            )  
+        );  
 
-        if(!contieneObbligatoria){
+    if(!contieneObbligatoria){  
 
-            alert(
-                "Devi prima utilizzare la carta obbligatoria " +
-                "presa dal monte scarti."
-            );
+        alert(  
+            "Devi prima utilizzare la carta obbligatoria " +  
+            "presa dal monte scarti."  
+        );  
 
-            return;
+        return;  
 
-        }
+    }  
 
-        partitaCPU.cartaObbligatoriaUsata = true;
+    partitaCPU.cartaObbligatoriaUsata = true;  
 
-    }
-
+}
 
 // =========================
 // CREA LA SCALA IN ORDINE
 // =========================
 
 let ordine = [
-    "A","3","4","5","6","7",
-    "8","9","10","J","Q","K"
+"A","3","4","5","6","7",
+"8","9","10","J","Q","K"
 ];
 
 let carteDaOrdinare = [...carteSelezionate];
 
 let normali = carteDaOrdinare.filter(c =>
-    c.valore !== "Jolly" &&
-    c.pinella !== true
+c.valore !== "Jolly" &&
+c.pinella !== true
 );
 
 let speciali = carteDaOrdinare.filter(c =>
-    c.valore === "Jolly" ||
-    c.pinella === true
+c.valore === "Jolly" ||
+c.pinella === true
 );
-
 
 // =========================
 // CONTROLLO POSIZIONE SPECIALI
@@ -4653,160 +4884,160 @@ let deveSceglierePosizione = false;
 
 if(speciali.length === 1 && normali.length >= 2){
 
-    let posizioni = normali.map(c =>
-        ordine.indexOf(c.valore)
-    );
+let posizioni = normali.map(c =>  
+    ordine.indexOf(c.valore)  
+);  
 
-    /*
-        Cerchiamo tutte le sequenze possibili
-        della lunghezza della combinazione.
+/*  
+    Cerchiamo tutte le sequenze possibili  
+    della lunghezza della combinazione.  
 
-        Per ogni sequenza controlliamo se:
-        - tutte le carte normali sono presenti
-        - esiste esattamente un buco
-        - quel buco può essere occupato
-          dallo speciale
-    */
+    Per ogni sequenza controlliamo se:  
+    - tutte le carte normali sono presenti  
+    - esiste esattamente un buco  
+    - quel buco può essere occupato  
+      dallo speciale  
+*/  
 
-    let posizioniValide = [];
-    
-    console.log("🔎 CONTROLLO SPECIALI", {
-    giocatore: mioGiocatore,
-    speciali: speciali,
-    normali: normali,
-    carteSelezionate: carteSelezionate
+let posizioniValide = [];  
+  
+console.log("🔎 CONTROLLO SPECIALI", {  
+giocatore: mioGiocatore,  
+speciali: speciali,  
+normali: normali,  
+carteSelezionate: carteSelezionate
+
 });
 
-    for(
-        let partenza = 0;
-        partenza < ordine.length;
-        partenza++
-    ){
+for(  
+    let partenza = 0;  
+    partenza < ordine.length;  
+    partenza++  
+){  
 
-        let sequenza = [];
+    let sequenza = [];  
 
-        for(
-            let i = 0;
-            i < normali.length + 1;
-            i++
-        ){
+    for(  
+        let i = 0;  
+        i < normali.length + 1;  
+        i++  
+    ){  
 
-            sequenza.push(
-                (partenza + i) % ordine.length
-            );
+        sequenza.push(  
+            (partenza + i) % ordine.length  
+        );  
 
-        }
+    }  
 
-        let tuttePresenti =
-            posizioni.every(pos =>
-                sequenza.includes(pos)
-            );
+    let tuttePresenti =  
+        posizioni.every(pos =>  
+            sequenza.includes(pos)  
+        );  
 
-        if(!tuttePresenti){
-            continue;
-        }
+    if(!tuttePresenti){  
+        continue;  
+    }  
 
-        let posizioniPresenti =
-            new Set(posizioni);
+    let posizioniPresenti =  
+        new Set(posizioni);  
 
-        let buchi =
-            sequenza.filter(pos =>
-                !posizioniPresenti.has(pos)
-            );
+    let buchi =  
+        sequenza.filter(pos =>  
+            !posizioniPresenti.has(pos)  
+        );  
 
-        /*
-            Con un solo speciale deve esserci
-            esattamente un buco.
-        */
+    /*  
+        Con un solo speciale deve esserci  
+        esattamente un buco.  
+    */  
 
-        if(buchi.length === 1){
+    if(buchi.length === 1){  
 
-            /*
-                Costruiamo la combinazione
-                sostituendo temporaneamente
-                il buco con lo speciale.
-            */
+        /*  
+            Costruiamo la combinazione  
+            sostituendo temporaneamente  
+            il buco con lo speciale.  
+        */  
 
-            let combinazioneTest = [];
+        let combinazioneTest = [];  
 
-            for(let posizione of sequenza){
+        for(let posizione of sequenza){  
 
-                let cartaNormale =
-                    normali.find(c =>
-                        ordine.indexOf(c.valore) === posizione
-                    );
+            let cartaNormale =  
+                normali.find(c =>  
+                    ordine.indexOf(c.valore) === posizione  
+                );  
 
-                if(cartaNormale){
+            if(cartaNormale){  
 
-                    combinazioneTest.push(
-                        cartaNormale
-                    );
+                combinazioneTest.push(  
+                    cartaNormale  
+                );  
 
-                }else{
+            }else{  
 
-                    combinazioneTest.push(
-                        speciali[0]
-                    );
+                combinazioneTest.push(  
+                    speciali[0]  
+                );  
 
-                }
+            }  
 
-            }
+        }  
 
-            /*
-                Se la combinazione è valida,
-                questa è una posizione possibile.
-            */
+        /*  
+            Se la combinazione è valida,  
+            questa è una posizione possibile.  
+        */  
 
-            if(combinazioneValida(combinazioneTest)){
+        if(combinazioneValida(combinazioneTest)){  
 
-                posizioniValide.push(
-                    sequenza
-                );
+            posizioniValide.push(  
+                sequenza  
+            );  
 
-            }
+        }  
 
-        }
+    }  
 
-    }
+}  
 
 
-    /*
-        UNA SOLA POSIZIONE POSSIBILE
-        =============================
+/*  
+    UNA SOLA POSIZIONE POSSIBILE  
+    =============================  
 
-        Esempio:
+    Esempio:  
 
-        A Jolly 4 5
+    A Jolly 4 5  
 
-        → il Jolly deve essere 3
-        → nessun popup
-    */
+    → il Jolly deve essere 3  
+    → nessun popup  
+*/
 
 console.log("🔎 POSIZIONI VALIDE:", posizioniValide);
 
-    if(posizioniValide.length === 1){
+if(posizioniValide.length === 1){  
 
-        deveSceglierePosizione = false;
+    deveSceglierePosizione = false;  
 
-    }
+}  
 
 
-    /*
-        PIÙ POSIZIONI POSSIBILI
-        =======================
+/*  
+    PIÙ POSIZIONI POSSIBILI  
+    =======================  
 
-        In questo caso lasciamo scegliere
-        il giocatore tramite il popup.
-    */
+    In questo caso lasciamo scegliere  
+    il giocatore tramite il popup.  
+*/  
 
-    if(posizioniValide.length > 1){
+if(posizioniValide.length > 1){  
 
-        deveSceglierePosizione = true;
-
-    }
+    deveSceglierePosizione = true;  
 
 }
 
+}
 
 // =========================
 // APRI POPUP
@@ -4814,99 +5045,97 @@ console.log("🔎 POSIZIONI VALIDE:", posizioniValide);
 
 if(deveSceglierePosizione){
 
-    console.log(
-        "🟡 JOLLY/PINELLA: SCELTA POSIZIONE"
-    );
+console.log(  
+    "🟡 JOLLY/PINELLA: SCELTA POSIZIONE"  
+);  
 
-    /*
-        Creiamo temporaneamente un gruppo
-        che rappresenta la nuova combinazione.
-    */
+/*  
+    Creiamo temporaneamente un gruppo  
+    che rappresenta la nuova combinazione.  
+*/  
 
-    let gruppoTemporaneo = {
+let gruppoTemporaneo = {  
 
-        tipo: "scala",
+    tipo: "scala",  
 
-        carte: [...normali]
+    carte: [...normali]  
 
-    };
-
-
-    apriPopupPosizioneCarta(
-        speciali[0],
-        gruppoTemporaneo
-    );
+};  
 
 
-    return;
+apriPopupPosizioneCarta(  
+    speciali[0],  
+    gruppoTemporaneo  
+);  
+
+
+return;
 
 }
-
 
 // =========================
 // TROVA LA SEQUENZA
 // =========================
 
 let posizioniNormali = normali.map(c =>
-    ordine.indexOf(c.valore)
+ordine.indexOf(c.valore)
 );
 
 let sequenzaTrovata = null;
 
 for(
-    let partenza = 0;
-    partenza < ordine.length;
-    partenza++
+let partenza = 0;
+partenza < ordine.length;
+partenza++
 ){
 
-    let sequenza = [];
+let sequenza = [];  
 
-    for(
-        let i = 0;
-        i < carteDaOrdinare.length;
-        i++
-    ){
+for(  
+    let i = 0;  
+    i < carteDaOrdinare.length;  
+    i++  
+){  
 
-        sequenza.push(
-            (partenza + i) % ordine.length
-        );
+    sequenza.push(  
+        (partenza + i) % ordine.length  
+    );  
 
-    }
-
-
-    let tuttePresenti =
-        posizioniNormali.every(pos =>
-            sequenza.includes(pos)
-        );
+}  
 
 
-    if(!tuttePresenti){
-
-        continue;
-
-    }
-
-
-    let posizioniPresenti =
-        new Set(posizioniNormali);
+let tuttePresenti =  
+    posizioniNormali.every(pos =>  
+        sequenza.includes(pos)  
+    );  
 
 
-    let buchi =
-        sequenza.filter(pos =>
-            !posizioniPresenti.has(pos)
-        );
+if(!tuttePresenti){  
+
+    continue;  
+
+}  
 
 
-    if(buchi.length === speciali.length){
+let posizioniPresenti =  
+    new Set(posizioniNormali);  
 
-        sequenzaTrovata = sequenza;
 
-        break;
+let buchi =  
+    sequenza.filter(pos =>  
+        !posizioniPresenti.has(pos)  
+    );  
 
-    }
+
+if(buchi.length === speciali.length){  
+
+    sequenzaTrovata = sequenza;  
+
+    break;  
 
 }
 
+}
 
 // =========================
 // COSTRUISCE LA SCALA
@@ -4914,54 +5143,51 @@ for(
 
 let carteOrdinate = [];
 
-
 if(sequenzaTrovata){
 
-    let normaliRimaste = [...normali];
+let normaliRimaste = [...normali];  
 
-    let specialiRimaste = [...speciali];
-
-
-    for(let posizione of sequenzaTrovata){
-
-        let cartaNormale =
-            normaliRimaste.find(c =>
-                ordine.indexOf(c.valore) === posizione
-            );
+let specialiRimaste = [...speciali];  
 
 
-        if(cartaNormale){
+for(let posizione of sequenzaTrovata){  
 
-            carteOrdinate.push(cartaNormale);
-
-            normaliRimaste =
-                normaliRimaste.filter(c =>
-                    c !== cartaNormale
-                );
-
-        }else{
-
-            let cartaSpeciale =
-                specialiRimaste.shift();
-
-            if(cartaSpeciale){
-
-                carteOrdinate.push(cartaSpeciale);
-
-            }
-
-        }
-
-    }
+    let cartaNormale =  
+        normaliRimaste.find(c =>  
+            ordine.indexOf(c.valore) === posizione  
+        );  
 
 
-}else{
+    if(cartaNormale){  
 
-    carteOrdinate =
-        [...carteDaOrdinare];
+        carteOrdinate.push(cartaNormale);  
+
+        normaliRimaste =  
+            normaliRimaste.filter(c =>  
+                c !== cartaNormale  
+            );  
+
+    }else{  
+
+        let cartaSpeciale =  
+            specialiRimaste.shift();  
+
+        if(cartaSpeciale){  
+
+            carteOrdinate.push(cartaSpeciale);  
+
+        }  
+
+    }  
 
 }
 
+}else{
+
+carteOrdinate =  
+    [...carteDaOrdinare];
+
+}
 
 // =========================
 // NUOVA COMBINAZIONE
@@ -4969,41 +5195,40 @@ if(sequenzaTrovata){
 
 let nuovaCombinazione = {
 
-    tipo: "scala",
+tipo: "scala",  
 
-    carte: carteOrdinate
+carte: carteOrdinate
 
 };
 
+// =========================  
+// TOGLIE LE CARTE DALLA MANO  
+// =========================  
 
-    // =========================
-    // TOGLIE LE CARTE DALLA MANO
-    // =========================
+carteSelezionate.forEach(carta => {  
 
-    carteSelezionate.forEach(carta => {
+    let indice = mano.indexOf(carta);  
 
-        let indice = mano.indexOf(carta);
+    if(indice !== -1){  
 
-        if(indice !== -1){
+        mano.splice(indice, 1);  
 
-            mano.splice(indice, 1);
+    }  
 
-        }
-
-    });
-
-
-    // =========================
-    // AGGIUNGE LA COMBINAZIONE
-    // =========================
-
-    combinazioni.push(nuovaCombinazione);
+});  
 
 
-    console.log(
-        "🟢 NUOVA COMBINAZIONE:",
-        nuovaCombinazione
-    );
+// =========================  
+// AGGIUNGE LA COMBINAZIONE  
+// =========================  
+
+combinazioni.push(nuovaCombinazione);  
+
+
+console.log(  
+    "🟢 NUOVA COMBINAZIONE:",  
+    nuovaCombinazione  
+);
 
 
     // =========================
@@ -5884,11 +6109,38 @@ function controllaAggiuntaCarta(carta, gruppo){
         a far scegliere al giocatore.
     */
 
-    if(validaSinistra || validaDestra){
+if(validaSinistra && validaDestra){
 
-        return "entrambe";
+    console.log(
+        "🟡 JOLLY/PINELLA: ENTRAMBE",
+        carta
+    );
 
-    }
+    return "entrambe";
+
+}
+
+if(validaSinistra){
+
+    console.log(
+        "🟢 JOLLY/PINELLA: SINISTRA",
+        carta
+    );
+
+    return "sinistra";
+
+}
+
+if(validaDestra){
+
+    console.log(
+        "🔵 JOLLY/PINELLA: DESTRA",
+        carta
+    );
+
+    return "destra";
+
+}
 
 
     return "nessuna";
