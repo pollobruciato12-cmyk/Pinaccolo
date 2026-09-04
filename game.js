@@ -4125,6 +4125,23 @@ if(combinazioneDragSelezionata){
         "✅ CARTA AGGIUNTA A DESTRA:",
         cartaDaAggiungere
     );
+    
+    if(modalitaGioco === "online"){
+
+    let percorsoBase =
+        "partite/" +
+        codicePartitaAttuale +
+        "/giocatori/" +
+        mioGiocatore;
+
+    update(
+        ref(database, percorsoBase),
+        {
+            mano: mano,
+            combinazioni: combinazioni
+        }
+    );
+}
 
     combinazioneDragSelezionata = null;
 
@@ -4167,6 +4184,23 @@ if(risultato === "sinistra"){
         "✅ CARTA AGGIUNTA A SINISTRA:",
         cartaDaAggiungere
     );
+    
+    if(modalitaGioco === "online"){
+
+    let percorsoBase =
+        "partite/" +
+        codicePartitaAttuale +
+        "/giocatori/" +
+        mioGiocatore;
+
+    update(
+        ref(database, percorsoBase),
+        {
+            mano: mano,
+            combinazioni: combinazioni
+        }
+    );
+}
 
     combinazioneDragSelezionata = null;
 
