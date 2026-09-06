@@ -99,15 +99,20 @@ if(carta.valore === "Jolly"){
 }
 
 
-    let valore =
-    valoriNomi[carta.valore] || carta.valore;
+let valore =
+    carta.valore;
 
 
-    let seme =
+let seme =
     semiNomi[carta.seme];
 
 
-    return valore + "_" + seme + ".png";
+if(carta.valore === "A" && carta.seme === "♣"){
+    return "A_fiori.jpg";
+}
+
+
+return valore + "_" + seme + ".png";
 
 }
 
@@ -2176,45 +2181,59 @@ function mostraCombinazioniCPU(){
 
             c.className =
                 "carta-mano carta-calata";
-                
-                // =========================
-// CARTA RUBABILE CPU
-// =========================
-
-if(
-    carta.valore === "Jolly" ||
-    carta.pinella === true
-){
-
-    c.style.cursor = "pointer";
-
-    c.onclick = function(event){
-
-        event.stopPropagation();
-
-        cartaRubabileSelezionata = carta;
-
-        combinazioneRubabileSelezionata = gruppo;
-
-        proprietarioCombinazioneRubabile = "avversario";
-
-        console.log(
-            "🟡 CARTA RUBABILE CPU:",
-            carta
-        );
-
-        console.log(
-            "🟡 COMBINAZIONE CPU:",
-            gruppo
-        );
-
-    };
-
-}
 
 
             /*
-                COLORE DEL SEME
+            =========================
+            CARTA RUBABILE CPU
+            =========================
+            */
+
+            if(
+                carta.valore === "Jolly" ||
+                carta.pinella === true
+            ){
+
+                c.style.cursor =
+                    "pointer";
+
+
+                c.onclick =
+                    function(event){
+
+                        event.stopPropagation();
+
+
+                        cartaRubabileSelezionata =
+                            carta;
+
+                        combinazioneRubabileSelezionata =
+                            gruppo;
+
+                        proprietarioCombinazioneRubabile =
+                            "avversario";
+
+
+                        console.log(
+                            "🟡 CARTA RUBABILE CPU:",
+                            carta
+                        );
+
+
+                        console.log(
+                            "🟡 COMBINAZIONE CPU:",
+                            gruppo
+                        );
+
+                    };
+
+            }
+
+
+            /*
+            =========================
+            COLORE
+            =========================
             */
 
             let colore =
@@ -2225,47 +2244,215 @@ if(
 
 
             /*
-                JOLLY
+            =========================
+            NOME IMMAGINE
+            =========================
             */
+
+            let nomeCarta = "";
+
 
             if(carta.valore === "Jolly"){
 
-                c.innerHTML = `
-                    <div class="cartaValore jolly">
-                        JOLLY
-                    </div>
+                if(
+                    carta.colore === "blu" ||
+                    carta.colore === "rosso"
+                ){
 
-                    <div class="cartaSeme jolly">
-                        🃏
-                    </div>
-                `;
+                    nomeCarta =
+                        "jolly_" +
+                        carta.colore;
+
+                }else{
+
+                    nomeCarta =
+                        "jolly";
+
+                }
+
+            }else{
+
+                /*
+                =========================
+                VALORE
+                =========================
+                */
+
+                let valoreImmagine =
+                    carta.valore === "A"
+                    ? "asso"
+                    : carta.valore.toLowerCase();
+
+
+                /*
+                =========================
+                SEME
+                =========================
+                */
+
+                let semeImmagine = "";
+
+
+                switch(carta.seme){
+
+                    case "♥":
+                        semeImmagine = "cuori";
+                        break;
+
+                    case "♦":
+                        semeImmagine = "quadri";
+                        break;
+
+                    case "♣":
+                        semeImmagine = "fiori";
+                        break;
+
+                    case "♠":
+                        semeImmagine = "picche";
+                        break;
+
+                }
+
+
+                nomeCarta =
+                    valoreImmagine +
+                    "_" +
+                    semeImmagine;
 
             }
 
 
             /*
-                CARTA NORMALE
+            =========================
+            CREA IMMAGINE
+            =========================
             */
 
-            else{
+            let immagine =
+                document.createElement("img");
 
-                c.innerHTML = `
-                    <div class="cartaAngolo cartaAlto ${colore}">
-                        <div>${carta.valore}</div>
-                        <div>${carta.seme}</div>
-                    </div>
 
-                    <div class="cartaSemeCentro ${colore}">
-                        ${carta.seme}
-                    </div>
+            immagine.className =
+                "immagineCarta";
 
-                    <div class="cartaAngolo cartaBasso ${colore}">
-                        <div>${carta.valore}</div>
-                        <div>${carta.seme}</div>
-                    </div>
-                `;
 
-            }
+            immagine.alt =
+                carta.valore === "Jolly"
+                ? "Jolly"
+                : carta.valore +
+                  " " +
+                  carta.seme;
+
+
+            /*
+            =========================
+            PERCORSI
+            =========================
+            */
+
+            let percorsoPNG =
+                "images/carte/" +
+                nomeCarta +
+                ".png";
+
+
+            let percorsoJPG =
+                "images/carte/" +
+                nomeCarta +
+                ".jpg";
+
+
+            /*
+            =========================
+            CARICA PNG
+            =========================
+            */
+
+            immagine.src =
+                percorsoPNG;
+
+
+            console.log(
+                "🖼️ IMMAGINE CALATA CPU:",
+                percorsoPNG
+            );
+
+
+            /*
+            =========================
+            FALLBACK JPG
+            =========================
+            */
+
+            immagine.onerror =
+                function(){
+
+                    if(
+                        immagine.src.endsWith(".png")
+                    ){
+
+                        immagine.src =
+                            percorsoJPG;
+
+                    }else{
+
+                        /*
+                        =========================
+                        FALLBACK TESTUALE
+                        =========================
+                        */
+
+                        immagine.remove();
+
+
+                        if(
+                            carta.valore === "Jolly"
+                        ){
+
+                            c.innerHTML = `
+                                <div class="cartaValore jolly">
+                                    JOLLY
+                                </div>
+
+                                <div class="cartaSeme jolly">
+                                    🃏
+                                </div>
+                            `;
+
+                        }else{
+
+                            c.innerHTML = `
+                                <div class="cartaAngolo cartaAlto ${colore}">
+                                    <div>${carta.valore}</div>
+                                    <div>${carta.seme}</div>
+                                </div>
+
+                                <div class="cartaSemeCentro ${colore}">
+                                    ${carta.seme}
+                                </div>
+
+                                <div class="cartaAngolo cartaBasso ${colore}">
+                                    <div>${carta.valore}</div>
+                                    <div>${carta.seme}</div>
+                                </div>
+                            `;
+
+                        }
+
+                    }
+
+                };
+
+
+            /*
+            =========================
+            INSERISCE IMMAGINE
+            =========================
+            */
+
+            c.appendChild(
+                immagine
+            );
 
 
             div.appendChild(c);
@@ -2585,128 +2772,332 @@ if(partitaCPU.turno === "giocatore"){
 
 function mostraScarti(){
 
-let area = document.getElementById("scarti");  
+    let area = document.getElementById("scarti");
 
-area.innerHTML = "";  
-
-
-let listaScarti = modalitaGioco === "cpu"  
-    ? partitaCPU.scarti  
-    : scarti;  
-      
-    console.log(  
-"🃏 NUMERO SCARTI:",  
-listaScarti.length,  
-listaScarti
-
-);
-
-listaScarti.forEach((carta, indice) => {  
-
-    let div = document.createElement("div");  
-
-    div.className = "carta-mano carta-scarto";  
+    area.innerHTML = "";
 
 
-    /*  
-        =========================  
-        COLORE  
-        =========================  
-    */  
-
-    let colore =  
-        (carta.seme === "♥" || carta.seme === "♦")  
-        ? "rosso"  
-        : "nero";  
+    let listaScarti =
+        modalitaGioco === "cpu"
+        ? partitaCPU.scarti
+        : scarti;
 
 
-    /*  
-        =========================  
-        CONTENUTO CARTA  
-        UGUALE ALLA MANO  
-        =========================  
-    */  
-
-    if(carta.valore === "Jolly"){  
-
-        div.innerHTML = `  
-            <div class="cartaValore jolly">  
-                JOLLY  
-            </div>  
-
-            <div class="cartaSeme jolly">  
-                🃏  
-            </div>  
-        `;  
-
-    }else{  
-
-        div.innerHTML = `  
-            <div class="cartaAngolo cartaAlto ${colore}">  
-                <div>${carta.valore}</div>  
-                <div>${carta.seme}</div>  
-            </div>  
-
-            <div class="cartaSemeCentro ${colore}">  
-                ${carta.seme}  
-            </div>  
-
-            <div class="cartaAngolo cartaBasso ${colore}">  
-                <div>${carta.valore}</div>  
-                <div>${carta.seme}</div>  
-            </div>  
-        `;  
-
-    }  
+    console.log(
+        "🃏 NUMERO SCARTI:",
+        listaScarti.length,
+        listaScarti
+    );
 
 
-    /*  
-        =========================  
-        CLIC SUL MONTE SCARTI  
-        =========================  
+    listaScarti.forEach((carta, indice) => {
+
+        console.log(
+            "🔍 CARTA SCARTO:",
+            JSON.stringify(carta)
+        );
+
+
+        let div =
+            document.createElement("div");
+
+        div.className =
+            "carta-mano carta-scarto";
+
+
+        /*
+        =========================
+        COLORE
+        =========================
+        */
+
+        let colore =
+            carta.seme === "♥" ||
+            carta.seme === "♦"
+            ? "rosso"
+            : "nero";
+
+
+        /*
+        =========================
+        NOME IMMAGINE
+        =========================
+        */
+
+        let nomeCarta = "";
+
+
+        if(carta.valore === "Jolly"){
+
+            if(
+                carta.colore === "blu" ||
+                carta.colore === "rosso"
+            ){
+
+                nomeCarta =
+                    "jolly_" +
+                    carta.colore;
+
+            }else{
+
+                nomeCarta =
+                    "jolly";
+
+            }
+
+        }else{
+
+            /*
+            =========================
+            CONVERSIONE ASSO
+            =========================
+            */
+
+            let valoreImmagine =
+                carta.valore === "A"
+                ? "asso"
+                : carta.valore.toLowerCase();
+
+
+            /*
+            =========================
+            CONVERSIONE SEME
+            =========================
+            */
+
+            let semeImmagine = "";
+
+
+            switch(carta.seme){
+
+                case "♥":
+                    semeImmagine = "cuori";
+                    break;
+
+                case "♦":
+                    semeImmagine = "quadri";
+                    break;
+
+                case "♣":
+                    semeImmagine = "fiori";
+                    break;
+
+                case "♠":
+                    semeImmagine = "picche";
+                    break;
+
+            }
+
+
+            nomeCarta =
+                valoreImmagine +
+                "_" +
+                semeImmagine;
+
+        }
+
+
+        /*
+        =========================
+        CREA IMMAGINE
+        =========================
+        */
+
+        let immagine =
+            document.createElement("img");
+
+
+        immagine.className =
+            "immagineCarta";
+
+
+        immagine.alt =
+            carta.valore === "Jolly"
+            ? "Jolly"
+            : carta.valore +
+              " " +
+              carta.seme;
+
+
+        /*
+        =========================
+        PROVA PNG
+        =========================
+        */
+
+        let percorsoPNG =
+            "images/carte/" +
+            nomeCarta +
+            ".png";
+
+
+        /*
+        =========================
+        FALLBACK JPG
+        =========================
+        */
+
+        let percorsoJPG =
+            "images/carte/" +
+            nomeCarta +
+            ".jpg";
+
+
+        immagine.src =
+            percorsoPNG;
+
+
+        console.log(
+            "🖼️ IMMAGINE SCARTO:",
+            percorsoPNG
+        );
+
+
+        /*
+        =========================
+        FALLBACK
+        =========================
+        */
+
+        immagine.onerror =
+            function(){
+
+                if(
+                    immagine.src.endsWith(".png")
+                ){
+
+                    immagine.src =
+                        percorsoJPG;
+
+                }else{
+
+                    /*
+                    =========================
+                    NESSUNA IMMAGINE
+                    =========================
+                    */
+
+                    immagine.remove();
+
+
+                    if(carta.valore === "Jolly"){
+
+                        div.innerHTML = `
+                            <div class="cartaValore jolly">
+                                JOLLY
+                            </div>
+
+                            <div class="cartaSeme jolly">
+                                🃏
+                            </div>
+                        `;
+
+                    }else{
+
+                        div.innerHTML = `
+                            <div class="cartaAngolo cartaAlto ${colore}">
+                                <div>${carta.valore}</div>
+                                <div>${carta.seme}</div>
+                            </div>
+
+                            <div class="cartaSemeCentro ${colore}">
+                                ${carta.seme}
+                            </div>
+
+                            <div class="cartaAngolo cartaBasso ${colore}">
+                                <div>${carta.valore}</div>
+                                <div>${carta.seme}</div>
+                            </div>
+                        `;
+
+                    }
+
+                }
+
+            };
+
+
+        /*
+        =========================
+        INSERISCE IMMAGINE
+        =========================
+        */
+
+        div.appendChild(immagine);
+
+
+        /*
+        =========================
+        CLICK MONTE SCARTI
+        =========================
+        */
+
+        div.onclick =
+            function(event){
+
+                alert(
+                    "CLICK MONTE SCARTI"
+                );
+
+                event.stopPropagation();
+
+
+                if(
+                    modalitaGioco === "cpu"
+                ){
+
+                    prendiDalMazzoScarti(
+                        indice
+                    );
+
+                }else{
+
+                    prendiScartiOnline(
+                        indice
+                    );
+
+                }
+
+            };
+
+
+        area.appendChild(div);
+
+    });
+
+
+    /*
+    =========================
+    MONTE SCARTI
+    SOVRAPPOSIZIONE FISSA
+    =========================
     */
 
-div.onclick = function(event){
+    let carteScarto =
+        document.querySelectorAll(
+            "#scarti .carta-scarto"
+        );
 
-alert("CLICK MONTE SCARTI");  
 
-event.stopPropagation();  
+    carteScarto.forEach(
+        (carta, indice) => {
 
+            carta.style.flexShrink =
+                "0";
 
-if(modalitaGioco === "cpu"){  
+            carta.style.marginLeft =
+                indice === 0
+                ? "0px"
+                : "-100px";
 
-    prendiDalMazzoScarti(indice);  
+            carta.style.position =
+                "relative";
 
-}else{  
+            carta.style.zIndex =
+                indice + 1;
 
-    prendiScartiOnline(indice);  
-
-}
-
-};
-
-area.appendChild(div);  
-
-});
-
-/*
-=========================
-MONTE SCARTI
-SOVRAPPOSIZIONE FISSA
-=========================
-*/
-
-let carteScarto =
-document.querySelectorAll("#scarti .carta-scarto");
-
-carteScarto.forEach((carta, indice) => {
-
-carta.style.flexShrink = "0";  
-carta.style.marginLeft = indice === 0 ? "0px" : "-42px";  
-carta.style.position = "relative";  
-carta.style.zIndex = indice + 1;
-
-});
+        }
+    );
 
 }
 
@@ -5598,46 +5989,115 @@ if(
 }
 
 
-let immagine = nomeImmagineCarta(carta);
+let immagine =
+    document.createElement("img");
 
-let colore =
-    (carta.seme === "♥" || carta.seme === "♦")
-    ? "rosso"
-    : "nero";
+immagine.className =
+    "immagineCarta";
+
+immagine.alt =
+    carta.valore === "Jolly"
+    ? "Jolly"
+    : carta.valore + " " + carta.seme;
 
 
-if(carta.valore === "Jolly"){
+/*
+    =========================
+    PROVA PNG
+    =========================
+*/
 
-    c.innerHTML = `
-        <div class="cartaValore jolly">
-            JOLLY
-        </div>
+let percorsoPNG =
+    "images/carte/" +
+    nomeImmagineCarta(carta);
 
-        <div class="cartaSeme jolly">
-            🃏
-        </div>
-    `;
 
-}else{
+/*
+    =========================
+    FALLBACK JPG
+    =========================
+*/
 
-    c.innerHTML = `
-        <div class="cartaAngolo cartaAlto ${colore}">
-            <div>${carta.valore}</div>
-            <div>${carta.seme}</div>
-        </div>
+let percorsoJPG =
+    percorsoPNG.replace(
+        ".png",
+        ".jpg"
+    );
 
-        <div class="cartaSemeCentro ${colore}">
-            ${carta.seme}
-        </div>
 
-        <div class="cartaAngolo cartaBasso ${colore}">
-            <div>${carta.valore}</div>
-            <div>${carta.seme}</div>
-        </div>
-    `;
+immagine.src =
+    percorsoPNG;
 
-}
 
+/*
+    Se PNG non esiste,
+    prova JPG.
+*/
+
+immagine.onerror = function(){
+
+    if(
+        immagine.src.endsWith(".png")
+    ){
+
+        immagine.src =
+            percorsoJPG;
+
+    }else{
+
+        /*
+            Se non esiste nessuna immagine,
+            torna alla grafica vecchia.
+        */
+
+        immagine.remove();
+
+
+        let colore =
+            (carta.seme === "♥" ||
+             carta.seme === "♦")
+            ? "rosso"
+            : "nero";
+
+
+        if(carta.valore === "Jolly"){
+
+            c.innerHTML = `
+                <div class="cartaValore jolly">
+                    JOLLY
+                </div>
+
+                <div class="cartaSeme jolly">
+                    🃏
+                </div>
+            `;
+
+        }else{
+
+            c.innerHTML = `
+                <div class="cartaAngolo cartaAlto ${colore}">
+                    <div>${carta.valore}</div>
+                    <div>${carta.seme}</div>
+                </div>
+
+                <div class="cartaSemeCentro ${colore}">
+                    ${carta.seme}
+                </div>
+
+                <div class="cartaAngolo cartaBasso ${colore}">
+                    <div>${carta.valore}</div>
+                    <div>${carta.seme}</div>
+                </div>
+            `;
+
+        }
+
+    }
+
+};
+
+
+c.appendChild(immagine);
 
 div.appendChild(c);
 
@@ -7456,71 +7916,109 @@ function mostraCombinazioniAvversarioOnline(){
     let lista =
         window.combinazioniAvversarioOnline || [];
 
+
     lista.forEach(gruppo => {
 
-        let div = document.createElement("div");
+        let div =
+            document.createElement("div");
 
-        div.className = "combinazione";
+        div.className =
+            "combinazione";
+
 
         gruppo.carte.forEach(carta => {
 
-            let c = document.createElement("div");
+            let c =
+                document.createElement("div");
 
             c.className =
                 "carta-mano carta-calata";
-                
-                c.onclick = function(){
 
-    if(carta.valore === "Jolly"){
 
-        cartaSpecialeSelezionata = carta;
-        combinazioneSpecialeSelezionata = gruppo;
-        proprietarioSpeciale = "avversario";
+            /*
+            =========================
+            CLICK CARTA
+            =========================
+            */
 
-        console.log(
-            "🃏 JOLLY AVVERSARIO SELEZIONATO:",
-            carta,
-            gruppo
-        );
+            c.onclick =
+                function(){
 
-    }
+                    if(carta.valore === "Jolly"){
 
-};
-                
-                // =========================
-// CARTA RUBABILE AVVERSARIO
-// =========================
+                        cartaSpecialeSelezionata =
+                            carta;
 
-if(
-    carta.valore === "Jolly" ||
-    carta.pinella === true
-){
+                        combinazioneSpecialeSelezionata =
+                            gruppo;
 
-    c.style.cursor = "pointer";
+                        proprietarioSpeciale =
+                            "avversario";
 
-    c.onclick = function(event){
 
-        event.stopPropagation();
+                        console.log(
+                            "🃏 JOLLY AVVERSARIO SELEZIONATO:",
+                            carta,
+                            gruppo
+                        );
 
-        cartaRubabileSelezionata = carta;
+                    }
 
-        combinazioneRubabileSelezionata = gruppo;
+                };
 
-        proprietarioCombinazioneRubabile = "avversario";
 
-        console.log(
-            "🟡 CARTA RUBABILE AVVERSARIO:",
-            carta
-        );
+            /*
+            =========================
+            CARTA RUBABILE
+            =========================
+            */
 
-        console.log(
-            "🟡 COMBINAZIONE AVVERSARIA:",
-            gruppo
-        );
+            if(
+                carta.valore === "Jolly" ||
+                carta.pinella === true
+            ){
 
-    };
+                c.style.cursor =
+                    "pointer";
 
-}
+
+                c.onclick =
+                    function(event){
+
+                        event.stopPropagation();
+
+
+                        cartaRubabileSelezionata =
+                            carta;
+
+                        combinazioneRubabileSelezionata =
+                            gruppo;
+
+                        proprietarioCombinazioneRubabile =
+                            "avversario";
+
+
+                        console.log(
+                            "🟡 CARTA RUBABILE AVVERSARIO:",
+                            carta
+                        );
+
+
+                        console.log(
+                            "🟡 COMBINAZIONE AVVERSARIA:",
+                            gruppo
+                        );
+
+                    };
+
+            }
+
+
+            /*
+            =========================
+            COLORE
+            =========================
+            */
 
             let colore =
                 (carta.seme === "♥" ||
@@ -7528,41 +8026,223 @@ if(
                 ? "rosso"
                 : "nero";
 
+
+            /*
+            =========================
+            NOME IMMAGINE
+            =========================
+            */
+
+            let nomeCarta = "";
+
+
             if(carta.valore === "Jolly"){
 
-                c.innerHTML = `
-                    <div class="cartaValore jolly">
-                        JOLLY
-                    </div>
+                if(
+                    carta.colore === "blu" ||
+                    carta.colore === "rosso"
+                ){
 
-                    <div class="cartaSeme jolly">
-                        🃏
-                    </div>
-                `;
+                    nomeCarta =
+                        "jolly_" +
+                        carta.colore;
+
+                }else{
+
+                    nomeCarta =
+                        "jolly";
+
+                }
 
             }else{
 
-                c.innerHTML = `
-                    <div class="cartaAngolo cartaAlto ${colore}">
-                        <div>${carta.valore}</div>
-                        <div>${carta.seme}</div>
-                    </div>
+                /*
+                =========================
+                CONVERSIONE VALORE
+                =========================
+                */
 
-                    <div class="cartaSemeCentro ${colore}">
-                        ${carta.seme}
-                    </div>
+                let valoreImmagine =
+                    carta.valore === "A"
+                    ? "asso"
+                    : carta.valore.toLowerCase();
 
-                    <div class="cartaAngolo cartaBasso ${colore}">
-                        <div>${carta.valore}</div>
-                        <div>${carta.seme}</div>
-                    </div>
-                `;
+
+                /*
+                =========================
+                CONVERSIONE SEME
+                =========================
+                */
+
+                let semeImmagine = "";
+
+
+                switch(carta.seme){
+
+                    case "♥":
+                        semeImmagine = "cuori";
+                        break;
+
+                    case "♦":
+                        semeImmagine = "quadri";
+                        break;
+
+                    case "♣":
+                        semeImmagine = "fiori";
+                        break;
+
+                    case "♠":
+                        semeImmagine = "picche";
+                        break;
+
+                }
+
+
+                nomeCarta =
+                    valoreImmagine +
+                    "_" +
+                    semeImmagine;
 
             }
+
+
+            /*
+            =========================
+            CREA IMMAGINE
+            =========================
+            */
+
+            let immagine =
+                document.createElement("img");
+
+
+            immagine.className =
+                "immagineCarta";
+
+
+            immagine.alt =
+                carta.valore === "Jolly"
+                ? "Jolly"
+                : carta.valore +
+                  " " +
+                  carta.seme;
+
+
+            /*
+            =========================
+            PERCORSI
+            =========================
+            */
+
+            let percorsoPNG =
+                "images/carte/" +
+                nomeCarta +
+                ".png";
+
+
+            let percorsoJPG =
+                "images/carte/" +
+                nomeCarta +
+                ".jpg";
+
+
+            /*
+            =========================
+            CARICA PNG
+            =========================
+            */
+
+            immagine.src =
+                percorsoPNG;
+
+
+            console.log(
+                "🖼️ IMMAGINE CALATA AVVERSARIO:",
+                percorsoPNG
+            );
+
+
+            /*
+            =========================
+            FALLBACK JPG
+            =========================
+            */
+
+            immagine.onerror =
+                function(){
+
+                    if(
+                        immagine.src.endsWith(".png")
+                    ){
+
+                        immagine.src =
+                            percorsoJPG;
+
+                    }else{
+
+                        /*
+                        =========================
+                        FALLBACK TESTUALE
+                        =========================
+                        */
+
+                        immagine.remove();
+
+
+                        if(
+                            carta.valore === "Jolly"
+                        ){
+
+                            c.innerHTML = `
+                                <div class="cartaValore jolly">
+                                    JOLLY
+                                </div>
+
+                                <div class="cartaSeme jolly">
+                                    🃏
+                                </div>
+                            `;
+
+                        }else{
+
+                            c.innerHTML = `
+                                <div class="cartaAngolo cartaAlto ${colore}">
+                                    <div>${carta.valore}</div>
+                                    <div>${carta.seme}</div>
+                                </div>
+
+                                <div class="cartaSemeCentro ${colore}">
+                                    ${carta.seme}
+                                </div>
+
+                                <div class="cartaAngolo cartaBasso ${colore}">
+                                    <div>${carta.valore}</div>
+                                    <div>${carta.seme}</div>
+                                </div>
+                            `;
+
+                        }
+
+                    }
+
+                };
+
+
+            /*
+            =========================
+            INSERISCE IMMAGINE
+            =========================
+            */
+
+            c.appendChild(
+                immagine
+            );
+
 
             div.appendChild(c);
 
         });
+
 
         area.appendChild(div);
 
