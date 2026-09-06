@@ -3749,7 +3749,7 @@ mano.forEach((carta, indice) => {
         let valoreImmagine =  
             carta.valore === "A"  
             ? "asso"  
-            : carta.valore;  
+: carta.valore.toLowerCase();
 
 
         /*  
