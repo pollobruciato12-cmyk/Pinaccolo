@@ -88,31 +88,31 @@ function nomeImmagineCarta(carta){
     };
 
 
-if(carta.valore === "Jolly"){
+    if(carta.valore === "Jolly"){
 
-    if(carta.colore === "blu"){
-        return "jolly_blu.png";
+        if(carta.colore === "blu"){
+            return "jolly_blu.png";
+        }
+
+        return "jolly_rosso.png";
+
     }
 
-    return "jolly_rosso.png";
 
-}
-
-
-let valore =
-    carta.valore;
+    let valore =
+        valoriNomi[carta.valore] || carta.valore.toLowerCase();
 
 
-let seme =
-    semiNomi[carta.seme];
+    let seme =
+        semiNomi[carta.seme];
 
 
-if(carta.valore === "A" && carta.seme === "♣"){
-    return "A_fiori.jpg";
-}
+    if(carta.valore === "A" && carta.seme === "♣"){
+        return "asso_fiori.jpg";
+    }
 
 
-return valore + "_" + seme + ".png";
+    return valore + "_" + seme + ".png";
 
 }
 
