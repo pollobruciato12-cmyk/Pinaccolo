@@ -4819,10 +4819,32 @@ manoAvversario.forEach((carta, indice) => {
 let img =  
     document.createElement("img");
 
-img.src =
-indice % 2 === 0
-? "images/carte/retro_rosso.jpg"
-: "images/carte/retro_blu.jpg";
+let nomeRetro =
+    indice % 2 === 0
+    ? "retro_rosso"
+    : "retro_blu";
+
+let percorsoPNG =
+    "images/carte/" +
+    nomeRetro +
+    ".png";
+
+let percorsoJPG =
+    "images/carte/" +
+    nomeRetro +
+    ".jpg";
+
+img.src = percorsoPNG;
+
+img.onerror = function(){
+
+    if(img.src.endsWith(".png")){
+
+        img.src = percorsoJPG;
+
+    }
+
+};
 
 img.className = "cartaRetro";  
 
