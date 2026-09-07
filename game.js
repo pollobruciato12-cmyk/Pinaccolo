@@ -2699,54 +2699,423 @@ function controllaCPU(){
 
     console.log("🤖 CPU controlla la mano");
 
+
+    /*
+        ==========================================
+        1. CARTA OBBLIGATORIA
+        ==========================================
+
+        Se la CPU ha preso dagli scarti,
+        deve prima utilizzare la carta
+        obbligatoria.
+    */
+
+    if(
+        partitaCPU.haPresoScarti &&
+        partitaCPU.cartaObbligatoria &&
+        !partitaCPU.cartaObbligatoriaUsata
+    ){
+
+        let obbligatoria =
+            partitaCPU.cartaObbligatoria;
+
+
+        console.log(
+            "🔴 CPU deve utilizzare:",
+            obbligatoria
+        );
+
+
+        /*
+            --------------------------------------
+            PROVA AD AGGIUNGERLA A UNA SCALA
+            GIÀ PRESENTE
+            --------------------------------------
+        */
+
+        let aggiuntaEffettuata = false;
+
+
+        for(let combinazione of combinazioniCPU){
+
+            if(combinazione.tipo !== "scala"){
+                continue;
+            }
+
+
+            if(
+                puoAggiungereCarta(
+                    obbligatoria,
+                    combinazione
+                )
+            ){
+
+                combinazione.carte.push(
+                    obbligatoria
+                );
+
+
+                let indice =
+                    partitaCPU.cpu.findIndex(c =>
+                        stessaCarta(
+                            c,
+                            obbligatoria
+                        )
+                    );
+
+
+                if(indice !== -1){
+
+                    partitaCPU.cpu.splice(
+                        indice,
+                        1
+                    );
+
+                }
+
+
+                partitaCPU.cartaObbligatoriaUsata =
+                    true;
+
+
+                aggiuntaEffettuata = true;
+
+
+                console.log(
+                    "✅ CPU ha aggiunto la carta obbligatoria:",
+                    obbligatoria
+                );
+
+
+                aggiornaNumeroCarteCPU();
+                mostraCombinazioniCPU();
+
+                break;
+
+            }
+
+        }
+
+
+        /*
+            --------------------------------------
+            SE NON PUÒ AGGIUNGERLA,
+            CERCA UNA NUOVA SCALA
+            CHE LA CONTENGA
+            --------------------------------------
+        */
+
+        if(!aggiuntaEffettuata){
+
+            let ordine = [
+                "A","3","4","5","6","7",
+                "8","9","10","J","Q","K"
+            ];
+
+
+            /*
+                La carta obbligatoria deve essere
+                una carta normale.
+            */
+
+            if(
+                obbligatoria.valore !== "Jolly" &&
+                obbligatoria.pinella !== true
+            ){
+
+                let stessoSeme =
+                    partitaCPU.cpu.filter(c =>
+                        c.seme === obbligatoria.seme &&
+                        c.valore !== "Jolly" &&
+                        c.pinella !== true
+                    );
+
+
+                /*
+                    Costruiamo tutte le possibili
+                    scale che contengono obbligatoria.
+                */
+
+                let candidate = [];
+
+
+                for(
+                    let lunghezza = 3;
+                    lunghezza <= Math.min(
+                        12,
+                        stessoSeme.length + 1
+                    );
+                    lunghezza++
+                ){
+
+                    function cerca(
+                        indice,
+                        scelte
+                    ){
+
+                        /*
+                            La carta obbligatoria
+                            viene inserita sempre
+                            nella combinazione.
+                        */
+
+                        if(scelte.length === lunghezza - 1){
+
+                            let combinazione = [
+                                obbligatoria,
+                                ...scelte
+                            ];
+
+
+                            if(
+                                combinazioneValida(
+                                    combinazione
+                                )
+                            ){
+
+                                candidate.push(
+                                    combinazione
+                                );
+
+                                return true;
+
+                            }
+
+                            return false;
+
+                        }
+
+
+                        for(
+                            let i = indice;
+                            i < stessoSeme.length;
+                            i++
+                        ){
+
+                            let carta =
+                                stessoSeme[i];
+
+
+                            if(
+                                stessaCarta(
+                                    carta,
+                                    obbligatoria
+                                )
+                            ){
+                                continue;
+                            }
+
+
+                            scelte.push(
+                                carta
+                            );
+
+
+                            if(
+                                cerca(
+                                    i + 1,
+                                    scelte
+                                )
+                            ){
+
+                                return true;
+
+                            }
+
+
+                            scelte.pop();
+
+                        }
+
+
+                        return false;
+
+                    }
+
+
+                    if(
+                        cerca(
+                            0,
+                            []
+                        )
+                    ){
+
+                        break;
+
+                    }
+
+                }
+
+
+                /*
+                    Se abbiamo trovato una scala,
+                    la CPU la cala.
+                */
+
+                if(candidate.length > 0){
+
+                    let scala =
+                        candidate[0];
+
+
+                    combinazioniCPU.push({
+
+                        tipo: "scala",
+
+                        carte: scala
+
+                    });
+
+
+                    /*
+                        Rimuoviamo le carte dalla mano.
+                    */
+
+                    scala.forEach(carta => {
+
+                        let indice =
+                            partitaCPU.cpu.findIndex(c =>
+                                stessaCarta(
+                                    c,
+                                    carta
+                                )
+                            );
+
+
+                        if(indice !== -1){
+
+                            partitaCPU.cpu.splice(
+                                indice,
+                                1
+                            );
+
+                        }
+
+                    });
+
+
+                    partitaCPU.cartaObbligatoriaUsata =
+                        true;
+
+
+                    aggiuntaEffettuata = true;
+
+
+                    console.log(
+                        "✅ CPU ha calato la carta obbligatoria:",
+                        scala
+                    );
+
+
+                    aggiornaNumeroCarteCPU();
+                    mostraCombinazioniCPU();
+
+                }
+
+            }
+
+        }
+
+
+        /*
+            Se non è riuscita a utilizzare
+            la carta obbligatoria,
+            NON deve essere considerata usata.
+        */
+
+        if(!aggiuntaEffettuata){
+
+            console.log(
+                "⚠️ CPU NON è riuscita a utilizzare la carta obbligatoria:",
+                obbligatoria
+            );
+
+        }
+
+    }
+
+
+    /*
+        ==========================================
+        2. CERCA ALTRE SCALE
+        ==========================================
+    */
+
     let combinazioneTrovata = true;
+
 
     while(combinazioneTrovata){
 
         combinazioneTrovata = false;
 
-        /*
-            CERCA SOLO SCALE
 
-            I TRIS NON ESISTONO PIÙ.
+        /*
+            Se la carta obbligatoria è ancora
+            inutilizzata, non cerchiamo altre scale.
+
+            Prima deve essere rispettato l'obbligo.
         */
 
-        let scala = trovaScalaCPU();
+        if(
+            partitaCPU.haPresoScarti &&
+            partitaCPU.cartaObbligatoria &&
+            !partitaCPU.cartaObbligatoriaUsata
+        ){
+
+            break;
+
+        }
+
+
+        let scala =
+            trovaScalaCPU();
+
 
         if(scala !== null){
 
-            combinazioniCPU.push(scala);
+            combinazioniCPU.push(
+                scala
+            );
+
 
             scala.carte.forEach(carta => {
 
                 let indice =
                     partitaCPU.cpu.indexOf(carta);
 
+
                 if(indice !== -1){
 
-                    partitaCPU.cpu.splice(indice,1);
+                    partitaCPU.cpu.splice(
+                        indice,
+                        1
+                    );
 
                 }
 
             });
 
-aggiornaNumeroCarteCPU();  
-        mostraCombinazioniCPU();  
 
-        console.log(  
-            "🤖 CPU ha calato una scala:",  
-            scala.carte  
-        );  
+            aggiornaNumeroCarteCPU();
+            mostraCombinazioniCPU();
 
-        combinazioneTrovata = true;  
 
-    }  
+            console.log(
+                "🤖 CPU ha calato una scala:",
+                scala.carte
+            );
 
-}  
 
-console.log(  
-    "🤖 CPU ha finito di cercare scale"  
-);
+            combinazioneTrovata = true;
+
+        }
+
+    }
+
+
+    console.log(
+        "🤖 CPU ha finito di cercare scale"
+    );
 
 }
 
@@ -7004,7 +7373,6 @@ if(
 
 function puoAggiungereCarta(carta, combinazione){
 
-
     if(combinazione.tipo === "tris"){
 
         return carta.valore === combinazione.carte[0].valore;
@@ -7012,11 +7380,17 @@ function puoAggiungereCarta(carta, combinazione){
     }
 
 
-
     if(combinazione.tipo === "scala"){
 
+        /*
+            Jolly e Pinelle non vengono aggiunti
+            automaticamente alle scale.
+        */
 
-        if(carta.valore === "Jolly" || carta.pinella === true){
+        if(
+            carta.valore === "Jolly" ||
+            carta.pinella === true
+        ){
 
             return false;
 
@@ -7029,35 +7403,75 @@ function puoAggiungereCarta(carta, combinazione){
         ];
 
 
+        /*
+            =====================================
+            CONTROLLO SEME
+            =====================================
 
-        let valoriScala = combinazione.carte
+            La carta deve avere lo stesso seme
+            delle carte normali della scala.
+        */
 
-        .filter(c =>
-            c.valore !== "Jolly" &&
-            c.pinella !== true
-        )
+        let normali =
+            combinazione.carte.filter(c =>
+                c.valore !== "Jolly" &&
+                c.pinella !== true
+            );
 
-        .map(c =>
-            ordine.indexOf(c.valore)
-        );
 
+        if(normali.length === 0){
+            return false;
+        }
+
+
+        if(carta.seme !== normali[0].seme){
+
+            return false;
+
+        }
+
+
+        /*
+            =====================================
+            CONTROLLO VALORE
+            =====================================
+        */
+
+        let valoriScala =
+            normali.map(c =>
+                ordine.indexOf(c.valore)
+            );
 
 
         let nuovaCarta =
-        ordine.indexOf(carta.valore);
+            ordine.indexOf(carta.valore);
 
 
+        if(nuovaCarta === -1){
 
-        // controlla tutti i punti possibili
+            return false;
+
+        }
+
+
+        /*
+            Controlla tutti i punti possibili
+            della scala.
+        */
+
         for(let valore of valoriScala){
 
+            let dopo =
+                (valore + 1) % 12;
 
-            let dopo = (valore + 1) % 12;
+            let prima =
+                (valore - 1 + 12) % 12;
 
-            let prima = (valore - 1 + 12) % 12;
 
-
-            if(nuovaCarta === dopo || nuovaCarta === prima){
+            if(
+                nuovaCarta === dopo ||
+                nuovaCarta === prima
+            ){
 
                 return true;
 
@@ -7068,12 +7482,10 @@ function puoAggiungereCarta(carta, combinazione){
 
         return false;
 
-
     }
 
 
     return false;
-
 
 }
 
