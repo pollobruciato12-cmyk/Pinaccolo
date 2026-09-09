@@ -2861,10 +2861,15 @@ function controllaCPU(){
 
                         if(scelte.length === lunghezza - 1){
 
-                            let combinazione = [
-                                obbligatoria,
-                                ...scelte
-                            ];
+let combinazione = [
+    obbligatoria,
+    ...scelte
+];
+
+combinazione.sort((a, b) =>
+    ordine.indexOf(a.valore) -
+    ordine.indexOf(b.valore)
+);
 
 
                             if(
