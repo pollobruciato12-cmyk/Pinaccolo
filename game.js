@@ -6560,28 +6560,67 @@ function combinazioneValida(carte){
         return false;
     }
 
+
+    // ==========================================
+    // CASO SPECIALE: Q - K - A - 3
+    // ==========================================
+    //
+    // Se abbiamo:
+    //
+    // Q - K - Pinella/Jolly - 3
+    //
+    // la carta speciale rappresenta A.
+    //
+    // Questo è l'unico caso in cui permettiamo
+    // di attraversare K -> A -> 3.
+    //
+
+    if(
+        carte.length === 4 &&
+        speciali.length === 1 &&
+        normali.length === 3
+    ){
+
+        let valoriNormali = normali.map(c => c.valore);
+
+        if(
+            valoriNormali.includes("Q") &&
+            valoriNormali.includes("K") &&
+            valoriNormali.includes("3")
+        ){
+
+            return true;
+        }
+    }
+
+
     /*
         Cerchiamo una sequenza valida della stessa
         lunghezza della combinazione.
 
-        La sequenza può attraversare:
+        IMPORTANTE:
+        qui NON è circolare.
 
-        ... Q K A 3 4 ...
-
-        quindi l'ordine è circolare.
+        Quindi A-3-K non può essere considerata
+        una sequenza valida.
     */
 
-    for(let partenza = 0; partenza < ordine.length; partenza++){
+    for(
+        let partenza = 0;
+        partenza <= ordine.length - carte.length;
+        partenza++
+    ){
 
         let sequenza = [];
 
         for(let i = 0; i < carte.length; i++){
 
             sequenza.push(
-                (partenza + i) % ordine.length
+                partenza + i
             );
 
         }
+
 
         /*
             Ogni carta normale deve occupare
@@ -6596,6 +6635,7 @@ function combinazioneValida(carte){
         if(!tutteValide){
             continue;
         }
+
 
         /*
             Le carte speciali devono occupare
@@ -6612,19 +6652,12 @@ function combinazioneValida(carte){
             continue;
         }
 
+
         /*
             REGOLA DEI SPECIALI:
 
             Tra due speciali devono esserci almeno
             due carte normali.
-
-            Esempio valido:
-
-            5 6 Jolly 8 9 Pinella J Q
-
-            Esempio non valido:
-
-            5 Jolly Pinella 8
         */
 
         let posizioniSpeciali = [];
@@ -6637,80 +6670,37 @@ function combinazioneValida(carte){
 
         }
 
-let specialiSeparati = true;
-
-/*
-    CONTROLLIAMO CHE TRA DUE SPECIALI
-    CI SIANO ALMENO 2 CARTE NORMALI.
-
-    Quindi:
-
-    NORMALE - NORMALE - SPECIALE - NORMALE - NORMALE - SPECIALE
-
-    è valido.
-
-    SPECIALE - NORMALE - SPECIALE
-
-    NON è valido.
-
-    Controlliamo anche il collegamento
-    circolare tra ultimo e primo speciale.
-*/
-
-for(let i = 1; i < posizioniSpeciali.length; i++){
-
-    let distanza =
-        posizioniSpeciali[i] -
-        posizioniSpeciali[i - 1];
-
-    if(distanza < 3){
-
-        specialiSeparati = false;
-        break;
-
-    }
-
-}
+        let specialiSeparati = true;
 
 
-/*
-    CONTROLLO CIRCOLARE
+        /*
+            Controlliamo la distanza tra gli speciali.
+        */
 
-    Se ci sono almeno 2 speciali,
-    controlliamo anche la distanza
-    tra l'ultimo e il primo passando
-    attraverso la fine e l'inizio
-    della scala.
-*/
+        for(
+            let i = 1;
+            i < posizioniSpeciali.length;
+            i++
+        ){
 
-if(
-    specialiSeparati &&
-    posizioniSpeciali.length >= 2
-){
+            let distanza =
+                posizioniSpeciali[i] -
+                posizioniSpeciali[i - 1];
 
-    let ultimo =
-        posizioniSpeciali[
-            posizioniSpeciali.length - 1
-        ];
+            if(distanza < 3){
 
-    let primo =
-        posizioniSpeciali[0];
+                specialiSeparati = false;
+                break;
 
-    let distanzaCircolare =
-        (sequenza.length - ultimo) + primo;
+            }
 
-    if(distanzaCircolare < 3){
-
-        specialiSeparati = false;
-
-    }
-
-}
+        }
 
 
-if(!specialiSeparati){
-    continue;
-}
+        if(!specialiSeparati){
+            continue;
+        }
+
 
         return true;
 
